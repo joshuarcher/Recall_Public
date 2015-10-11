@@ -10,7 +10,15 @@ import UIKit
 
 class TimeCapsuleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var tableHeightConstraint: NSLayoutConstraint!
+    
+    let testing = ["josh", "lexi", "jerrick", "nick", "david", "jimmy"]
+    
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,14 +35,12 @@ class TimeCapsuleViewController: UIViewController, UITableViewDataSource, UITabl
     // MARK: - UITableView methods
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return testing.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("capsuleCell", forIndexPath: indexPath)
-        
-        cell.textLabel?.text = "HELLOOOOO"
-        
+        cell.textLabel?.text = testing[indexPath.row]
         return cell
     }
     

@@ -36,9 +36,14 @@ class PagingContainerViewController: UIViewController {
         self.addChildViewController(timeCapsuleViewController)
         self.scrollView.addSubview(timeCapsuleViewController.view)
         self.timeCapsuleViewController.didMoveToParentViewController(self)
-        var tableFrame = timeCapsuleViewController.tableView.frame
-        tableFrame.size.width = 375
-        timeCapsuleViewController.tableView.frame = tableFrame
+        
+        let capsuleFrameSize = timeCapsuleViewController.view.frame.size
+        timeCapsuleViewController.tableWidthConstraint.constant = capsuleFrameSize.width
+        timeCapsuleViewController.tableHeightConstraint.constant = capsuleFrameSize.height
+        
+//        var tableFrame = timeCapsuleViewController.tableView.frame
+//        tableFrame.size.width = 375
+//        timeCapsuleViewController.tableView.frame = tableFrame
         
         self.timelineViewController = self.storyboard?.instantiateViewControllerWithIdentifier("Timeline") as! TimelineViewController
         
@@ -49,6 +54,10 @@ class PagingContainerViewController: UIViewController {
         self.addChildViewController(timelineViewController)
         self.scrollView.addSubview(timelineViewController.view)
         self.timelineViewController.didMoveToParentViewController(self)
+        
+        let timeFrameSize = timelineViewController.view.frame.size
+        timelineViewController.tableWidthConstraint.constant = timeFrameSize.width
+        timelineViewController.tableHeightConstraint.constant = timeFrameSize.height
         
         self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 2, self.view.frame.size.height - 66)
         

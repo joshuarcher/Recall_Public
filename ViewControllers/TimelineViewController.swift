@@ -8,9 +8,17 @@
 
 import UIKit
 
-class TimelineViewController: UIViewController {
+class TimelineViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    
+    // MARK: - IBOutlets
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var tableHeightConstraint: NSLayoutConstraint!
+    
+    let testing = ["josh", "lexi", "jerrick", "nick", "david", "jimmy"]
+    
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +29,18 @@ class TimelineViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    // MARK: - UITableView methods
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return testing.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("timelineCell", forIndexPath: indexPath)
+        cell.textLabel?.text = testing[indexPath.row]
+        return cell
     }
     
 
