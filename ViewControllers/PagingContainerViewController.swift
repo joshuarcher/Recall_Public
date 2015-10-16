@@ -11,9 +11,12 @@ import UIKit
 class PagingContainerViewController: UIViewController {
 
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var cameraButton: UIButton!
     
-    var timelineViewController: TimelineViewController!
-    var timeCapsuleViewController: TimeCapsuleViewController!
+    var photoTakingHelper: PhotoTakingHelper?
+    var imageToCompose: UIImage?
+    
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,45 +25,68 @@ class PagingContainerViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    // MARK - Helper methods
+    // MARK: - Actions
+    
+    @IBAction func cameraButtonTapped(sender: AnyObject) {
+        print("Camera button tapped lessgooo")
+        
+        photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) -> Void in
+            print("image captured")
+            self.imageToCompose = image
+            self.performSegueWithIdentifier("showRecallCompose", sender: sender)
+        })
+    }
+    
+    @IBAction func unwindToSegue(segue: UIStoryboardSegue) {
+        
+        if let identifier = segue.identifier {
+            print("Identifier \(identifier)")
+        }
+    }
+    
+    // MARK: - Helper methods
     
     func setUpView() {
-        self.timeCapsuleViewController = self.storyboard?.instantiateViewControllerWithIdentifier("TimeCapsule") as! TimeCapsuleViewController
-
-        self.addChildViewController(timeCapsuleViewController)
-        self.scrollView.addSubview(timeCapsuleViewController.view)
-        self.timeCapsuleViewController.didMoveToParentViewController(self)
         
-        let capsuleFrameSize = timeCapsuleViewController.view.frame.size
-        timeCapsuleViewController.tableWidthConstraint.constant = capsuleFrameSize.width
-        timeCapsuleViewController.tableHeightConstraint.constant = capsuleFrameSize.height
+        //let timeCapsuleView = TimeCapsuleTableViewController(nibName: "TimeCapsuleTableViewController", bundle: nil)
+        let timeCapsuleView = CapsuleViewController(nibName: "CapsuleViewController", bundle: nil)
         
-//        var tableFrame = timeCapsuleViewController.tableView.frame
-//        tableFrame.size.width = 375
-//        timeCapsuleViewController.tableView.frame = tableFrame
         
-        self.timelineViewController = self.storyboard?.instantiateViewControllerWithIdentifier("Timeline") as! TimelineViewController
+        self.addChildViewController(timeCapsuleView)
+        self.scrollView.addSubview(timeCapsuleView.view)
+        timeCapsuleView.didMoveToParentViewController(self)
         
-        var timeFrame = timelineViewController.view.frame
-        timeFrame.origin.x = self.view.frame.size.width
-        self.timelineViewController.view.frame = timeFrame
+        //let timelineView = TimelineTableViewController(nibName: "TimelineTableViewController", bundle: nil)
+        let timelineView = RecallViewController(nibName: "RecallViewController", bundle: nil)
         
-        self.addChildViewController(timelineViewController)
-        self.scrollView.addSubview(timelineViewController.view)
-        self.timelineViewController.didMoveToParentViewController(self)
+        var timelineFrame = timelineView.view.frame
+        timelineFrame.origin.x = self.view.frame.size.width
+        timelineView.view.frame = timelineFrame
         
-        let timeFrameSize = timelineViewController.view.frame.size
-        timelineViewController.tableWidthConstraint.constant = timeFrameSize.width
-        timelineViewController.tableHeightConstraint.constant = timeFrameSize.height
+        self.addChildViewController(timelineView)
+        self.scrollView.addSubview(timelineView.view)
+        timelineView.didMoveToParentViewController(self)
         
         self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 2, self.view.frame.size.height - 66)
         
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showRecallCompose" {
+            let composeView: RecallComposeViewController = segue.destinationViewController as! RecallComposeViewController
+            if let imageToCompose = imageToCompose {
+                composeView.imageTaken = imageToCompose
+            }
+//            composeView.photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) in
+//                print("picked the image")
+//                composeView.imageTaken = image
+//            })
+        }
     }
     
 
