@@ -28,7 +28,7 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
         
         self.timelineComponent = TimelineComponent(target: self)
 
-        let nib = UINib(nibName: "CapsuleTableViewCell", bundle: nil)
+        let nib = UINib(nibName: "TimeCapsuleTableViewCell", bundle: nil)
         tableView.registerNib(nib, forCellReuseIdentifier: "capsuleCell")
 
         // Do any additional setup after loading the view.
@@ -65,7 +65,7 @@ extension CapsuleViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: CapsuleTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("capsuleCell") as! CapsuleTableViewCell
+        let cell: TimeCapsuleTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("capsuleCell") as! TimeCapsuleTableViewCell
         
         let photo = timelineComponent.content[indexPath.row]
         photo.downloadImage()
@@ -78,7 +78,7 @@ extension CapsuleViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        let cell: CapsuleTableViewCell = self.tableView.cellForRowAtIndexPath(indexPath) as! CapsuleTableViewCell
+        let cell: TimeCapsuleTableViewCell = self.tableView.cellForRowAtIndexPath(indexPath) as! TimeCapsuleTableViewCell
         UIView.animateWithDuration(3.0, animations: { () -> Void in
             cell.timeLabel.alpha = 1
             cell.timeLabel.alpha = 0

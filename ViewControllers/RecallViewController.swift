@@ -28,7 +28,7 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
         
         self.timelineComponent = TimelineComponent(target: self)
         
-        let nib = UINib(nibName: "RecallTableViewCell", bundle: nil)
+        let nib = UINib(nibName: "TimelineTableViewCell", bundle: nil)
         tableView.registerNib(nib, forCellReuseIdentifier: "timelineCell")
 
         // Do any additional setup after loading the view.
@@ -74,7 +74,7 @@ extension RecallViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: RecallTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("timelineCell") as! RecallTableViewCell
+        let cell: TimelineTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("timelineCell") as! TimelineTableViewCell
         
         let photo = timelineComponent.content[indexPath.row]
         photo.downloadImage()
