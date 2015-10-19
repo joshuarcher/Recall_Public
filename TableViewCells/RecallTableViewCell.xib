@@ -2,14 +2,16 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="RecallTableViewCell" customModule="Reecall" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="536" id="KGk-i7-Jjw" customClass="RecallTableViewCell" customModule="Reecall" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="467" height="290"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+<<<<<<< HEAD
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -22,11 +24,53 @@
                     </label>
                 </subviews>
                 <animations/>
+=======
+                <rect key="frame" x="0.0" y="0.0" width="467" height="290"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U5Y-3y-JG9">
+                        <rect key="frame" x="0.0" y="0.0" width="467" height="50"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XlD-LD-05d">
+                                <rect key="frame" x="8" y="15" width="409" height="20"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" red="0.97647058819999999" green="0.97647058819999999" blue="0.97647058819999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="XlD-LD-05d" firstAttribute="centerY" secondItem="U5Y-3y-JG9" secondAttribute="centerY" id="8PX-k8-F07"/>
+                            <constraint firstAttribute="trailing" secondItem="XlD-LD-05d" secondAttribute="trailing" constant="50" id="L8V-sy-tGF"/>
+                            <constraint firstAttribute="height" constant="50" id="OhA-Rk-ngc"/>
+                            <constraint firstItem="XlD-LD-05d" firstAttribute="leading" secondItem="U5Y-3y-JG9" secondAttribute="leading" constant="8" id="mw3-4p-gCp"/>
+                        </constraints>
+                    </view>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zSY-hY-T8B">
+                        <rect key="frame" x="0.0" y="50" width="467" height="240"/>
+                        <animations/>
+                    </imageView>
+                </subviews>
+                <animations/>
+                <constraints>
+                    <constraint firstAttribute="trailingMargin" secondItem="U5Y-3y-JG9" secondAttribute="trailing" constant="-8" id="80r-XA-Vxv"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="zSY-hY-T8B" secondAttribute="trailing" constant="-8" id="8eW-XC-gQP"/>
+                    <constraint firstItem="U5Y-3y-JG9" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="-8" id="DUJ-fe-UHH"/>
+                    <constraint firstItem="U5Y-3y-JG9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="UXb-pr-GDl"/>
+                    <constraint firstItem="zSY-hY-T8B" firstAttribute="top" secondItem="U5Y-3y-JG9" secondAttribute="bottom" id="VwB-ZN-bge"/>
+                    <constraint firstItem="zSY-hY-T8B" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="-8" id="fDv-hl-vdB"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="zSY-hY-T8B" secondAttribute="bottom" constant="-8" id="grw-ok-4fC"/>
+                </constraints>
+>>>>>>> temp
             </tableViewCellContentView>
             <animations/>
             <connections>
-                <outlet property="testerLabel" destination="mmc-UA-tRS" id="AeZ-wR-x8g"/>
+                <outlet property="recallImageView" destination="zSY-hY-T8B" id="zpJ-G7-WtZ"/>
+                <outlet property="senderLabel" destination="XlD-LD-05d" id="URF-qx-BzT"/>
             </connections>
+            <point key="canvasLocation" x="493.5" y="391"/>
         </tableViewCell>
     </objects>
 </document>

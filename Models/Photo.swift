@@ -50,7 +50,9 @@ class Photo: PFObject, PFSubclassing {
             
             let imageData = UIImageJPEGRepresentation(image, 0.8)
             let imageFile = PFFile(data: imageData!)
-            imageFile.saveInBackgroundWithBlock(nil)
+            if let imageFile = imageFile {
+                imageFile.saveInBackgroundWithBlock(nil)
+            }
             
             fromUser = PFUser.currentUser()
             self.imageSent = imageFile
@@ -66,11 +68,23 @@ class Photo: PFObject, PFSubclassing {
             imageSent?.getDataInBackgroundWithBlock({ (data: NSData?, error: NSError?) -> Void in
                 if let data = data {
                     let image = UIImage(data: data, scale: 1.0)!
+                    print("received image")
+                    
+                    //let blurredImage = self.blurImage(image)
                     
                     self.image.value = image
+                }
+                else {
+                    print("didn't get image")
                 }
             })
         }
         
     }
+    
+    func blurImage(image: UIImage) -> UIImage {
+        
+        return image
+    }
+    
 }

@@ -79,8 +79,8 @@ class PagingContainerViewController: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showRecallCompose" {
             let composeView: RecallComposeViewController = segue.destinationViewController as! RecallComposeViewController
-            if let imageToCompose = imageToCompose {
-                composeView.imageTaken = imageToCompose
+            if let imageTo = imageToCompose {
+                composeView.imageTaken = imageTo
             }
 //            composeView.photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) in
 //                print("picked the image")
