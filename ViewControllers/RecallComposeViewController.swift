@@ -18,6 +18,7 @@ class RecallComposeViewController: UIViewController {
     
     @IBOutlet weak var recallPostImage: UIImageView!
     @IBOutlet weak var uploadButoon: UIButton!
+    
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {

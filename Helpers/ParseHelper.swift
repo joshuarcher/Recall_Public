@@ -42,6 +42,8 @@ class ParseHelper {
     static let ParseMessageContent = "messagetext"
     static let ParseMessageConvo = "ParentConversation"
     
+    // MARK: - Parse Queries
+    
     static func timeCapsuleRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
         
         let finalQuery = PFQuery(className: ParsePhotoClass)
@@ -52,6 +54,7 @@ class ParseHelper {
         finalQuery.skip = range.startIndex
         finalQuery.limit = range.endIndex - range.startIndex
         
+        //finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
         //finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
         finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }

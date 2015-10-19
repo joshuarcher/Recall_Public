@@ -7,20 +7,36 @@
 //
 
 import UIKit
+import Parse
 
-class RecallViewController: UIViewController {
+class RecallViewController: UIViewController, TimelineComponentTarget {
     
     let testLabels = ["shit", "josh", "dani", "jonah", "colby", "solit"]
 
     @IBOutlet weak var tableView: UITableView!
     
+    // MARK: - TimelineComponent properties
+    
+    var timelineComponent: TimelineComponent<Photo, RecallViewController>!
+    let defaultRange = 0...4
+    let additionalRangeSize = 5
+    
+    // MARK: - View Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.timelineComponent = TimelineComponent(target: self)
         
         let nib = UINib(nibName: "RecallTableViewCell", bundle: nil)
         tableView.registerNib(nib, forCellReuseIdentifier: "timelineCell")
 
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        timelineComponent.loadInitialIfRequired()
     }
 
     override func didReceiveMemoryWarning() {
@@ -28,6 +44,14 @@ class RecallViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: - TimelineComponent Methods
+    
+    func loadInRange(range: Range<Int>, completionBlock: ([Photo]?) -> Void) {
+        ParseHelper.timeCapsuleRequestForCurrentUser(range) { (results: [PFObject]?, error: NSError?) -> Void in
+            let photos = results as? [Photo] ?? []
+            completionBlock(photos)
+        }
+    }
 
     /*
     // MARK: - Navigation
@@ -41,22 +65,33 @@ class RecallViewController: UIViewController {
 
 }
 
+// MARK: - TableView Methods
+
 extension RecallViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return testLabels.count
+        return timelineComponent.content.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: RecallTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("timelineCell") as! RecallTableViewCell
         
-        cell.testerLabel.text = testLabels[indexPath.row]
+        let photo = timelineComponent.content[indexPath.row]
+        photo.downloadImage()
+        cell.photo = photo
+        cell.senderLabel.text = "josh"
         
         return cell
     }
     
-    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-    }
+//    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+//        
+//    }
     
+}
+
+extension RecallViewController: UITableViewDelegate {
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        timelineComponent.targetWillDisplayEntry(indexPath.row)
+    }
 }

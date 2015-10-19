@@ -9,8 +9,21 @@
 import UIKit
 
 class RecallTableViewCell: UITableViewCell {
-
-    @IBOutlet weak var testerLabel: UILabel!
+    
+    @IBOutlet weak var senderLabel: UILabel!
+    @IBOutlet weak var recallImageView: UIImageView!
+    
+    var photoDisposable: DisposableType?
+    
+    var photo: Photo? {
+        didSet {
+            photoDisposable?.dispose()
+            
+            if let photo = photo {
+                photoDisposable = photo.image.bindTo(recallImageView.bnd_image)
+            }
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
