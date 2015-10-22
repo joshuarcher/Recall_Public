@@ -42,6 +42,9 @@ class ParseHelper {
     static let ParseMessageContent = "messagetext"
     static let ParseMessageConvo = "ParentConversation"
     
+    // User Relation
+    static let ParseUserUsername = "username"
+    
     // MARK: - Parse Queries
     
     static func timeCapsuleRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
@@ -57,6 +60,20 @@ class ParseHelper {
         //finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
         //finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
         finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+    }
+    
+    static func addFriendsRequestForCurrentUser(completionBlock: PFQueryArrayResultBlock) {
+        
+        let finalQuery = PFQuery(className: ParseUserClass)
+        
+        finalQuery.whereKey(ParseUserUsername, notEqualTo: PFUser.currentUser()!.username!)
+        finalQuery.orderByAscending(ParseUserUsername)
+        
+//        finalQuery.skip = range.startIndex
+//        finalQuery.limit = range.endIndex - range.startIndex
+        
+        finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+        
     }
     
 }

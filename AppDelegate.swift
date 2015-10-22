@@ -40,6 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("No logged in user :(")
         }
         
+        application.statusBarHidden = true
+        
         
         return true
     }

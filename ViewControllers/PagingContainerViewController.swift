@@ -21,6 +21,8 @@ class PagingContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpView()
+        UIApplication.sharedApplication().statusBarHidden = true
+        
         
         // Do any additional setup after loading the view.
     }
@@ -35,11 +37,16 @@ class PagingContainerViewController: UIViewController {
     @IBAction func cameraButtonTapped(sender: AnyObject) {
         print("Camera button tapped lessgooo")
         
-        photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) -> Void in
-            print("image captured")
-            self.imageToCompose = image
+        if UIImagePickerController.isCameraDeviceAvailable(.Rear) {
+            photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) -> Void in
+                print("image captured")
+                self.imageToCompose = image
+                self.performSegueWithIdentifier("showRecallCompose", sender: sender)
+            })
+        } else {
             self.performSegueWithIdentifier("showRecallCompose", sender: sender)
-        })
+        }
+        
     }
     
     @IBAction func unwindToSegue(segue: UIStoryboardSegue) {
