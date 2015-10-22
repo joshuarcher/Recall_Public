@@ -7,8 +7,18 @@
 //
 
 import UIKit
+import Parse
 
 class TagFriendTableViewCell: UITableViewCell {
+    
+    var cellUser: PFUser! {
+        didSet{
+            usernameLabel.text = cellUser.username
+        }
+    }
+    
+    @IBOutlet weak var usernameLabel: UILabel!
+    
 
     override func awakeFromNib() {
         super.awakeFromNib()

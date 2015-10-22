@@ -42,38 +42,77 @@ class ParseHelper {
     static let ParseMessageContent = "messagetext"
     static let ParseMessageConvo = "ParentConversation"
     
+    // FriendsWith Relation
+    static let ParseFriendClass = "friendsWith"
+    static let ParseFriendFromUser = "fromUser"
+    static let ParseFriendTouser = "toUser"
+    static let ParseFriendToUsername = "toUserUsername"
+    
     // User Relation
     static let ParseUserUsername = "username"
     
     // MARK: - Parse Queries
     
     static func timeCapsuleRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
-        
         let finalQuery = PFQuery(className: ParsePhotoClass)
-        
         finalQuery.includeKey(ParsePhotoUser)
+        
+        finalQuery.whereKey(ParsePhotoDisplayDate, greaterThan: NSDate())
         finalQuery.orderByDescending("createdAt")
         
         finalQuery.skip = range.startIndex
         finalQuery.limit = range.endIndex - range.startIndex
         
-        //finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
-        //finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+        finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+    }
+    
+    static func timelineRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
+        let finalQuery = PFQuery(className: ParsePhotoClass)
+        finalQuery.includeKey(ParsePhotoUser)
+        
+        finalQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
+        finalQuery.orderByAscending("createdAt")
+        
+        finalQuery.skip = range.startIndex
+        finalQuery.limit = range.endIndex - range.startIndex
+        
         finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
     static func addFriendsRequestForCurrentUser(completionBlock: PFQueryArrayResultBlock) {
         
+        let friendQuery = PFQuery(className: ParseFriendClass)
+        friendQuery.whereKey(ParseFriendFromUser, equalTo: PFUser.currentUser()!)
+        
         let finalQuery = PFQuery(className: ParseUserClass)
         
+        
+        finalQuery.whereKey(ParseUserUsername, doesNotMatchKey: ParseFriendToUsername, inQuery: friendQuery)
         finalQuery.whereKey(ParseUserUsername, notEqualTo: PFUser.currentUser()!.username!)
         finalQuery.orderByAscending(ParseUserUsername)
-        
-//        finalQuery.skip = range.startIndex
-//        finalQuery.limit = range.endIndex - range.startIndex
+
         
         finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
         
+    }
+    
+    static func addFriendsWithRelationForCurrentUser(friendsWith: PFUser) {
+        
+        let friendRelation = PFObject(className: ParseFriendClass)
+        friendRelation[ParseFriendFromUser] = PFUser.currentUser()
+        friendRelation[ParseFriendTouser] = friendsWith
+        friendRelation[ParseFriendToUsername] = friendsWith.username
+        
+        friendRelation.saveInBackgroundWithBlock(nil)
+    }
+    
+    static func findFriendsRequestForCurrentUser(completionBlock: PFQueryArrayResultBlock) {
+        let friendQuery = PFQuery(className: ParseFriendClass)
+        friendQuery.whereKey(ParseFriendFromUser, equalTo: PFUser.currentUser()!)
+        friendQuery.includeKey(ParseFriendTouser)
+        friendQuery.orderByAscending(ParseFriendTouser)
+        
+        friendQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
 }

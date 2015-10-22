@@ -47,21 +47,11 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
     // MARK: - TimelineComponent Methods
     
     func loadInRange(range: Range<Int>, completionBlock: ([Photo]?) -> Void) {
-        ParseHelper.timeCapsuleRequestForCurrentUser(range) { (results: [PFObject]?, error: NSError?) -> Void in
+        ParseHelper.timelineRequestForCurrentUser(range) { (results: [PFObject]?, error: NSError?) -> Void in
             let photos = results as? [Photo] ?? []
             completionBlock(photos)
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 
@@ -79,14 +69,9 @@ extension RecallViewController: UITableViewDataSource {
         let photo = timelineComponent.content[indexPath.row]
         photo.downloadImage()
         cell.photo = photo
-        cell.senderLabel.text = "josh"
         
         return cell
     }
-    
-//    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-//        
-//    }
     
 }
 

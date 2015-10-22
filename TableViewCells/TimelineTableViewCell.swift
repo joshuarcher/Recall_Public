@@ -12,6 +12,7 @@ class TimelineTableViewCell: UITableViewCell {
     
     @IBOutlet weak var senderLabel: UILabel!
     @IBOutlet weak var recallImageView: UIImageView!
+    @IBOutlet weak var dateLabel: UILabel!
     
     var photoDisposable: DisposableType?
     
@@ -21,6 +22,10 @@ class TimelineTableViewCell: UITableViewCell {
             
             if let photo = photo {
                 photoDisposable = photo.image.bindTo(recallImageView.bnd_image)
+                self.senderLabel.text = photo.fromUser?.username
+                if let date = photo.displayDate {
+                    self.dateLabel.text = String(date)
+                }
             }
         }
     }

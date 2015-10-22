@@ -83,9 +83,6 @@ extension CapsuleViewController: UITableViewDataSource {
             cell.timeLabel.alpha = 1
             cell.timeLabel.alpha = 0
             }) { (finished: Bool) -> Void in
-//                if finished {
-//                    tableView.deselectRowAtIndexPath(indexPath, animated: true)
-//                }
         }
         
     }
@@ -94,6 +91,6 @@ extension CapsuleViewController: UITableViewDataSource {
 
 extension CapsuleViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        //timelineComponent.targetWillDisplayEntry(indexPath.row)
+        timelineComponent.targetWillDisplayEntry(indexPath.row)
     }
 }

@@ -21,50 +21,36 @@ class AddFriendsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        ParseHelper.addFriendsRequestForCurrentUser { (results: [AnyObject]?, error: NSError?) -> Void in
+        ParseHelper.addFriendsRequestForCurrentUser { (results: [PFObject]?, error: NSError?) -> Void in
             let users = results as? [PFUser] ?? []
-            
             self.usersToAdd = users
         }
-        
+
+        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 
 extension AddFriendsViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return usersToAdd?.count
+        guard let usersToAdd = usersToAdd else {return 0}
+        return usersToAdd.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("testCell")!
-        let userToDisplay: PFUser = usersToAdd[indexPath.row] as? PFUser
+        let cell: AddFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("addFriendCell") as! AddFriendTableViewCell
         
-        cell.textLabel?.text = userToDisplay.user
+        //let cell: UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("testCell")!
+        if let usersToAdd = usersToAdd {
+            cell.cellUser = usersToAdd[indexPath.row] as PFUser
+        }
+        
         return cell
     }
 }

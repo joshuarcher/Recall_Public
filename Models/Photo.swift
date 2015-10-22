@@ -13,12 +13,16 @@ class Photo: PFObject, PFSubclassing {
     
     @NSManaged var imageSent: PFFile?
     @NSManaged var fromUser: PFUser?
+    @NSManaged var taggedUsers: PFRelation?
+    @NSManaged var displayDate: NSDate?
     
     var photoUploadTask: UIBackgroundTaskIdentifier?
     
     // MARK: - Parse Class Properties
     
     var image: Observable<UIImage?> = Observable(nil)
+    var tagged: Observable<[PFUser]?> = Observable(nil)
+    var dateDisplay: Observable<NSDate?> = Observable(nil)
     
     // MARK: - PFSublclassing Protocol
     
@@ -53,9 +57,14 @@ class Photo: PFObject, PFSubclassing {
             if let imageFile = imageFile {
                 imageFile.saveInBackgroundWithBlock(nil)
             }
-            
             fromUser = PFUser.currentUser()
             self.imageSent = imageFile
+            if let users = tagged.value {
+                for user in users {
+                    taggedUsers?.addObject(user)
+                }
+            }
+            displayDate = dateDisplay.value
             saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
                 UIApplication.sharedApplication().endBackgroundTask(self.photoUploadTask!)
             }

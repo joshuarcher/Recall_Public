@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Parse
 
 class RecallComposeViewController: UIViewController {
     
@@ -15,6 +16,12 @@ class RecallComposeViewController: UIViewController {
     var photoTakingHelper: PhotoTakingHelper?
     
     var imageTaken: UIImage?
+    
+    var taggedFriends: [PFUser]! {
+        didSet {
+            taggedFriendsCountLabel.text = String(taggedFriends.count)
+        }
+    }
     
     
     @IBOutlet var dateButtonCollection: Array<UIButton>!
@@ -31,6 +38,10 @@ class RecallComposeViewController: UIViewController {
         // set image from picture taker
         if let imageTaken = imageTaken {
             recallPostImage.image = imageTaken
+        }
+        
+        if taggedFriends == nil {
+            taggedFriends = []
         }
         
         for button in dateButtonCollection {
@@ -55,12 +66,22 @@ class RecallComposeViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func unwindOneSegue(segue: UIStoryboardSegue) {
+        if let identifier = segue.identifier {
+            print("Identifier \(identifier)")
+        }
+    }
+    
+    
     // MARK: - Touch events
     
     @IBAction func uploadButtonTapped(sender: AnyObject) {
         let photo = Photo()
         photo.image.value = imageTaken
+        photo.tagged.value = taggedFriends
+        photo.dateDisplay.value = getDateToSend()
         photo.uploadPost()
+        
     }
     
     @IBAction func tagFriendsTapped(sender: AnyObject) {
@@ -71,12 +92,18 @@ class RecallComposeViewController: UIViewController {
     func handleDatePicker(sender: UIButton!) {
         for button in dateButtonCollection {
             if button == sender {
-                button.selected = true
+                if button.restorationIdentifier != "CustomDay" {
+                    button.selected = true
+                }
+                else {
+                    showCustomDateAlert()
+                }
             }
             else {
                 button.selected = false
             }
         }
+        print(String(getDateToSend()))
     }
 
     /*
@@ -89,4 +116,47 @@ class RecallComposeViewController: UIViewController {
     }
     */
 
+}
+
+// MARK: - Helper Methods
+
+extension RecallComposeViewController {
+    
+    func showCustomDateAlert() {
+        let alertTitle = "NOPE!"
+        let message = "Custom date picking is coming soon :)\n-Josh"
+        let alert = UIAlertController(title: alertTitle, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "I'm a troll", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func getDateToSend() -> NSDate {
+        var index: Int = 0
+        var daysToAdd: Double = 1
+        for (var i = 0; i < self.dateButtonCollection.count; i++) {
+            if self.dateButtonCollection[i].selected {
+                index = i
+            }
+        }
+        switch (index) {
+        case 0:
+            daysToAdd = 0.5
+            break;
+        case 1:
+            daysToAdd = 1
+            break;
+        case 2:
+            daysToAdd = 3
+            break;
+        case 3:
+            daysToAdd = 5
+            break;
+        case 4:
+            daysToAdd = 7
+            break;
+        default:
+            break;
+        }
+        return NSDate().dateByAddingTimeInterval(86400*daysToAdd)
+    }
 }
