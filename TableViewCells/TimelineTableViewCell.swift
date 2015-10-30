@@ -23,8 +23,8 @@ class TimelineTableViewCell: UITableViewCell {
             if let photo = photo {
                 photoDisposable = photo.image.bindTo(recallImageView.bnd_image)
                 self.senderLabel.text = photo.fromUser?.username
-                if let date = photo.displayDate {
-                    self.dateLabel.text = String(date)
+                if let date = photo.createdAt {
+                    self.dateLabel.text = GenHelper.timeFromString(date, cell: "timeline")
                 }
             }
         }
@@ -33,6 +33,8 @@ class TimelineTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

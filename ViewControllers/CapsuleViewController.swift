@@ -71,19 +71,17 @@ extension CapsuleViewController: UITableViewDataSource {
         photo.downloadImage()
         cell.photo = photo
         cell.senderLabel.text = "josh"
-        cell.timeLabel.text = "28 days"
-        
         return cell
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        let cell: TimeCapsuleTableViewCell = self.tableView.cellForRowAtIndexPath(indexPath) as! TimeCapsuleTableViewCell
-        UIView.animateWithDuration(3.0, animations: { () -> Void in
-            cell.timeLabel.alpha = 1
-            cell.timeLabel.alpha = 0
-            }) { (finished: Bool) -> Void in
-        }
+//        let cell: TimeCapsuleTableViewCell = self.tableView.cellForRowAtIndexPath(indexPath) as! TimeCapsuleTableViewCell
+//        UIView.animateWithDuration(3.0, animations: { () -> Void in
+//            cell.timeLabel.alpha = 1
+//            cell.timeLabel.alpha = 0
+//            }) { (finished: Bool) -> Void in
+//        }
         
     }
     

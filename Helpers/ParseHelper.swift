@@ -28,7 +28,7 @@ class ParseHelper {
     static let ParseUserPass = "password"
     static let ParseUserPhone = "phoneNumber"
     
-    // Convesation Relation
+    // Conversation Relation
     static let ParseConvoClass = "Conversation"
     static let ParseConvoMessages = "Messages"
     static let ParseConvoTitle = "conversationTitle"
@@ -39,8 +39,9 @@ class ParseHelper {
     // Messages Relation
     static let ParseMessageClass = "Message"
     static let ParseMessageSender = "fromUser"
-    static let ParseMessageContent = "messagetext"
+    static let ParseMessageContent = "messageText"
     static let ParseMessageConvo = "ParentConversation"
+    static let ParseMessageParentPhoto = "parentPhoto"
     
     // FriendsWith Relation
     static let ParseFriendClass = "friendsWith"
@@ -51,14 +52,14 @@ class ParseHelper {
     // User Relation
     static let ParseUserUsername = "username"
     
-    // MARK: - Parse Queries
+    // MARK: - Parse Timeline Queries
     
     static func timeCapsuleRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
         let finalQuery = PFQuery(className: ParsePhotoClass)
         finalQuery.includeKey(ParsePhotoUser)
         
         finalQuery.whereKey(ParsePhotoDisplayDate, greaterThan: NSDate())
-        finalQuery.orderByDescending("createdAt")
+        finalQuery.orderByAscending(ParsePhotoDisplayDate)
         
         finalQuery.skip = range.startIndex
         finalQuery.limit = range.endIndex - range.startIndex
@@ -71,13 +72,15 @@ class ParseHelper {
         finalQuery.includeKey(ParsePhotoUser)
         
         finalQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
-        finalQuery.orderByAscending("createdAt")
+        finalQuery.orderByDescending("createdAt")
         
         finalQuery.skip = range.startIndex
         finalQuery.limit = range.endIndex - range.startIndex
         
         finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
+    
+    // MARK: - Parse Friend Shtuff
     
     static func addFriendsRequestForCurrentUser(completionBlock: PFQueryArrayResultBlock) {
         
@@ -115,7 +118,17 @@ class ParseHelper {
         friendQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
+    // MARK: - Parse message shtuff
+    
+    
+    
+    static func findMessagesForPhoto(photo: Photo) {
+        
+    }
+    
 }
+
+// MARK: - PFUser capabilities
 
 extension PFUser {
     

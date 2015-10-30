@@ -76,7 +76,18 @@ extension RecallViewController: UITableViewDataSource {
 }
 
 extension RecallViewController: UITableViewDelegate {
+    
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         timelineComponent.targetWillDisplayEntry(indexPath.row)
     }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        // get messages view controller, pass photo, push view
+        let photo = timelineComponent.content[indexPath.row]
+        let nextVc: MessagesViewController = MessagesViewController(nibName: "MessagesViewController", bundle: nil)
+        nextVc.photo = photo
+        self.navigationController?.pushViewController(nextVc, animated: true)
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+    }
+    
 }

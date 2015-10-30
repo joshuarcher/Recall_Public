@@ -23,6 +23,9 @@ class TimeCapsuleTableViewCell: UITableViewCell {
             if let photo = photo {
                 // bind image of the post to the 'postImage' view
                 photoDisposable = photo.image.bindTo(recallImageView.bnd_image)
+                if let date = photo.displayDate {
+                    self.timeLabel.text = GenHelper.timeFromString(date, cell: "capsule")
+                }
             }
         }
     }
@@ -40,16 +43,52 @@ class TimeCapsuleTableViewCell: UITableViewCell {
         timeLayer.shadowOpacity = 0.6
         timeLayer.shadowRadius = 5
         
-        self.selectionStyle = UITableViewCellSelectionStyle.None
-        
+        let gesture: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "longPressed:")
+        gesture.minimumPressDuration = 0.09
+        //self.recallImageView.gestureRecognizers = [gesture]
+        visEffect.addGestureRecognizer(gesture)
         // Initialization code
     }
+    
+    
+//  return [image applyBlurWithRadius:30 tintColor:[UIColor colorWithWhite:1 alpha:0.2] saturationDeltaFactor:1.5 maskImage:nil];
+//    theImageView.image = theImageView.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+//    theImageView.tintColor = UIColor.redColor()
+    
+    //UIView *overlay = [[UIView alloc] initWithFrame:[originalImageView frame]];
+    //
+    //UIImageView *maskImageView = [[UIImageView alloc] initWithImage:myImage];
+    //[maskImageView setFrame:[overlay bounds]];
+    //
+    //[[overlay layer] setMask:[maskImageView layer]];
+    //
+    //[overlay setBackgroundColor:[UIColor redColor]];
     
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
         // Configure the view for the selected state
     }
+    
+    func longPressed(sender: UIGestureRecognizer) {
+        if (sender.state == UIGestureRecognizerState.Ended) {
+            print("ended")
+            UIView.animateWithDuration(3.0, animations: { () -> Void in
+                self.timeLabel.alpha = 0
+            })
+        }
+        else if (sender.state == UIGestureRecognizerState.Began) {
+            print("started")
+            self.timeLabel.alpha = 1
+        }
+    }
 
     
 }
+
+//        let cell: TimeCapsuleTableViewCell = self.tableView.cellForRowAtIndexPath(indexPath) as! TimeCapsuleTableViewCell
+//        UIView.animateWithDuration(3.0, animations: { () -> Void in
+//            cell.timeLabel.alpha = 1
+//            cell.timeLabel.alpha = 0
+//            }) { (finished: Bool) -> Void in
+//        }
