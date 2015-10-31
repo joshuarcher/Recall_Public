@@ -11,14 +11,14 @@ import Parse
 
 class Photo: PFObject, PFSubclassing {
     
+    // MARK: - Parse Class Properties
+    
     @NSManaged var imageSent: PFFile?
     @NSManaged var fromUser: PFUser?
     @NSManaged var taggedUsers: PFRelation?
     @NSManaged var displayDate: NSDate?
     
     var photoUploadTask: UIBackgroundTaskIdentifier?
-    
-    // MARK: - Parse Class Properties
     
     var image: Observable<UIImage?> = Observable(nil)
     var tagged: Observable<[PFUser]?> = Observable(nil)
@@ -89,11 +89,6 @@ class Photo: PFObject, PFSubclassing {
             })
         }
         
-    }
-    
-    func blurImage(image: UIImage) -> UIImage {
-        
-        return image
     }
     
 }

@@ -7,20 +7,35 @@
 //
 
 import UIKit
-import Foundation
+import Parse
 
 class MessagesViewController: UIViewController {
     
     var photo: Photo?
+    
+    var messages: [Message]?
+    
+    var jMessages: [JMessage]?
+    
+    // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = .ShortStyle
+        let _ = Message()
+        setTitle()
         guard let photo = photo else {return}
-        self.navigationItem.title = formatter.stringFromDate(photo.createdAt!)
+        getMessagesFromParse(photo)
+        
+//        let formatter = NSDateFormatter()
+//        formatter.dateStyle = .ShortStyle
+//        guard let photo = photo else {return}
+//        self.navigationItem.title = formatter.stringFromDate(photo.createdAt!)
         // Do any additional setup after loading the view.
+        
+//        ParseHelper.findMessagesForPhoto(photo, completionBlock: { (results: [PFObject]?, error: NSError?) -> Void in
+//            let newMessages: [Message] = results as? [Message] ?? []
+//            self.messages = newMessages
+//        })
     }
 
     override func didReceiveMemoryWarning() {
@@ -31,6 +46,24 @@ class MessagesViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         print("hey I just appeared")
+        
+    }
+    
+    // MARK: - Helper methods
+    
+    func setTitle() {
+        let formatter = NSDateFormatter()
+        formatter.dateStyle = .ShortStyle
+        guard let photo = photo else {return}
+        self.navigationItem.title = formatter.stringFromDate(photo.createdAt!)
+    }
+    
+    func getMessagesFromParse(photo: Photo) {
+        ParseHelper.findMessagesForPhoto(photo, completionBlock: { (results: [PFObject]?, error: NSError?) -> Void in
+            let newMessages: [Message] = results as? [Message] ?? []
+            self.messages = newMessages
+            print(self.messages)
+        })
     }
     
 

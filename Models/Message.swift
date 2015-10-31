@@ -10,6 +10,9 @@ import Foundation
 import Parse
 
 class Message: PFObject, PFSubclassing {
+    
+    // For Observables
+    
     @NSManaged var fromUser: PFUser?
     @NSManaged var messageText: String?
     @NSManaged var parentPhoto: Photo?
@@ -48,6 +51,13 @@ class Message: PFObject, PFSubclassing {
             saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                 if success {
                     print("message saved successfully")
+                    let relation = photo.relationForKey("messages")
+                    relation.addObject(self)
+                    photo.saveInBackgroundWithBlock({ (seccess: Bool, error: NSError?) -> Void in
+                        if success {
+                            print("relation saved successfully")
+                        }
+                    })
                 }
             })
             

@@ -122,8 +122,14 @@ class ParseHelper {
     
     
     
-    static func findMessagesForPhoto(photo: Photo) {
+    static func findMessagesForPhoto(photo: Photo, completionBlock: PFQueryArrayResultBlock) {
         
+        
+        
+        let messageQuery = PFQuery(className: ParseMessageClass)
+        messageQuery.orderByAscending("createdAt")
+        
+        messageQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
 }
