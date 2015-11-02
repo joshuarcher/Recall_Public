@@ -127,6 +127,7 @@ class ParseHelper {
         
         
         let messageQuery = PFQuery(className: ParseMessageClass)
+        messageQuery.whereKey(ParseMessageParentPhoto, equalTo: photo)
         messageQuery.orderByAscending("createdAt")
         
         messageQuery.findObjectsInBackgroundWithBlock(completionBlock)

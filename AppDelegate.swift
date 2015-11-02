@@ -22,11 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Parse.enableLocalDatastore()
         Parse.setApplicationId("BWQm6KKz966A5aH0PLNufiBd5BoHobddqnxj5ZBC", clientKey: "uCDKJNDJOSIC12YVQimx9NzrR98ARS3OCkE60eQD")
         // test user
-//        do {
-//            try PFUser.logInWithUsername("test", password: "test")
-//        } catch {
-//            print("login failed")
-//        }
+        do {
+            try PFUser.logInWithUsername("test", password: "test")
+        } catch {
+            print("login failed")
+        }
         
         //PFUser.logInWithUsername("test", password: "test")
         

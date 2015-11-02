@@ -53,7 +53,7 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
             completionBlock(photos)
         }
     }
-
+    
 }
 
 // MARK: - TableView Methods

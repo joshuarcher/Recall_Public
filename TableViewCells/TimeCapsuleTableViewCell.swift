@@ -37,7 +37,7 @@ class TimeCapsuleTableViewCell: UITableViewCell {
         visEffect.frame = self.frame
         self.contentView.insertSubview(visEffect, atIndex: 2)
         // lable
-        self.timeLabel.alpha = 0
+        self.timeLabel.alpha = 0.1
         let timeLayer = self.timeLabel.layer
         timeLayer.shadowOffset = CGSize(width: 2, height: 2)
         timeLayer.shadowOpacity = 0.6
@@ -45,7 +45,6 @@ class TimeCapsuleTableViewCell: UITableViewCell {
         
         let gesture: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "longPressed:")
         gesture.minimumPressDuration = 0.09
-        //self.recallImageView.gestureRecognizers = [gesture]
         visEffect.addGestureRecognizer(gesture)
         // Initialization code
     }
@@ -64,9 +63,14 @@ class TimeCapsuleTableViewCell: UITableViewCell {
     //
     //[overlay setBackgroundColor:[UIColor redColor]];
     
+    func animateLabel() {
+        UIView.animateWithDuration(3.0, animations: { () -> Void in
+            self.timeLabel.alpha = 0
+        })
+    }
+    
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-        
         // Configure the view for the selected state
     }
     

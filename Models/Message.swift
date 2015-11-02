@@ -27,10 +27,6 @@ class Message: PFObject, PFSubclassing {
         return ParseHelper.ParseMessageClass
     }
     
-    override init() {
-        super.init()
-    }
-    
     override class func initialize() {
         var onceToken: dispatch_once_t = 0
         
