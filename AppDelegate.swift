@@ -21,12 +21,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register parse ID
         Parse.enableLocalDatastore()
         Parse.setApplicationId("BWQm6KKz966A5aH0PLNufiBd5BoHobddqnxj5ZBC", clientKey: "uCDKJNDJOSIC12YVQimx9NzrR98ARS3OCkE60eQD")
-        // test user
-        do {
-            try PFUser.logInWithUsername("test", password: "test")
-        } catch {
-            print("login failed")
-        }
+//        // test user
+//        do {
+//            try PFUser.logInWithUsername("test", password: "test")
+//        } catch {
+//            print("login failed")
+//        }
         
         //PFUser.logInWithUsername("test", password: "test")
         
@@ -38,6 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let _ = PFUser.currentUser() {
 //            print("\(currentUser.username!) logged in successfully")
             print("logged in already, lets log out")
+            
             //PFUser.logOut()
         } else {
             print("No logged in user :(")

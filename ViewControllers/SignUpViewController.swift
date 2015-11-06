@@ -27,6 +27,11 @@ class SignUpViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        view.endEditing(true)
+        super.touchesBegan(touches, withEvent: event)
+    }
+    
     @IBAction func signUpButtonTapped(sender: AnyObject) {
         if usernameTextField.text?.characters.count != 0 &&
             emailTextField.text?.characters.count != 0 &&

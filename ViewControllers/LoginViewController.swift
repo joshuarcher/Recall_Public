@@ -14,9 +14,18 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
+    // MARK: - View lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if PFUser.currentUser() != nil {
+            self.performSegueWithIdentifier("loginToApp", sender: nil)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -24,16 +33,18 @@ class LoginViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        view.endEditing(true)
-        super.touchesBegan(touches, withEvent: event)
-    }
-    
     @IBAction func unwindToLogin(segue: UIStoryboardSegue) {
         
         if let identifier = segue.identifier {
             print("Identifier \(identifier)")
         }
+    }
+    
+    // MARK: - Touch methods
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        view.endEditing(true)
+        super.touchesBegan(touches, withEvent: event)
     }
     
     @IBAction func loginButtonTapped(sender: AnyObject) {
@@ -45,6 +56,8 @@ class LoginViewController: UIViewController {
             showLoginAlert()
         }
     }
+    
+    // MARK: - Login Methods
     
     func loginUser() {
         guard let username = usernameTextField.text else {return}
@@ -67,6 +80,19 @@ class LoginViewController: UIViewController {
         let alert = UIAlertController(title: alertTitle, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "I'm a troll", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - Text Field Delegate
+    
+    func textFieldShouldReturn(textField: UITextField!) -> Bool {   //delegate method
+        textField.resignFirstResponder()
+        if textField == passwordTextField {
+            loginUser()
+        } else if textField == usernameTextField {
+            passwordTextField.becomeFirstResponder()
+        }
+        
+        return true
     }
 
     /*

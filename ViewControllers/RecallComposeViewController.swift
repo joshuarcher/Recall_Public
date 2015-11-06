@@ -78,6 +78,9 @@ class RecallComposeViewController: UIViewController {
     @IBAction func uploadButtonTapped(sender: AnyObject) {
         let photo = Photo()
         photo.image.value = imageTaken
+//        if let taggedFriends = taggedFriends {
+//            
+//        }
         photo.tagged.value = taggedFriends
         photo.dateDisplay.value = getDateToSend()
         photo.uploadPost()

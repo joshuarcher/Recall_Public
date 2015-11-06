@@ -17,7 +17,7 @@ class ParseHelper {
     static let ParsePhotoClass = "Photo"
     static let ParsePhotoDateSent = "dateSent"
     static let ParsePhotoImage = "imageSent"
-    static let ParsePhotoUser = "userOwner"
+    static let ParsePhotoFromUser = "fromUser"
     static let ParsePhotoTagged = "taggedUsers"
     static let ParsePhotoDisplayDate = "displayDate"
     static let ParsePhotoConversation = "converation"
@@ -55,8 +55,20 @@ class ParseHelper {
     // MARK: - Parse Timeline Queries
     
     static func timeCapsuleRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
-        let finalQuery = PFQuery(className: ParsePhotoClass)
-        finalQuery.includeKey(ParsePhotoUser)
+        
+        guard let user = PFUser.currentUser() else { return }
+        
+        let taggedQuery = PFQuery(className: ParsePhotoClass)
+        taggedQuery.whereKey(ParsePhotoTagged, equalTo: user)
+        
+        let ownerPhotoQuery = PFQuery(className: ParsePhotoClass)
+        ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
+        
+        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
+        
+        //let finalQuery = PFQuery(className: ParsePhotoClass)
+        
+        finalQuery.includeKey(ParsePhotoFromUser)
         
         finalQuery.whereKey(ParsePhotoDisplayDate, greaterThan: NSDate())
         finalQuery.orderByAscending(ParsePhotoDisplayDate)
@@ -68,8 +80,18 @@ class ParseHelper {
     }
     
     static func timelineRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
-        let finalQuery = PFQuery(className: ParsePhotoClass)
-        finalQuery.includeKey(ParsePhotoUser)
+        
+        guard let user = PFUser.currentUser() else { return }
+        
+        let taggedQuery = PFQuery(className: ParsePhotoClass)
+        taggedQuery.whereKey(ParsePhotoTagged, equalTo: user)
+        
+        let ownerPhotoQuery = PFQuery(className: ParsePhotoClass)
+        ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
+        
+        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
+        
+        finalQuery.includeKey(ParsePhotoFromUser)
         
         finalQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
         finalQuery.orderByDescending("createdAt")

@@ -22,7 +22,9 @@ class TimelineTableViewCell: UITableViewCell {
             
             if let photo = photo {
                 photoDisposable = photo.image.bindTo(recallImageView.bnd_image)
-                self.senderLabel.text = photo.fromUser?.username
+                if let user = photo.fromUser {
+                    self.senderLabel.text = user.username
+                }
                 if let date = photo.createdAt {
                     self.dateLabel.text = GenHelper.timeFromString(date, cell: "timeline")
                 }
