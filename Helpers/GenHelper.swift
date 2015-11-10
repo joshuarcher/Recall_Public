@@ -79,3 +79,12 @@ extension NSDate {
         return ""
     }
 }
+
+extension UIColor {
+    static func recallRed() -> UIColor {
+        return UIColor(red: 0.918, green: 0.345, blue: 0.345, alpha: 1)
+    }
+    static func recallOffWhite() -> UIColor {
+        return UIColor(red: 0.973, green: 0.973, blue: 0.973, alpha: 1)
+    }
+}

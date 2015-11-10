@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="eAs-PC-a3X">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -532,10 +532,66 @@
             </objects>
             <point key="canvasLocation" x="2937" y="475"/>
         </scene>
+        <!--Digits Verify View Controller-->
+        <scene sceneID="XXs-SB-vUf">
+            <objects>
+                <viewController storyboardIdentifier="DigitsVerifyViewController" id="5Rv-zv-tB9" customClass="DigitsVerifyViewController" customModule="Recall" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="B80-cd-mhu"/>
+                        <viewControllerLayoutGuide type="bottom" id="28c-z3-LGR"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="V6B-YM-UFd">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y4k-8b-NnI" customClass="DGTAuthenticateButton">
+                                <rect key="frame" x="20" y="540" width="560" height="40"/>
+                                <animations/>
+                                <color key="backgroundColor" red="0.91764705879999997" green="0.34509803919999998" blue="0.34509803919999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="WBE-g7-5kQ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                <state key="normal" title="Verify">
+                                    <color key="titleColor" red="0.97254901959999995" green="0.97254901959999995" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="digitsVerifyButtonTapped:" destination="5Rv-zv-tB9" eventType="touchUpInside" id="ilw-Sb-UBm"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please verify your phone number so we can help your friends find you on Recall :)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GzG-Oc-FIz">
+                                <rect key="frame" x="70" y="279.5" width="460" height="41"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <color key="textColor" red="0.91764705879999997" green="0.34509803919999998" blue="0.34509803919999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" red="0.97254901960784312" green="0.97254901960784312" blue="0.97254901960784312" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Y4k-8b-NnI" secondAttribute="trailing" constant="20" id="98g-eZ-Hel"/>
+                            <constraint firstItem="28c-z3-LGR" firstAttribute="top" secondItem="Y4k-8b-NnI" secondAttribute="bottom" constant="20" id="FIq-tZ-cBs"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="GzG-Oc-FIz" secondAttribute="trailing" constant="50" id="FVj-NM-Tro"/>
+                            <constraint firstItem="GzG-Oc-FIz" firstAttribute="centerY" secondItem="V6B-YM-UFd" secondAttribute="centerY" id="W46-LX-RuV"/>
+                            <constraint firstItem="Y4k-8b-NnI" firstAttribute="leading" secondItem="V6B-YM-UFd" secondAttribute="leading" constant="20" id="Z1t-4y-IX3"/>
+                            <constraint firstItem="GzG-Oc-FIz" firstAttribute="centerX" secondItem="V6B-YM-UFd" secondAttribute="centerX" id="fro-xY-TrM"/>
+                            <constraint firstItem="GzG-Oc-FIz" firstAttribute="leading" secondItem="V6B-YM-UFd" secondAttribute="leadingMargin" constant="50" id="zFu-bE-2UU"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="digitsVerifyButton" destination="Y4k-8b-NnI" id="CPt-S5-xZQ"/>
+                        <segue destination="nJC-yM-tRm" kind="show" identifier="digitsToApp" id="QuG-Ge-cQC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8Sb-z7-4NK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-775" y="-206"/>
+        </scene>
         <!--Login View Controller-->
         <scene sceneID="16w-Kh-Ctd">
             <objects>
-                <viewController id="eAs-PC-a3X" customClass="LoginViewController" customModule="Recall" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="eAs-PC-a3X" customClass="LoginViewController" customModule="Recall" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MIc-4F-ato"/>
                         <viewControllerLayoutGuide type="bottom" id="nED-qP-brR"/>
@@ -670,16 +726,17 @@
                         <outlet property="passwordTextField" destination="EBh-Ur-69s" id="Pvx-5Y-Ths"/>
                         <outlet property="usernameTextField" destination="KJY-Uw-FNZ" id="1L0-Y2-ps6"/>
                         <segue destination="nJC-yM-tRm" kind="presentation" identifier="loginToApp" id="ihK-Yj-RYj"/>
+                        <segue destination="5Rv-zv-tB9" kind="show" identifier="loginToDigits" id="Yej-wC-7ln"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ceQ-vO-ihb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1041" y="214"/>
+            <point key="canvasLocation" x="-1601" y="69"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="YzK-BY-YcT">
             <objects>
-                <viewController id="LER-u4-GjV" customClass="SignUpViewController" customModule="Recall" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignUpViewController" id="LER-u4-GjV" customClass="SignUpViewController" customModule="Recall" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="cvd-Z8-J04"/>
                         <viewControllerLayoutGuide type="bottom" id="RKB-Xj-3ao"/>
@@ -830,17 +887,18 @@
                         <outlet property="passwordTextField" destination="36K-UZ-wOg" id="Bbf-Qx-HTB"/>
                         <outlet property="usernameTextField" destination="71L-lO-GKz" id="5ld-ii-RzB"/>
                         <segue destination="nJC-yM-tRm" kind="presentation" identifier="signUpToApp" id="gYN-F0-GAu"/>
+                        <segue destination="5Rv-zv-tB9" kind="show" identifier="signUpToDigits" id="k5b-nz-CN2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uSm-YK-7EZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="NRE-aL-OpL" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-1080" y="972"/>
+            <point key="canvasLocation" x="-1652" y="970"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ycB-0j-lxf">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="nJC-yM-tRm" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="AppNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="nJC-yM-tRm" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="vKc-jA-YhE"/>
                     <nil key="simulatedStatusBarMetrics"/>
@@ -889,6 +947,7 @@
         <image name="ViewBackgroundSmall" width="21" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ihK-Yj-RYj"/>
+        <segue reference="QuG-Ge-cQC"/>
+        <segue reference="k5b-nz-CN2"/>
     </inferredMetricsTieBreakers>
 </document>

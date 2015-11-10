@@ -8,6 +8,16 @@
 
 import UIKit
 import Parse
+import Fabric
+import DigitsKit
+import Crashlytics
+
+/*
+DigitsVerifyViewController
+LoginViewController
+SignUpViewController
+AppNavigationController
+*/
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,36 +28,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
+        Fabric.with([Digits.self, Crashlytics.self])
+        self.logUser()
+        
         // Register parse ID
         Parse.enableLocalDatastore()
         Parse.setApplicationId("BWQm6KKz966A5aH0PLNufiBd5BoHobddqnxj5ZBC", clientKey: "uCDKJNDJOSIC12YVQimx9NzrR98ARS3OCkE60eQD")
-//        // test user
-//        do {
-//            try PFUser.logInWithUsername("test", password: "test")
-//        } catch {
-//            print("login failed")
-//        }
-        
-        //PFUser.logInWithUsername("test", password: "test")
         
         // changing ACL default
         let acl = PFACL()
         acl.setPublicReadAccess(true)
         PFACL.setDefaultACL(acl, withAccessForCurrentUser: true)
         
-        if let _ = PFUser.currentUser() {
-//            print("\(currentUser.username!) logged in successfully")
-            print("logged in already, lets log out")
-            
-            //PFUser.logOut()
-        } else {
-            print("No logged in user :(")
+        application.statusBarHidden = true
+        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        var initViewControllerID = "LoginViewController"
+        
+        if let _ = KeychainHelper.getKeychainUserPhone() {
+            if let _ = PFUser.currentUser() {
+                // user logged in and has phone number, show app
+                initViewControllerID = "AppNavigationController"
+            } else {
+                initViewControllerID = "LoginViewController"
+            }
         }
         
-        application.statusBarHidden = true
+        let initialViewController = storyboard.instantiateViewControllerWithIdentifier(initViewControllerID)
+        self.window?.rootViewController = initialViewController
+        self.window?.makeKeyAndVisible()
+        
         
         
         return true
+    }
+    
+    func logUser() {
+        if let user = PFUser.currentUser() {
+            Crashlytics.sharedInstance().setUserName(user.username)
+            Crashlytics.sharedInstance().setUserEmail(user.email)
+        }
     }
 
     func applicationWillResignActive(application: UIApplication) {

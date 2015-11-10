@@ -49,20 +49,6 @@ class TimeCapsuleTableViewCell: UITableViewCell {
         // Initialization code
     }
     
-    
-//  return [image applyBlurWithRadius:30 tintColor:[UIColor colorWithWhite:1 alpha:0.2] saturationDeltaFactor:1.5 maskImage:nil];
-//    theImageView.image = theImageView.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-//    theImageView.tintColor = UIColor.redColor()
-    
-    //UIView *overlay = [[UIView alloc] initWithFrame:[originalImageView frame]];
-    //
-    //UIImageView *maskImageView = [[UIImageView alloc] initWithImage:myImage];
-    //[maskImageView setFrame:[overlay bounds]];
-    //
-    //[[overlay layer] setMask:[maskImageView layer]];
-    //
-    //[overlay setBackgroundColor:[UIColor redColor]];
-    
     func animateLabel() {
         UIView.animateWithDuration(3.0, animations: { () -> Void in
             self.timeLabel.alpha = 0

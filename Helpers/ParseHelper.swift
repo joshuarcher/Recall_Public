@@ -27,6 +27,7 @@ class ParseHelper {
     static let ParseUserName = "username"
     static let ParseUserPass = "password"
     static let ParseUserPhone = "phoneNumber"
+    static let ParseUserDigits = "digitsID"
     
     // Conversation Relation
     static let ParseConvoClass = "Conversation"
@@ -58,19 +59,19 @@ class ParseHelper {
         
         guard let user = PFUser.currentUser() else { return }
         
+        let targetQuery = PFQuery(className: ParsePhotoClass)
+        targetQuery.whereKey("objectId", equalTo: "XT1ohbnpej")
+        
         let taggedQuery = PFQuery(className: ParsePhotoClass)
         taggedQuery.whereKey(ParsePhotoTagged, equalTo: user)
+        taggedQuery.whereKey(ParsePhotoDisplayDate, greaterThan: NSDate())
         
         let ownerPhotoQuery = PFQuery(className: ParsePhotoClass)
         ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
         
-        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
-        
-        //let finalQuery = PFQuery(className: ParsePhotoClass)
+        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery, targetQuery])
         
         finalQuery.includeKey(ParsePhotoFromUser)
-        
-        finalQuery.whereKey(ParsePhotoDisplayDate, greaterThan: NSDate())
         finalQuery.orderByAscending(ParsePhotoDisplayDate)
         
         finalQuery.skip = range.startIndex
@@ -83,26 +84,63 @@ class ParseHelper {
         
         guard let user = PFUser.currentUser() else { return }
         
+        let targetQuery = PFQuery(className: ParsePhotoClass)
+        targetQuery.whereKey("objectId", equalTo: "XT1ohbnpej")
+        
         let taggedQuery = PFQuery(className: ParsePhotoClass)
         taggedQuery.whereKey(ParsePhotoTagged, equalTo: user)
+        taggedQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
         
         let ownerPhotoQuery = PFQuery(className: ParsePhotoClass)
         ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
+        ownerPhotoQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
         
-        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
+        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery, targetQuery])
         
         finalQuery.includeKey(ParsePhotoFromUser)
-        
-        finalQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
-        finalQuery.orderByDescending("createdAt")
+        finalQuery.orderByDescending(ParsePhotoDisplayDate)
         
         finalQuery.skip = range.startIndex
         finalQuery.limit = range.endIndex - range.startIndex
         
         finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+        
+//        guard let user = PFUser.currentUser() else { return }
+//        
+//        let taggedQuery = PFQuery(className: ParsePhotoClass)
+//        taggedQuery.whereKey(ParsePhotoTagged, equalTo: user)
+//        
+//        let ownerPhotoQuery = PFQuery(className: ParsePhotoClass)
+//        ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
+//        
+//        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
+//        
+//        finalQuery.includeKey(ParsePhotoFromUser)
+//        
+//        finalQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
+//        finalQuery.orderByDescending(ParsePhotoDisplayDate)
+//        finalQuery.whereKey("objectId", equalTo: "XT1ohbnpej")
+//        
+//        finalQuery.skip = range.startIndex
+//        finalQuery.limit = range.endIndex - range.startIndex
+//        
+//        finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
     // MARK: - Parse Friend Shtuff
+    
+    static func addressBookFriendsForCurrentUser(digitsIDs: [String], completionBlock: PFQueryArrayResultBlock) {
+        let friendQuery = PFQuery(className: ParseFriendClass)
+        friendQuery.whereKey(ParseFriendFromUser, equalTo: PFUser.currentUser()!)
+        
+        let finalQuery = PFQuery(className: ParseUserClass)
+        finalQuery.whereKey(ParseUserUsername, doesNotMatchKey: ParseFriendToUsername, inQuery: friendQuery)
+        finalQuery.whereKey(ParseUserUsername, notEqualTo: PFUser.currentUser()!.username!)
+        finalQuery.whereKey(ParseUserDigits, containedIn: digitsIDs)
+        finalQuery.orderByAscending(ParseUserUsername)
+        
+        finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+    }
     
     static func addFriendsRequestForCurrentUser(completionBlock: PFQueryArrayResultBlock) {
         
@@ -145,14 +183,17 @@ class ParseHelper {
     
     
     static func findMessagesForPhoto(photo: Photo, completionBlock: PFQueryArrayResultBlock) {
-        
-        
-        
         let messageQuery = PFQuery(className: ParseMessageClass)
         messageQuery.whereKey(ParseMessageParentPhoto, equalTo: photo)
         messageQuery.orderByAscending("createdAt")
         
         messageQuery.findObjectsInBackgroundWithBlock(completionBlock)
+    }
+    
+    static func getDefualtPhotot() {
+        let photo = Photo()
+        // image, created at, from user
+        photo.fromUser?.username = "recall founders"
     }
     
 }
@@ -167,6 +208,23 @@ extension PFUser {
         }
         else {
             return super.isEqual(object)
+        }
+    }
+    
+    static func setCurrentUserPhone() -> Bool {
+        if let user = self.currentUser() {
+            guard let phoneNo = KeychainHelper.getKeychainUserPhone() else {return false}
+            user["phone"] = phoneNo
+            user.saveInBackground()
+            return true
+        }
+        return false
+    }
+    
+    static func setCurrentUserDigitsID(digitsID: String) {
+        if let user = self.currentUser() {
+            user["digitsID"] = digitsID
+            user.saveInBackground()
         }
     }
     

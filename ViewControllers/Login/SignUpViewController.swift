@@ -1,5 +1,5 @@
 //
-//  LoginViewController.swift
+//  SignUpViewController.swift
 //  Reecall
 //
 //  Created by Joshua Archer on 11/2/15.
@@ -9,23 +9,17 @@
 import UIKit
 import Parse
 
-class LoginViewController: UIViewController {
+class SignUpViewController: UIViewController {
 
     @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
-    // MARK: - View lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Do any additional setup after loading the view.
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        if PFUser.currentUser() != nil {
-            self.performSegueWithIdentifier("loginToApp", sender: nil)
-        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -33,48 +27,41 @@ class LoginViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func unwindToLogin(segue: UIStoryboardSegue) {
-        
-        if let identifier = segue.identifier {
-            print("Identifier \(identifier)")
-        }
-    }
-    
-    // MARK: - Touch methods
-    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         view.endEditing(true)
         super.touchesBegan(touches, withEvent: event)
     }
     
-    @IBAction func loginButtonTapped(sender: AnyObject) {
+    @IBAction func signUpButtonTapped(sender: AnyObject) {
         if usernameTextField.text?.characters.count != 0 &&
+            emailTextField.text?.characters.count != 0 &&
             passwordTextField.text?.characters.count != 0 {
-                loginUser()
+                signUpUser()
         } else {
             // show alert to fill out all fields
-            showLoginAlert()
+            showSignUpAlert()
         }
     }
     
-    // MARK: - Login Methods
-    
-    func loginUser() {
-        guard let username = usernameTextField.text else {return}
-        guard let password = passwordTextField.text else {return}
-        PFUser.logInWithUsernameInBackground(username, password: password) { (user: PFUser?, error: NSError?) -> Void in
+    func signUpUser() {
+        let newUser = PFUser()
+        newUser.username = usernameTextField.text
+        newUser.email = emailTextField.text
+        newUser.password = passwordTextField.text
+        if let phoneNo = KeychainHelper.getKeychainUserPhone() {
+            newUser["phone"] = phoneNo
+        }
+        newUser.signUpInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
             if let error = error {
                 print(error.description)
             } else {
-                if let user = user {
-                    print("user: \(user.username), logged in successfully..")
-                }
-                self.performSegueWithIdentifier("loginToApp", sender: self)
-            }
-        }
+                print("successfully signed up user")
+                // present next screen
+                self.presentNextScreen()            }
+        })
     }
     
-    func showLoginAlert() {
+    func showSignUpAlert() {
         let alertTitle = "Hey!"
         let message = "Please provide all required information!"
         let alert = UIAlertController(title: alertTitle, message: message, preferredStyle: UIAlertControllerStyle.Alert)
@@ -82,17 +69,17 @@ class LoginViewController: UIViewController {
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
-    // MARK: - Text Field Delegate
-    
-    func textFieldShouldReturn(textField: UITextField!) -> Bool {   //delegate method
-        textField.resignFirstResponder()
-        if textField == passwordTextField {
-            loginUser()
-        } else if textField == usernameTextField {
-            passwordTextField.becomeFirstResponder()
+    func presentNextScreen() {
+        if let _ = PFUser.currentUser() {
+            if let _ = KeychainHelper.getKeychainUserPhone() {
+                self.performSegueWithIdentifier("signUpToApp", sender: self)
+            } else {
+                self.performSegueWithIdentifier("signUpToDigits", sender: self)
+            }
         }
-        
-        return true
+        else {
+            print("user is not logged in after signup...")
+        }
     }
 
     /*

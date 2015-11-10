@@ -26,7 +26,11 @@ class TimelineTableViewCell: UITableViewCell {
                     self.senderLabel.text = user.username
                 }
                 if let date = photo.createdAt {
-                    self.dateLabel.text = GenHelper.timeFromString(date, cell: "timeline")
+                    if photo.objectId == "XT1ohbnpej" {
+                        self.dateLabel.text = "troll days ago"
+                    } else {
+                        self.dateLabel.text = GenHelper.timeFromString(date, cell: "timeline")
+                    }
                 }
             }
         }

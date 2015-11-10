@@ -76,13 +76,6 @@ extension CapsuleViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-//        let cell: TimeCapsuleTableViewCell = self.tableView.cellForRowAtIndexPath(indexPath) as! TimeCapsuleTableViewCell
-//        UIView.animateWithDuration(3.0, animations: { () -> Void in
-//            cell.timeLabel.alpha = 1
-//            cell.timeLabel.alpha = 0
-//            }) { (finished: Bool) -> Void in
-//        }
-        
     }
     
 }
