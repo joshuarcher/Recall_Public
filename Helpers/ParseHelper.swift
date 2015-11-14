@@ -68,6 +68,7 @@ class ParseHelper {
         
         let ownerPhotoQuery = PFQuery(className: ParsePhotoClass)
         ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
+        ownerPhotoQuery.whereKey(ParsePhotoDisplayDate, greaterThan: NSDate())
         
         let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery, targetQuery])
         
@@ -104,27 +105,6 @@ class ParseHelper {
         finalQuery.limit = range.endIndex - range.startIndex
         
         finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
-        
-//        guard let user = PFUser.currentUser() else { return }
-//        
-//        let taggedQuery = PFQuery(className: ParsePhotoClass)
-//        taggedQuery.whereKey(ParsePhotoTagged, equalTo: user)
-//        
-//        let ownerPhotoQuery = PFQuery(className: ParsePhotoClass)
-//        ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
-//        
-//        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
-//        
-//        finalQuery.includeKey(ParsePhotoFromUser)
-//        
-//        finalQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
-//        finalQuery.orderByDescending(ParsePhotoDisplayDate)
-//        finalQuery.whereKey("objectId", equalTo: "XT1ohbnpej")
-//        
-//        finalQuery.skip = range.startIndex
-//        finalQuery.limit = range.endIndex - range.startIndex
-//        
-//        finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
     // MARK: - Parse Friend Shtuff

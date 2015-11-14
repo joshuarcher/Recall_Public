@@ -70,6 +70,19 @@ class AddFriendsViewController: UIViewController {
 
 extension AddFriendsViewController: UITableViewDataSource {
     
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if tableView.numberOfSections == 1 {
+            return "all users"
+        } else if tableView.numberOfSections == 2 {
+            if section == 0 {
+                return "trolls in contacts"
+            } else if section == 1 {
+                return "all users"
+            }
+        }
+        return "troll"
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if usersInAddressBook?.count > 0 {
             return 2

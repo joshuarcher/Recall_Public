@@ -19,7 +19,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>6</string>
+	<string>11</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -30,9 +30,9 @@
 				<key>KitInfo</key>
 				<dict>
 					<key>consumerKey</key>
-					<string>cXKGxwTqyUyx2M6IqcFdgzmvC</string>
+					<string>DhQ1X5W10dBSRzavPjknsEqk1</string>
 					<key>consumerSecret</key>
-					<string>k6F6R5dSj52ybwgPYYBCNa2vSTGi8YY7N3b62sF7N6Kg3sGni7</string>
+					<string>4ZgmMjvGJUtzj7w549YRQnzelt75vW6QzNlooKBax0Lx4VVxEa</string>
 				</dict>
 				<key>KitName</key>
 				<string>Digits</string>

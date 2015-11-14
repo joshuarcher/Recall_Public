@@ -35,11 +35,7 @@ class FabricHelper {
                 completion(success: false, number: nil)
             }
             if let session = session {
-                // store phone to keychain
-                let success = KeychainHelper.setKeychainUserPhone(session.phoneNumber)
-                if success {
-                    print("keychain stored")
-                }
+                // removed store in keychain
                 completion(success: true, number: session.phoneNumber)
             }
         }
@@ -70,6 +66,9 @@ class FabricHelper {
         let digitsContacts = DGTContacts(userSession: session)
         let appearance = recallAppearance()
         digitsContacts.startContactsUploadWithDigitsAppearance(appearance, presenterViewController: nil, title: "Let's find friends :)") { (result, error) -> Void in
+            if let error = error {
+                NSLog("error starting contacts upload: %@", error)
+            }
             if result != nil {
                 // the result object tells how many contacts were uploaded
                 print("Total contacts:\(result.totalContacts), uploaded successfully: \(result.numberOfUploadedContacts)")
@@ -86,6 +85,12 @@ class FabricHelper {
         digitsContacts.lookupContactMatchesWithCursor(nil) { (matches, nextCursor, error) -> Void in
             // If nextCursor is not nil, you can continue to call lookupContactMatchesWithCursor: to retrieve even more friends.
             // Matches contain instances of DGTUser. Use DGTUser's userId to lookup users in your own database.
+            if let error = error {
+                NSLog("Error looking up contacts: %@", error)
+                completion(digitUsers: nil)
+                return
+            }
+            guard let matches = matches else { completion(digitUsers: nil); return }
             print("Friends:")
             var digitUsersIDs = [String]()
             for digitsUser in matches {

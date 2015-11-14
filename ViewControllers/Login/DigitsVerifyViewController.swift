@@ -26,19 +26,19 @@ class DigitsVerifyViewController: UIViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        if let _ = KeychainHelper.getKeychainUserPhone() {
-            let success = PFUser.setCurrentUserPhone()
-            if success {print("saved current user's phone")} else {print("did not save current user's phone")}
-            presentNextView()
-        }
+//        if let _ = KeychainHelper.getKeychainUserPhone() {
+//            let success = PFUser.setCurrentUserPhone()
+//            if success {print("saved current user's phone")} else {print("did not save current user's phone")}
+//            presentNextView()
+//        }
     }
     
     @IBAction func digitsVerifyButtonTapped(sender: AnyObject) {
         FabricHelper.verifyUserPhoneNumber { (success: Bool, number: String?) -> Void in
             if success {
                 if let userDigitsID = FabricHelper.getDigitsUserID() {
-                    
                     PFUser.setCurrentUserDigitsID(userDigitsID)
+                    self.presentNextView()
                 }
             }
         }

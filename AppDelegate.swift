@@ -24,16 +24,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
         Fabric.with([Digits.self, Crashlytics.self])
-        self.logUser()
         
         // Register parse ID
         Parse.enableLocalDatastore()
         Parse.setApplicationId("BWQm6KKz966A5aH0PLNufiBd5BoHobddqnxj5ZBC", clientKey: "uCDKJNDJOSIC12YVQimx9NzrR98ARS3OCkE60eQD")
+        
+        PushNotificationHelper.signUpForNotifications()
         
         // changing ACL default
         let acl = PFACL()
@@ -45,13 +45,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         var initViewControllerID = "LoginViewController"
         
-        if let _ = KeychainHelper.getKeychainUserPhone() {
-            if let _ = PFUser.currentUser() {
-                // user logged in and has phone number, show app
-                initViewControllerID = "AppNavigationController"
-            } else {
-                initViewControllerID = "LoginViewController"
-            }
+//        if let _ = KeychainHelper.getKeychainUserPhone() {
+//            if let userParse = PFUser.currentUser() {
+//                // user logged in and has phone number, show app
+//                initViewControllerID = "AppNavigationController"
+//                FabricHelper.verifyUserPhoneNumber({ (success, number) -> Void in
+//                    if success {
+//                        if let _ = number {
+//                            self.logUser(userParse)
+//                        }
+//                    }
+//                })
+//                
+//            } else {
+//                initViewControllerID = "LoginViewController"
+//            }
+//        }
+        
+        // taken out because we're not storing the keychain
+        
+        if let userParse = PFUser.currentUser() {
+            // user logged in and has phone number, show app
+            initViewControllerID = "AppNavigationController"
+            FabricHelper.verifyUserPhoneNumber({ (success, number) -> Void in
+                if success {
+                    if let _ = number {
+                        self.logUser(userParse)
+                    }
+                }
+            })
+            
+        } else {
+            initViewControllerID = "LoginViewController"
         }
         
         let initialViewController = storyboard.instantiateViewControllerWithIdentifier(initViewControllerID)
@@ -63,8 +88,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func logUser() {
-        if let user = PFUser.currentUser() {
+    func logUser(userP: PFUser?) {
+        if let user = userP {
             Crashlytics.sharedInstance().setUserName(user.username)
             Crashlytics.sharedInstance().setUserEmail(user.email)
         }
@@ -91,7 +116,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
+    
+    // MARK: - Push notifications
+    
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        print("registered for user notification settings")
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        print("device token: \(deviceToken)")
+        PushNotificationHelper.setDeviceTokenForInstallation(deviceToken)
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        PFPush.handlePush(userInfo)
+        print("got push notification")
+    }
 }
 

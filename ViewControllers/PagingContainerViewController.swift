@@ -37,6 +37,8 @@ class PagingContainerViewController: UIViewController {
     @IBAction func cameraButtonTapped(sender: AnyObject) {
         print("Camera button tapped lessgooo")
         
+        PushNotificationHelper.sendTestingPushNotificaton(forString: "cameraattaaa")
+        
         if UIImagePickerController.isCameraDeviceAvailable(.Rear) {
             photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) -> Void in
                 print("image captured")
