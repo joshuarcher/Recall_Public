@@ -191,10 +191,9 @@ extension PFUser {
         }
     }
     
-    static func setCurrentUserPhone() -> Bool {
-        if let user = self.currentUser() {
-            guard let phoneNo = KeychainHelper.getKeychainUserPhone() else {return false}
-            user["phone"] = phoneNo
+    static func setCurrentUserPhone(phoneNumber: String?) -> Bool {
+        if let user = self.currentUser(), phoneNumber = phoneNumber {
+            user["phone"] = phoneNumber
             user.saveInBackground()
             return true
         }

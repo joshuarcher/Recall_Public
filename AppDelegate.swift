@@ -45,36 +45,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         var initViewControllerID = "LoginViewController"
         
-//        if let _ = KeychainHelper.getKeychainUserPhone() {
-//            if let userParse = PFUser.currentUser() {
-//                // user logged in and has phone number, show app
-//                initViewControllerID = "AppNavigationController"
-//                FabricHelper.verifyUserPhoneNumber({ (success, number) -> Void in
-//                    if success {
-//                        if let _ = number {
-//                            self.logUser(userParse)
-//                        }
-//                    }
-//                })
-//                
-//            } else {
-//                initViewControllerID = "LoginViewController"
-//            }
-//        }
-        
-        // taken out because we're not storing the keychain
         
         if let userParse = PFUser.currentUser() {
-            // user logged in and has phone number, show app
-            initViewControllerID = "AppNavigationController"
-            FabricHelper.verifyUserPhoneNumber({ (success, number) -> Void in
-                if success {
-                    if let _ = number {
-                        self.logUser(userParse)
-                    }
-                }
-            })
-            
+            if userParse["digitsID"] != nil {
+                // user logged in and has phone number, show app
+                initViewControllerID = "AppNavigationController"
+                self.logUser(userParse)
+            } else {
+                // digits ID not set, lets show the verify page
+                initViewControllerID = "DigitsVerifyViewController"
+            }
         } else {
             initViewControllerID = "LoginViewController"
         }

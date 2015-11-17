@@ -36,12 +36,28 @@ class DigitsVerifyViewController: UIViewController {
     @IBAction func digitsVerifyButtonTapped(sender: AnyObject) {
         FabricHelper.verifyUserPhoneNumber { (success: Bool, number: String?) -> Void in
             if success {
-                if let userDigitsID = FabricHelper.getDigitsUserID() {
+                if let userDigitsID = FabricHelper.getDigitsUserID(), number = number {
                     PFUser.setCurrentUserDigitsID(userDigitsID)
+                    PFUser.setCurrentUserPhone(number)
                     self.presentNextView()
                 }
+            } else {
+                self.presentDigitsFailAlert()
             }
         }
+    }
+    
+    @IBAction func noButtonTapped(sender: AnyObject) {
+        presentNextView()
+    }
+    
+    func presentDigitsFailAlert() {
+        let alert = UIAlertController(title: "Failed to Verify", message: "Something went wrong when verifying your phone number.  Please try again next time you open the app!", preferredStyle: .Alert)
+        let action = UIAlertAction(title: "Got it!", style: .Default) { (action) -> Void in
+            self.presentNextView()
+        }
+        alert.addAction(action)
+        self.presentViewController(alert, animated: true, completion: nil)
     }
     
     func presentNextView() {

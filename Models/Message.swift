@@ -47,6 +47,8 @@ class Message: PFObject, PFSubclassing {
             saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                 if success {
                     print("message saved successfully")
+                    let message = "\(self.fromUser!.username!) said: \(mText)"
+                    PushNotificationHelper.sendMessagePushNotification(forPhoto: photo, withMessage: message)
                     let relation = photo.relationForKey("messages")
                     relation.addObject(self)
                     photo.saveInBackgroundWithBlock({ (seccess: Bool, error: NSError?) -> Void in
@@ -54,6 +56,9 @@ class Message: PFObject, PFSubclassing {
                             print("relation saved successfully")
                         }
                     })
+                }
+                if let error = error {
+                    NSLog("error saving message: %@", error)
                 }
             })
             
