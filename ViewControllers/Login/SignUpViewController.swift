@@ -10,11 +10,15 @@ import UIKit
 import Parse
 
 class SignUpViewController: UIViewController {
+    
+    private let toAppSegue = "signUpToApp"
+    private let toDigitsSegue = "signUpToDigits"
 
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +30,8 @@ class SignUpViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    // MARK: - Touch Events
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         view.endEditing(true)
@@ -43,21 +49,20 @@ class SignUpViewController: UIViewController {
         }
     }
     
+    // MARK: - Helper methods
+    
     func signUpUser() {
         let newUser = PFUser()
         newUser.username = usernameTextField.text
         newUser.email = emailTextField.text
         newUser.password = passwordTextField.text
-        if let phoneNo = KeychainHelper.getKeychainUserPhone() {
-            newUser["phone"] = phoneNo
-        }
         newUser.signUpInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
             if let error = error {
-                print(error.description)
+                NSLog("Error signing up: %@", error)
             } else {
-                print("successfully signed up user")
                 // present next screen
-                self.presentNextScreen()            }
+                self.presentNextScreen()
+            }
         })
     }
     
@@ -72,24 +77,14 @@ class SignUpViewController: UIViewController {
     func presentNextScreen() {
         if let _ = PFUser.currentUser() {
             if let _ = KeychainHelper.getKeychainUserPhone() {
-                self.performSegueWithIdentifier("signUpToApp", sender: self)
+                self.performSegueWithIdentifier(toAppSegue, sender: self)
             } else {
-                self.performSegueWithIdentifier("signUpToDigits", sender: self)
+                self.performSegueWithIdentifier(toDigitsSegue, sender: self)
             }
         }
         else {
             print("user is not logged in after signup...")
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

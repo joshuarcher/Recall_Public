@@ -9,6 +9,10 @@
 import UIKit
 
 class PagingContainerViewController: UIViewController {
+    
+    private let capsuleViewNib = "CapsuleViewController"
+    private let timelineViewNib = "RecallViewController"
+    private let composeSegue = "showRecallCompose"
 
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var cameraButton: UIButton!
@@ -23,7 +27,6 @@ class PagingContainerViewController: UIViewController {
         self.setUpView()
         UIApplication.sharedApplication().statusBarHidden = true
         
-        
         // Do any additional setup after loading the view.
     }
     
@@ -35,24 +38,18 @@ class PagingContainerViewController: UIViewController {
     // MARK: - Actions
     
     @IBAction func cameraButtonTapped(sender: AnyObject) {
-        print("Camera button tapped lessgooo")
-        
-        PushNotificationHelper.sendTestingPushNotificaton(forString: "cameraattaaa")
-        
         if UIImagePickerController.isCameraDeviceAvailable(.Rear) {
             photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) -> Void in
-                print("image captured")
                 self.imageToCompose = image
-                self.performSegueWithIdentifier("showRecallCompose", sender: sender)
+                self.performSegueWithIdentifier(self.composeSegue, sender: sender)
             })
         } else {
-            self.performSegueWithIdentifier("showRecallCompose", sender: sender)
+            self.performSegueWithIdentifier(composeSegue, sender: sender)
         }
         
     }
     
     @IBAction func unwindToSegue(segue: UIStoryboardSegue) {
-        
         if let identifier = segue.identifier {
             print("Identifier \(identifier)")
         }
@@ -62,51 +59,37 @@ class PagingContainerViewController: UIViewController {
     
     func setUpView() {
         
-        //let timeCapsuleView = TimeCapsuleTableViewController(nibName: "TimeCapsuleTableViewController", bundle: nil)
-        let timeCapsuleView = CapsuleViewController(nibName: "CapsuleViewController", bundle: nil)
+        let timeCapsuleView = CapsuleViewController(nibName: capsuleViewNib, bundle: nil)
         
-        
+        // add to scrollView
         self.addChildViewController(timeCapsuleView)
         self.scrollView.addSubview(timeCapsuleView.view)
         timeCapsuleView.didMoveToParentViewController(self)
         
-        //let timelineView = TimelineTableViewController(nibName: "TimelineTableViewController", bundle: nil)
-        let timelineView = RecallViewController(nibName: "RecallViewController", bundle: nil)
+        let timelineView = RecallViewController(nibName: timelineViewNib, bundle: nil)
         
+        // set frame to be to the right of the capsule view
         var timelineFrame = timelineView.view.frame
         timelineFrame.origin.x = self.view.frame.size.width
         timelineView.view.frame = timelineFrame
         
+        // add to scroll view
         self.addChildViewController(timelineView)
         self.scrollView.addSubview(timelineView.view)
         timelineView.didMoveToParentViewController(self)
         
+        // two views wide, height does not include nav bar
         self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * 2, self.view.frame.size.height - 66)
         
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "showRecallCompose" {
+        if segue.identifier == composeSegue {
             let composeView: RecallComposeViewController = segue.destinationViewController as! RecallComposeViewController
             if let imageTo = imageToCompose {
                 composeView.imageTaken = imageTo
             }
-//            composeView.photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) in
-//                print("picked the image")
-//                composeView.imageTaken = image
-//            })
         }
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

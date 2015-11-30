@@ -12,16 +12,15 @@ import Parse
 
 class DigitsVerifyViewController: UIViewController {
 
+    private let toAppSegue = "digitsToApp"
+    
     @IBOutlet weak var digitsVerifyButton: DGTAuthenticateButton!
+    
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -32,6 +31,8 @@ class DigitsVerifyViewController: UIViewController {
 //            presentNextView()
 //        }
     }
+    
+    // MARK: - Button actions
     
     @IBAction func digitsVerifyButtonTapped(sender: AnyObject) {
         FabricHelper.verifyUserPhoneNumber { (success: Bool, number: String?) -> Void in
@@ -51,6 +52,8 @@ class DigitsVerifyViewController: UIViewController {
         presentNextView()
     }
     
+    // MARK: - Helper methods
+    
     func presentDigitsFailAlert() {
         let alert = UIAlertController(title: "Failed to Verify", message: "Something went wrong when verifying your phone number.  Please try again next time you open the app!", preferredStyle: .Alert)
         let action = UIAlertAction(title: "Got it!", style: .Default) { (action) -> Void in
@@ -61,17 +64,7 @@ class DigitsVerifyViewController: UIViewController {
     }
     
     func presentNextView() {
-        self.performSegueWithIdentifier("digitsToApp", sender: self)
+        self.performSegueWithIdentifier(toAppSegue, sender: self)
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

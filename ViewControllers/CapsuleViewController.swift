@@ -11,8 +11,7 @@ import Parse
 
 class CapsuleViewController: UIViewController, TimelineComponentTarget {
     
-    let testLabels = ["shit", "josh", "dani", "jonah", "colby", "solit"]
-    
+    private let rowHeight: CGFloat = 290
     @IBOutlet weak var tableView: UITableView!
     
     // MARK: - TimelineComponent properties
@@ -28,8 +27,10 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
         
         self.timelineComponent = TimelineComponent(target: self)
 
-        let nib = UINib(nibName: "TimeCapsuleTableViewCell", bundle: nil)
-        tableView.registerNib(nib, forCellReuseIdentifier: "capsuleCell")
+//        let nib = UINib(nibName: "TimeCapsuleTableViewCell", bundle: nil)
+//        tableView.registerNib(nib, forCellReuseIdentifier: "capsuleCell")
+        let nib = UINib(nibName: "RCCapsuleCell", bundle: nil)
+        tableView.registerNib(nib, forCellReuseIdentifier: "recallCapsuleCell")
 
         // Do any additional setup after loading the view.
     }
@@ -65,13 +66,22 @@ extension CapsuleViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: TimeCapsuleTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("capsuleCell") as! TimeCapsuleTableViewCell
+//        let cell: TimeCapsuleTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("capsuleCell") as! TimeCapsuleTableViewCell
+//        
+//        let photo = timelineComponent.content[indexPath.row]
+//        photo.downloadImage()
+//        cell.photo = photo
         
+        let cell: RCCapsuleCell = tableView.dequeueReusableCellWithIdentifier("recallCapsuleCell") as! RCCapsuleCell
         let photo = timelineComponent.content[indexPath.row]
         photo.downloadImage()
         cell.photo = photo
-        cell.senderLabel.text = "josh"
+        
         return cell
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return self.rowHeight
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

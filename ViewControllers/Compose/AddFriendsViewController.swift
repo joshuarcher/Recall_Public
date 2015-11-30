@@ -11,6 +11,8 @@ import Parse
 import Contacts
 
 class AddFriendsViewController: UIViewController {
+    
+    private let addFriendReuseId = "addFriendCell"
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -107,7 +109,7 @@ extension AddFriendsViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: AddFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("addFriendCell") as! AddFriendTableViewCell
+        let cell: AddFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(addFriendReuseId) as! AddFriendTableViewCell
         
         if tableView.numberOfSections == 1 {
             if let usersToAdd = usersToAdd {

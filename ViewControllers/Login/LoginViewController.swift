@@ -10,6 +10,9 @@ import UIKit
 import Parse
 
 class LoginViewController: UIViewController {
+    
+    private let toAppSegue = "loginToApp"
+    private let toDigitsSegue = "loginToDigits"
 
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -24,17 +27,11 @@ class LoginViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         if PFUser.currentUser() != nil {
-            self.performSegueWithIdentifier("loginToApp", sender: nil)
+            self.performSegueWithIdentifier(toAppSegue, sender: nil)
         }
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     @IBAction func unwindToLogin(segue: UIStoryboardSegue) {
-        
         if let identifier = segue.identifier {
             print("Identifier \(identifier)")
         }
@@ -74,6 +71,8 @@ class LoginViewController: UIViewController {
         }
     }
     
+    // MARK: - Helper Methods
+    
     func showLoginAlert() {
         let alertTitle = "Hey!"
         let message = "Please provide all required information!"
@@ -84,17 +83,23 @@ class LoginViewController: UIViewController {
     
     func presentNextScreen() {
         if let user = PFUser.currentUser() {
-            if let keychainNo = KeychainHelper.getKeychainUserPhone() {
-                if let parsePhoneNo = user["phone"] {
-                    print(parsePhoneNo)
-                } else {
-                    performSegueWithIdentifier("loginToDigits", sender: self)
-                    return
-                }
-                self.performSegueWithIdentifier("loginToApp", sender: self)
+            if let parsePhotoNo = user["phone"] {
+                performSegueWithIdentifier(toAppSegue, sender: self)
             } else {
-                self.performSegueWithIdentifier("loginToDigits", sender: self)
+                performSegueWithIdentifier(toDigitsSegue, sender: self)
             }
+//            
+//            if let keychainNo = KeychainHelper.getKeychainUserPhone() {
+//                if let parsePhoneNo = user["phone"] {
+//                    print(parsePhoneNo)
+//                } else {
+//                    performSegueWithIdentifier(toDigitsSegue, sender: self)
+//                    return
+//                }
+//                self.performSegueWithIdentifier(toAppSegue, sender: self)
+//            } else {
+//                self.performSegueWithIdentifier(toDigitsSegue, sender: self)
+//            }
         }
         else {
             print("user is not logged in after login")
@@ -113,15 +118,5 @@ class LoginViewController: UIViewController {
         
         return true
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

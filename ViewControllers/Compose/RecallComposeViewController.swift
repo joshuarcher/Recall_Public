@@ -11,6 +11,8 @@ import Parse
 
 class RecallComposeViewController: UIViewController {
     
+    private let tagFriendsSegue = "showTagFriends"
+    
     // MARK: - Class Variables
     
     var photoTakingHelper: PhotoTakingHelper?
@@ -78,9 +80,7 @@ class RecallComposeViewController: UIViewController {
     @IBAction func uploadButtonTapped(sender: AnyObject) {
         let photo = Photo()
         photo.image.value = imageTaken
-//        if let taggedFriends = taggedFriends {
-//            
-//        }
+
         photo.tagged.value = taggedFriends
         photo.dateDisplay.value = getDateToSend()
         photo.uploadPost()
@@ -89,7 +89,7 @@ class RecallComposeViewController: UIViewController {
     
     @IBAction func tagFriendsTapped(sender: AnyObject) {
         print("tag friends tapped")
-        self.performSegueWithIdentifier("showTagFriends", sender: sender)
+        self.performSegueWithIdentifier(tagFriendsSegue, sender: sender)
     }
     
     func handleDatePicker(sender: UIButton!) {
@@ -108,16 +108,6 @@ class RecallComposeViewController: UIViewController {
         }
         print(String(getDateToSend()))
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 

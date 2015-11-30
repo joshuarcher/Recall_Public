@@ -29,17 +29,12 @@ class MessagesViewController: JSQMessagesViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        jMessages = []
-        self.sender = PFUser.currentUser()?.username
-        let _ = Message()
-        // Set title to date of photo
         setTitle()
+        registerJSMessages()
+        
         // download messages
         guard let photo = photo else {return}
         getMessagesFromParse(photo)
-        
-        self.collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
-        self.collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,12 +44,19 @@ class MessagesViewController: JSQMessagesViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        print("hey I just appeared")
         self.collectionView?.collectionViewLayout.springinessEnabled = true
-        
     }
     
     // MARK: - Helper methods
+    
+    func registerJSMessages() {
+        jMessages = []
+        self.sender = PFUser.currentUser()?.username
+        let _ = Message()
+        
+        self.collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
+        self.collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
+    }
     
     func setTitle() {
         let formatter = NSDateFormatter()
@@ -74,23 +76,6 @@ class MessagesViewController: JSQMessagesViewController {
             self.messages = newMessages
         })
     }
-    
-    /*
-    func sendMessage(text: String!, sender: String!) {
-    // *** STEP 3: ADD A MESSAGE TO FIREBASE
-    messagesRef.childByAutoId().setValue([
-    "text":text,
-    "sender":sender,
-    "imageUrl":senderImageUrl
-    ])
-    }
-    
-    func tempSendMessage(text: String!, sender: String!) {
-    let message = Message(text: text, sender: sender, imageUrl: senderImageUrl)
-    messages.append(message)
-    }
-    */
-    
 }
 
 // MARK: - JSQMessages Collection view shtuffffff
@@ -178,8 +163,6 @@ extension MessagesViewController {
         let attributes : [String:AnyObject] = [NSForegroundColorAttributeName:cell.textView!.textColor!.description, NSUnderlineStyleAttributeName: 1]
         cell.textView!.linkTextAttributes = attributes
         
-        //        cell.textView.linkTextAttributes = [NSForegroundColorAttributeName: cell.textView.textColor,
-        //            NSUnderlineStyleAttributeName: NSUnderlineStyle.StyleSingle]
         return cell
     }
     

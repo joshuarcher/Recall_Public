@@ -10,6 +10,8 @@ import UIKit
 import Parse
 
 class TagFriendsViewController: UIViewController {
+    
+    private let tagFriendCellReuseId = "tagFriendCell"
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tagFriendsButton: UIButton!
@@ -27,6 +29,8 @@ class TagFriendsViewController: UIViewController {
         }
     }
     
+    // MARK: - View Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,23 +38,34 @@ class TagFriendsViewController: UIViewController {
             taggedUsers = []
         }
         
+        parseRequestFriends()
+        // show button if there are tagged users
+        updateTagButton()
+        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        parseRequestFriends()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        // if dissapearing to compose screen, pass it the friends it needs (lolz)
+        if let composeController = self.navigationController?.viewControllers[1] as? RecallComposeViewController {
+            composeController.taggedFriends = taggedUsers
+        }
+    }
+    
+    // MARK: - Helper Functions
+    
+    func parseRequestFriends() {
         ParseHelper.findFriendsRequestForCurrentUser { (results: [PFObject]?, error: NSError?) -> Void in
             if let relations = results {
                 self.usersToTag = relations.map {
                     $0.objectForKey(ParseHelper.ParseFriendTouser) as! PFUser
                 }
             }
-        }
-        // show button if there are tagged users
-        updateTagButton()
-
-        // Do any additional setup after loading the view.
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        if let composeController = self.navigationController?.viewControllers[1] as? RecallComposeViewController {
-            composeController.taggedFriends = taggedUsers
         }
     }
     
@@ -63,13 +78,10 @@ class TagFriendsViewController: UIViewController {
             tagFriendsButton.hidden = false
         }
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 
 }
+
+// MARK: - Tableview Methods
 
 extension TagFriendsViewController: UITableViewDataSource {
     
@@ -79,7 +91,7 @@ extension TagFriendsViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: TagFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("tagFriendCell") as! TagFriendTableViewCell
+        let cell: TagFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(tagFriendCellReuseId) as! TagFriendTableViewCell
         if let usersToTag = usersToTag {
             cell.cellUser = usersToTag[indexPath.row]
         }

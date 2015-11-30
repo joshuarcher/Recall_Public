@@ -11,7 +11,9 @@ import Parse
 
 class RecallViewController: UIViewController, TimelineComponentTarget {
     
-    let testLabels = ["shit", "josh", "dani", "jonah", "colby", "solit"]
+    private let cellNibName = "TimelineTableViewCell"
+    private let cellReuseId = "timelineCell"
+    private let messagesViewNibName = "MessagesViewController"
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -25,12 +27,8 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.timelineComponent = TimelineComponent(target: self)
-        
-        let nib = UINib(nibName: "TimelineTableViewCell", bundle: nil)
-        tableView.registerNib(nib, forCellReuseIdentifier: "timelineCell")
-
+        registerTimelineComponent()
+        registerCellForTable()
         // Do any additional setup after loading the view.
     }
     
@@ -44,7 +42,16 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
         // Dispose of any resources that can be recreated.
     }
     
+    private func registerCellForTable() {
+        let nib = UINib(nibName: cellNibName, bundle: nil)
+        tableView.registerNib(nib, forCellReuseIdentifier: cellReuseId)
+    }
+    
     // MARK: - TimelineComponent Methods
+    
+    private func registerTimelineComponent() {
+        self.timelineComponent = TimelineComponent(target: self)
+    }
     
     func loadInRange(range: Range<Int>, completionBlock: ([Photo]?) -> Void) {
         ParseHelper.timelineRequestForCurrentUser(range) { (results: [PFObject]?, error: NSError?) -> Void in
@@ -64,7 +71,7 @@ extension RecallViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: TimelineTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("timelineCell") as! TimelineTableViewCell
+        let cell: TimelineTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! TimelineTableViewCell
         
         let photo = timelineComponent.content[indexPath.row]
         photo.downloadImage()
@@ -84,7 +91,7 @@ extension RecallViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         // get messages view controller, pass photo, push view
         let photo = timelineComponent.content[indexPath.row]
-        let nextVc: MessagesViewController = MessagesViewController(nibName: "MessagesViewController", bundle: nil)
+        let nextVc: MessagesViewController = MessagesViewController(nibName: messagesViewNibName, bundle: nil)
         nextVc.photo = photo
         self.navigationController?.pushViewController(nextVc, animated: true)
         tableView.deselectRowAtIndexPath(indexPath, animated: false)

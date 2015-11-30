@@ -90,14 +90,14 @@ class FabricHelper {
                 completion(digitUsers: nil)
                 return
             }
-            guard let matches = matches else { completion(digitUsers: nil); return }
-            print("Friends:")
-            var digitUsersIDs = [String]()
-            for digitsUser in matches {
-                print("Digits ID: \(digitsUser.userID)")
-                digitUsersIDs.append(digitsUser.userID)
+            // map userID's and fill completion so we can do this lookup to parse
+            if let matches = matches as? [DGTUser] {
+                var digitUsersIDs = [String]()
+                digitUsersIDs = matches.map({$0.userID})
+                completion(digitUsers: digitUsersIDs)
+            } else {
+                completion(digitUsers: nil)
             }
-            completion(digitUsers: digitUsersIDs)
         }
     }
 

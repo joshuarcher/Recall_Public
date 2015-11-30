@@ -80,11 +80,42 @@ extension NSDate {
     }
 }
 
+// MARK: - Colors
+
 extension UIColor {
     static func recallRed() -> UIColor {
         return UIColor(red: 0.918, green: 0.345, blue: 0.345, alpha: 1)
     }
     static func recallOffWhite() -> UIColor {
         return UIColor(red: 0.973, green: 0.973, blue: 0.973, alpha: 1)
+    }
+}
+
+
+// MARK: - Device Properties
+
+struct Device {
+    struct Screen {
+        static let width = UIScreen.mainScreen().bounds.size.width
+        static let height = UIScreen.mainScreen().bounds.size.height
+    }
+    
+    enum Kind { case iPhone4, iPhone5, iPhone6, iPhone6P, iPad }
+    
+    static var type: Kind {
+        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
+            switch max(Screen.width, Screen.height) {
+            case 568:
+                return .iPhone5
+            case 667:
+                return .iPhone6
+            case 736.0:
+                return .iPhone6P
+            default:
+                return .iPhone4
+            }
+        } else {
+            return .iPad
+        }
     }
 }

@@ -50,6 +50,14 @@ class ParseHelper {
     static let ParseFriendTouser = "toUser"
     static let ParseFriendToUsername = "toUserUsername"
     
+    // Feedback Relation
+    static let ParseFeedbackClass = "Feedback"
+    static let ParseFeedbackFromUser = "fromUser"
+    static let ParseFeedbackOne = "changeRecall"
+    static let ParseFeedbackTwo = "problemUnderstand"
+    static let ParseFeedbackThree = "creatingRecall"
+    static let ParseFeedbackFour = "recallFeature"
+    
     // User Relation
     static let ParseUserUsername = "username"
     
@@ -174,6 +182,19 @@ class ParseHelper {
         let photo = Photo()
         // image, created at, from user
         photo.fromUser?.username = "recall founders"
+    }
+    
+    // MARK: - Parse Feedback Shtuff
+    
+    static func saveFeedback(one: String, two: String, three: String, four: String) {
+        let feedbackObject: PFObject = PFObject(className: ParseFeedbackClass)
+        feedbackObject.setValue(PFUser.currentUser(), forKey: ParseFeedbackFromUser)
+        feedbackObject.setValue(one, forKey: ParseFeedbackOne)
+        feedbackObject.setValue(two, forKey: ParseFeedbackTwo)
+        feedbackObject.setValue(three, forKey: ParseFeedbackThree)
+        feedbackObject.setValue(four, forKey: ParseFeedbackFour)
+        
+        feedbackObject.saveInBackground()
     }
     
 }
