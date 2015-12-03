@@ -16,6 +16,11 @@ class TagFriendsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tagFriendsButton: UIButton!
     
+    var realmFriends: [FriendRealm]? {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     var usersToTag: [PFUser]? {
         didSet {
