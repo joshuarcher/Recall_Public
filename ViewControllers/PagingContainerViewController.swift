@@ -26,7 +26,7 @@ class PagingContainerViewController: UIViewController {
         super.viewDidLoad()
         self.setUpView()
         UIApplication.sharedApplication().statusBarHidden = true
-        
+        PushNotificationHelper.signUpForNotifications()
         // Do any additional setup after loading the view.
     }
     

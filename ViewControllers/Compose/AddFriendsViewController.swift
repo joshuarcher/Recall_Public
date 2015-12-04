@@ -8,13 +8,15 @@
 
 import UIKit
 import Parse
-import Contacts
+import RealmSwift
 
 class AddFriendsViewController: UIViewController {
     
     private let addFriendReuseId = "addFriendCell"
 
     @IBOutlet weak var tableView: UITableView!
+    
+    var realmContacts: Results<ContactRealm>?
     
     var digitUsers: [String]? {
         didSet {
@@ -59,18 +61,43 @@ class AddFriendsViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        getContactsFromRealm()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func getContactsFromRealm() {
+        self.realmContacts = RealmHelper.getContacts()
+        tableView.reloadData()
+    }
+    
+    func syncFabricParseWithRealm() {
+        FabricHelper.findFriends { (digitUsers) -> Void in
+            if let digitUsers = digitUsers {
+                ParseHelper.addressBookFriendsForCurrentUser(digitUsers, completionBlock: { (results: [PFObject]?, error: NSError?) -> Void in
+                    let users = results as? [PFUser] ?? []
+                    RealmHelper.saveContactsFromParse(users)
+                    self.getContactsFromRealm()
+                })
+            }
+        }
     }
 
 }
 
 extension AddFriendsViewController: UITableViewDataSource {
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if realmContacts?.count > 0 {
+            return 2
+        }
+        // commenting for trying realm
+//        if usersInAddressBook?.count > 0 {
+//            return 2
+//        }
+        return 1
+    }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if tableView.numberOfSections == 1 {
@@ -82,14 +109,7 @@ extension AddFriendsViewController: UITableViewDataSource {
                 return "all users"
             }
         }
-        return "troll"
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if usersInAddressBook?.count > 0 {
-            return 2
-        }
-        return 1
+        return "error?"
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -98,8 +118,11 @@ extension AddFriendsViewController: UITableViewDataSource {
             return usersToAdd.count
         } else if tableView.numberOfSections == 2 {
             if section == 0 {
-                guard let usersInAddressBook = usersInAddressBook else {return 0}
-                return usersInAddressBook.count
+                guard let realmContacts = realmContacts else {return 0}
+                return realmContacts.count
+                // commenting for trying realm
+//                guard let usersInAddressBook = usersInAddressBook else {return 0}
+//                return usersInAddressBook.count
             } else if section == 1 {
                 guard let usersToAdd = usersToAdd else {return 0}
                 return usersToAdd.count
@@ -117,9 +140,13 @@ extension AddFriendsViewController: UITableViewDataSource {
             }
         } else if tableView.numberOfSections == 2 {
             if indexPath.section == 0 {
-                if let usersInAddressBook = usersInAddressBook {
-                    cell.cellUser = usersInAddressBook[indexPath.row] as PFUser
+                if let realmContacts = realmContacts {
+                    cell.usernameLabel.text = realmContacts[indexPath.row].parseUsername
                 }
+                // commenting for trying realm
+//                if let usersInAddressBook = usersInAddressBook {
+//                    cell.cellUser = usersInAddressBook[indexPath.row] as PFUser
+//                }
             } else if indexPath.section == 1 {
                 if let usersToAdd = usersToAdd {
                     cell.cellUser = usersToAdd[indexPath.row] as PFUser

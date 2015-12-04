@@ -15,5 +15,4 @@ class UserDefaultsHelper {
     class func setDigitsViewSeen(phoneNo: String) {
         
     }
-    
 }

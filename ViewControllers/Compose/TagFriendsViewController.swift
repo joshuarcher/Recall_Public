@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import RealmSwift
 
 class TagFriendsViewController: UIViewController {
     
@@ -16,21 +17,19 @@ class TagFriendsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tagFriendsButton: UIButton!
     
-    var realmFriends: [FriendRealm]? {
-        didSet {
-            tableView.reloadData()
-        }
-    }
+    var realmFriends: Results<FriendRealm>?
     
     var usersToTag: [PFUser]? {
         didSet {
-            tableView.reloadData()
+            // commenting for trying realm
+            // tableView.reloadData()
         }
     }
     
     var taggedUsers: [PFUser]! {
         didSet {
-            updateTagButton()
+            // commenting for trying realm
+            // updateTagButton()
         }
     }
     
@@ -43,7 +42,7 @@ class TagFriendsViewController: UIViewController {
             taggedUsers = []
         }
         
-        parseRequestFriends()
+        //parseRequestFriends()
         // show button if there are tagged users
         updateTagButton()
         // Do any additional setup after loading the view.
@@ -51,6 +50,7 @@ class TagFriendsViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        getFriendsFromRealm()
         parseRequestFriends()
     }
     
@@ -64,12 +64,19 @@ class TagFriendsViewController: UIViewController {
     
     // MARK: - Helper Functions
     
+    func getFriendsFromRealm() {
+        self.realmFriends = RealmHelper.getFriends()
+    }
+    
+    // get friends from parse, then save them in Realm, reload view (Replace with synchronizer?)
     func parseRequestFriends() {
         ParseHelper.findFriendsRequestForCurrentUser { (results: [PFObject]?, error: NSError?) -> Void in
             if let relations = results {
-                self.usersToTag = relations.map {
+                let users: [PFUser] = relations.map {
                     $0.objectForKey(ParseHelper.ParseFriendTouser) as! PFUser
                 }
+                RealmHelper.saveFriendsFromParse(users)
+                self.tableView.reloadData()
             }
         }
     }
@@ -91,29 +98,38 @@ class TagFriendsViewController: UIViewController {
 extension TagFriendsViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let usersToTag = usersToTag else {return 0}
-        return usersToTag.count
+        guard let realmFriends = realmFriends else {return 0}
+        return realmFriends.count
+        // commenting out to test realm
+//        guard let usersToTag = usersToTag else {return 0}
+//        return usersToTag.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: TagFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(tagFriendCellReuseId) as! TagFriendTableViewCell
-        if let usersToTag = usersToTag {
-            cell.cellUser = usersToTag[indexPath.row]
+        if let realmFriends = realmFriends {
+            cell.usernameLabel.text = realmFriends[indexPath.row].parseUsername
         }
+        // commenting out to test realm
+//        if let usersToTag = usersToTag {
+//            cell.cellUser = usersToTag[indexPath.row]
+//        }
         return cell
     }
 }
 
 extension TagFriendsViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let usersToTag = usersToTag {
-            taggedUsers.append(usersToTag[indexPath.row])
-        }
+        // commenting to test realm
+//        if let usersToTag = usersToTag {
+//            taggedUsers.append(usersToTag[indexPath.row])
+//        }
     }
     
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        if let usersToTag = usersToTag {
-            taggedUsers.removeObject(usersToTag[indexPath.row])
-        }
+        // commenting to test realm
+//        if let usersToTag = usersToTag {
+//            taggedUsers.removeObject(usersToTag[indexPath.row])
+//        }
     }
 }

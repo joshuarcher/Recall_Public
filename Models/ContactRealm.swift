@@ -1,8 +1,8 @@
 //
-//  FriendRealm.swift
+//  ContactRealm.swift
 //  Reecall
 //
-//  Created by Joshua Archer on 12/2/15.
+//  Created by Joshua Archer on 12/3/15.
 //  Copyright © 2015 Joshua Archer. All rights reserved.
 //
 
@@ -10,7 +10,8 @@ import Foundation
 import Parse
 import RealmSwift
 
-class FriendRealm: Object {
+class ContactRealm: Object {
+    
     dynamic var parseObjectId: String? = nil
     dynamic var parseUsername: String? = nil
     

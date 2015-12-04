@@ -30,10 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Fabric.with([Digits.self, Crashlytics.self])
         
         // Register parse ID
-        Parse.enableLocalDatastore()
+        // Parse.enableLocalDatastore()
         Parse.setApplicationId("BWQm6KKz966A5aH0PLNufiBd5BoHobddqnxj5ZBC", clientKey: "uCDKJNDJOSIC12YVQimx9NzrR98ARS3OCkE60eQD")
         
-        PushNotificationHelper.signUpForNotifications()
+        // PushNotificationHelper.signUpForNotifications()
         
         // changing ACL default
         let acl = PFACL()
