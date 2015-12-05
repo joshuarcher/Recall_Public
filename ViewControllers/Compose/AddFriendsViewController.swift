@@ -18,6 +18,8 @@ class AddFriendsViewController: UIViewController {
     
     var realmContacts: Results<ContactRealm>?
     
+    var realmUsers: Results<AllUsersRealm>?
+    
     var digitUsers: [String]? {
         didSet {
             // query for new section
@@ -33,8 +35,6 @@ class AddFriendsViewController: UIViewController {
         }
     }
     
-    
-    
     var usersToAdd: [PFUser]? {
         didSet {
             tableView.reloadData()
@@ -45,26 +45,19 @@ class AddFriendsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        ParseHelper.addFriendsRequestForCurrentUser { (results: [PFObject]?, error: NSError?) -> Void in
-            let users = results as? [PFUser] ?? []
-            self.usersToAdd = users
-        }
-        FabricHelper.findFriends { (digitUsers) -> Void in
-            if let digitUsers = digitUsers {
-                ParseHelper.addressBookFriendsForCurrentUser(digitUsers, completionBlock: { (results: [PFObject]?, error: NSError?) -> Void in
-                    let users = results as? [PFUser] ?? []
-                    self.usersInAddressBook = users
-                })
-                self.digitUsers = digitUsers
-            }
-        }
+//        ParseHelper.addFriendsRequestForCurrentUser { (results: [PFObject]?, error: NSError?) -> Void in
+//            let users = results as? [PFUser] ?? []
+//            self.usersToAdd = users
+//        }
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
         getContactsFromRealm()
+        getUsersFromRealm()
+        syncFabricParseWithContacts()
+        syncParseWithUsers()
     }
     
     func getContactsFromRealm() {
@@ -72,7 +65,7 @@ class AddFriendsViewController: UIViewController {
         tableView.reloadData()
     }
     
-    func syncFabricParseWithRealm() {
+    func syncFabricParseWithContacts() {
         FabricHelper.findFriends { (digitUsers) -> Void in
             if let digitUsers = digitUsers {
                 ParseHelper.addressBookFriendsForCurrentUser(digitUsers, completionBlock: { (results: [PFObject]?, error: NSError?) -> Void in
@@ -81,6 +74,19 @@ class AddFriendsViewController: UIViewController {
                     self.getContactsFromRealm()
                 })
             }
+        }
+    }
+    
+    func getUsersFromRealm() {
+        self.realmUsers = RealmHelper.getAllUsers()
+        tableView.reloadData()
+    }
+    
+    func syncParseWithUsers() {
+        ParseHelper.addFriendsRequestForCurrentUser { (results: [PFObject]?, error: NSError?) -> Void in
+            let users = results as? [PFUser] ?? []
+            RealmHelper.saveAllUsersFromParse(users)
+            self.getUsersFromRealm()
         }
     }
 
@@ -114,8 +120,11 @@ extension AddFriendsViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView.numberOfSections == 1 {
-            guard let usersToAdd = usersToAdd else {return 0}
-            return usersToAdd.count
+            guard let realmUsers = realmUsers else {return 0}
+            return realmUsers.count
+            // commenting for trying realm
+//            guard let usersToAdd = usersToAdd else {return 0}
+//            return usersToAdd.count
         } else if tableView.numberOfSections == 2 {
             if section == 0 {
                 guard let realmContacts = realmContacts else {return 0}
@@ -124,8 +133,11 @@ extension AddFriendsViewController: UITableViewDataSource {
 //                guard let usersInAddressBook = usersInAddressBook else {return 0}
 //                return usersInAddressBook.count
             } else if section == 1 {
-                guard let usersToAdd = usersToAdd else {return 0}
-                return usersToAdd.count
+                guard let realmUsers = realmUsers else {return 0}
+                return realmUsers.count
+                // commenting for trying realm
+//                guard let usersToAdd = usersToAdd else {return 0}
+//                return usersToAdd.count
             }
         }
         return 0
@@ -135,22 +147,30 @@ extension AddFriendsViewController: UITableViewDataSource {
         let cell: AddFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(addFriendReuseId) as! AddFriendTableViewCell
         
         if tableView.numberOfSections == 1 {
-            if let usersToAdd = usersToAdd {
-                cell.cellUser = usersToAdd[indexPath.row] as PFUser
+            if let realmUsers = realmUsers {
+                cell.realmUser = realmUsers[indexPath.row]
             }
+            // commenting for trying realm
+//            if let usersToAdd = usersToAdd {
+//                cell.cellUser = usersToAdd[indexPath.row] as PFUser
+//            }
         } else if tableView.numberOfSections == 2 {
             if indexPath.section == 0 {
                 if let realmContacts = realmContacts {
-                    cell.usernameLabel.text = realmContacts[indexPath.row].parseUsername
+                    cell.realmContact = realmContacts[indexPath.row]
                 }
                 // commenting for trying realm
 //                if let usersInAddressBook = usersInAddressBook {
 //                    cell.cellUser = usersInAddressBook[indexPath.row] as PFUser
 //                }
             } else if indexPath.section == 1 {
-                if let usersToAdd = usersToAdd {
-                    cell.cellUser = usersToAdd[indexPath.row] as PFUser
+                if let realmUsers = realmUsers {
+                    cell.realmUser = realmUsers[indexPath.row]
                 }
+                // commenting for trying realm
+//                if let usersToAdd = usersToAdd {
+//                    cell.cellUser = usersToAdd[indexPath.row] as PFUser
+//                }
             }
         }
         

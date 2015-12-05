@@ -117,7 +117,7 @@ extension RecallComposeViewController {
     
     func showCustomDateAlert() {
         let alertTitle = "NOPE!"
-        let message = "Custom date picking is coming soon :)\n-Josh"
+        let message = "Custom date picking is coming soon :)"
         let alert = UIAlertController(title: alertTitle, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: "I'm a troll", style: UIAlertActionStyle.Default, handler: nil))
         self.presentViewController(alert, animated: true, completion: nil)

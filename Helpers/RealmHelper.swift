@@ -14,6 +14,8 @@ class RealmHelper {
     
     static let parseUsername = "parseUsername"
     
+    // MARK: - FriendRealm
+    
     // return friends for TagFriendsViewController
     static func getFriends() -> Results<FriendRealm>? {
         var friends = Results<FriendRealm>?()
@@ -54,6 +56,8 @@ class RealmHelper {
             }
         }
     }
+    
+    // MARK: - ContactRealm
     
     // return contacts for AddFriendsViewController
     static func getContacts() -> Results<ContactRealm>? {
@@ -97,6 +101,46 @@ class RealmHelper {
         }
     }
     
+    // MARK: - AllUsersRealm
+    
+    // return users for AddFriendsViewController
+    static func getAllUsers() -> Results<AllUsersRealm>? {
+        var users = Results<AllUsersRealm>?()
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in getContacts of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            users = realm.objects(AllUsersRealm).sorted(parseUsername)
+        }
+        
+        return users
+    }
+    
+    // takes in all PFUsers on recall.... (NEED TO REPLACE THIS WHEN THE APP SCALESSSSS)
+    static func saveAllUsersFromParse(users: [PFUser]) {
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveContacts of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            realm.beginWrite()
+            for user in users {
+                let realmContact = AllUsersRealm(user: user)
+                realm.add(realmContact, update: true)
+            }
+            do {
+                try realm.commitWrite()
+            } catch let error as NSError {
+                NSLog("error committing in saveContacts of RealmHelper: %@", error)
+            }
+        }
+    }
     
 }
-

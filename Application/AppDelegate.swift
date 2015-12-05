@@ -103,6 +103,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("registered for user notification settings")
     }
     
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        NSLog("Failed to register for remote notifications.. error: %@", error)
+    }
+    
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         print("device token: \(deviceToken)")
         PushNotificationHelper.setDeviceTokenForInstallation(deviceToken)

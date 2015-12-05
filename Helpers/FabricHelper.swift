@@ -9,6 +9,8 @@
 import Foundation
 import DigitsKit
 
+typealias DGDataCallback = (success: Bool, phoneNumber: String?, digitsUserId: String?) -> Void
+
 class FabricHelper {
     
     static let digits = Digits.sharedInstance()
@@ -22,6 +24,20 @@ class FabricHelper {
     
     static func getDigitsUserID() -> String? {
         return digits.session()?.userID
+    }
+    
+    static func getDigitsData(dataCallback: DGDataCallback) {
+        var success = false
+        var phone: String? = nil
+        var userId: String? = nil
+        
+        if let session = digits.session() {
+            success = true
+            phone = session.phoneNumber
+            userId = session.userID
+        }
+        
+        dataCallback(success: success, phoneNumber: phone, digitsUserId: userId)
     }
     
     static func verifyUserPhoneNumber(completion: (success: Bool, number: String?) -> Void) {

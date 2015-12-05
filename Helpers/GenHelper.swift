@@ -41,6 +41,16 @@ class GenHelper {
         }
         return toReturn
     }
+    
+    static func delay(timeDelay: Double, completion: () -> Void) {
+        dispatch_after(
+            dispatch_time(
+                DISPATCH_TIME_NOW,
+                Int64(timeDelay * Double(NSEC_PER_SEC))
+            ),
+            dispatch_get_main_queue(), completion)
+    }
+    
 }
 
 extension NSDate {

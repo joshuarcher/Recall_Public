@@ -11,11 +11,23 @@ import Parse
 
 class AddFriendTableViewCell: UITableViewCell {
     
-    var cellUser: PFUser! {
+    var realmContact: ContactRealm? {
         didSet {
-            usernameLabel.text = cellUser.username
+            if (realmUser == nil) {
+                usernameLabel.text = realmContact?.parseUsername
+            }
         }
     }
+    
+    var realmUser: AllUsersRealm? {
+        didSet {
+            if (realmContact == nil) {
+                usernameLabel.text = realmUser?.parseUsername
+            }
+        }
+    }
+    
+    var cellUser: PFUser?
 
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var addFriendButton: UIButton!
@@ -24,14 +36,36 @@ class AddFriendTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
+    
+    /*
+    if let button = sender as? UIButton {
+        if !button.selected {
+            if let contact = realmContact {
+                ParseHelper.addContactRealmFriendRelation(contact)
+            } else if let user = realmUser {
+                ParseHelper.addAllUserRealmFriendRelation(user)
+            }
+            button.selected = true
+            print("hey")
+        }
+    }
+    */
 
     @IBAction func addFriendButtonTapped(sender: AnyObject) {
-        if let button = sender as? UIButton, cellUser = cellUser {
+        if let button = sender as? UIButton {
             if !button.selected {
-                ParseHelper.addFriendsWithRelationForCurrentUser(cellUser)
+                addRelation()
                 button.selected = true
-                print("hey")
+                print("Hey")
             }
+        }
+    }
+    
+    func addRelation() {
+        if let contact = realmContact {
+            ParseHelper.addContactRealmFriendRelation(contact)
+        } else if let user = realmUser {
+            ParseHelper.addAllUserRealmFriendRelation(user)
         }
     }
     

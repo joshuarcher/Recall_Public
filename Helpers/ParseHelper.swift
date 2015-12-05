@@ -157,6 +157,30 @@ class ParseHelper {
         friendRelation.saveInBackgroundWithBlock(nil)
     }
     
+    static func addContactRealmFriendRelation(friendsWith: ContactRealm) {
+        
+        let friendRelation = PFObject(className: ParseFriendClass)
+        friendRelation[ParseFriendFromUser] = PFUser.currentUser()
+        let user: PFUser = PFUser(withoutDataWithObjectId: friendsWith.parseObjectId)
+        friendRelation[ParseFriendTouser] = user
+        friendRelation[ParseFriendToUsername] = friendsWith.parseUsername
+        
+        friendRelation.saveInBackgroundWithBlock(nil)
+        
+    }
+    
+    static func addAllUserRealmFriendRelation(friendsWith: AllUsersRealm) {
+        
+        let friendRelation = PFObject(className: ParseFriendClass)
+        friendRelation[ParseFriendFromUser] = PFUser.currentUser()
+        let user: PFUser = PFUser(withoutDataWithObjectId: friendsWith.parseObjectId)
+        friendRelation[ParseFriendTouser] = user
+        friendRelation[ParseFriendToUsername] = friendsWith.parseUsername
+        
+        friendRelation.saveInBackgroundWithBlock(nil)
+        
+    }
+    
     static func findFriendsRequestForCurrentUser(completionBlock: PFQueryArrayResultBlock) {
         let friendQuery = PFQuery(className: ParseFriendClass)
         friendQuery.whereKey(ParseFriendFromUser, equalTo: PFUser.currentUser()!)

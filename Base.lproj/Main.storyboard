@@ -362,7 +362,7 @@
             </objects>
             <point key="canvasLocation" x="1433" y="475"/>
         </scene>
-        <!--send to...-->
+        <!--tag friends-->
         <scene sceneID="cTh-bE-vr9">
             <objects>
                 <viewController id="wMu-sa-07b" customClass="TagFriendsViewController" customModule="Recall" customModuleProvider="target" sceneMemberID="viewController">
@@ -459,7 +459,7 @@
                             </mask>
                         </variation>
                     </view>
-                    <navigationItem key="navigationItem" title="send to..." id="Epp-2Q-Jht">
+                    <navigationItem key="navigationItem" title="tag friends" id="Epp-2Q-Jht">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Bd0-XG-Nop">
                             <connections>
                                 <segue destination="LZM-u5-pke" kind="show" id="UqN-QO-3MH"/>

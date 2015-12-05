@@ -25,27 +25,18 @@ class DigitsVerifyViewController: UIViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-//        if let _ = KeychainHelper.getKeychainUserPhone() {
-//            let success = PFUser.setCurrentUserPhone()
-//            if success {print("saved current user's phone")} else {print("did not save current user's phone")}
-//            presentNextView()
-//        }
+        let digitsVerified = UserDefaultsHelper.isDigitsVerified()
+        if digitsVerified {
+            self.presentNextView()
+        } else {
+            self.checkDigits()
+        }
     }
     
     // MARK: - Button actions
     
     @IBAction func digitsVerifyButtonTapped(sender: AnyObject) {
-        FabricHelper.verifyUserPhoneNumber { (success: Bool, number: String?) -> Void in
-            if success {
-                if let userDigitsID = FabricHelper.getDigitsUserID(), number = number {
-                    PFUser.setCurrentUserDigitsID(userDigitsID)
-                    PFUser.setCurrentUserPhone(number)
-                    self.presentNextView()
-                }
-            } else {
-                self.presentDigitsFailAlert()
-            }
-        }
+        verifyUserPhoneNumber()
     }
     
     @IBAction func noButtonTapped(sender: AnyObject) {
@@ -61,6 +52,36 @@ class DigitsVerifyViewController: UIViewController {
         }
         alert.addAction(action)
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func verifyUserPhoneNumber() {
+        FabricHelper.verifyUserPhoneNumber { (success: Bool, number: String?) -> Void in
+            if success {
+                if let userDigitsID = FabricHelper.getDigitsUserID(), number = number {
+                    PFUser.setCurrentUserDigitsID(userDigitsID)
+                    PFUser.setCurrentUserPhone(number)
+                    UserDefaultsHelper.verifyDigits()
+                }
+            } else {
+                self.presentDigitsFailAlert()
+            }
+        }
+    }
+    
+    func checkDigits() {
+        FabricHelper.getDigitsData { (success, phoneNumber, digitsUserId) -> Void in
+            if success {
+                if let phoneNumber = phoneNumber, digitsUserId = digitsUserId {
+                    PFUser.setCurrentUserPhone(phoneNumber)
+                    PFUser.setCurrentUserDigitsID(digitsUserId)
+                    UserDefaultsHelper.verifyDigits()
+                    // Parse user data is saved, continue to next screen
+                    self.presentNextView()
+                }
+            } else {
+                print("User doesn't have a session, button should work..")
+            }
+        }
     }
     
     func presentNextView() {

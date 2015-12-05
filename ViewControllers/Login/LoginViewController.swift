@@ -83,7 +83,7 @@ class LoginViewController: UIViewController {
     
     func presentNextScreen() {
         if let user = PFUser.currentUser() {
-            if let parsePhotoNo = user["phone"] {
+            if let _ = user["phone"] {
                 performSegueWithIdentifier(toAppSegue, sender: self)
             } else {
                 performSegueWithIdentifier(toDigitsSegue, sender: self)
