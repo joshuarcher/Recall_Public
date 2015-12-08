@@ -43,6 +43,7 @@ class ParseHelper {
     static let ParseMessageContent = "messageText"
     static let ParseMessageConvo = "ParentConversation"
     static let ParseMessageParentPhoto = "parentPhoto"
+    static let ParseMessageCreated = "createdAt"
     
     // FriendsWith Relation
     static let ParseFriendClass = "friendsWith"
@@ -147,6 +148,7 @@ class ParseHelper {
         
     }
     
+    // add relationship
     static func addFriendsWithRelationForCurrentUser(friendsWith: PFUser) {
         
         let friendRelation = PFObject(className: ParseFriendClass)
@@ -197,7 +199,8 @@ class ParseHelper {
     static func findMessagesForPhoto(photo: Photo, completionBlock: PFQueryArrayResultBlock) {
         let messageQuery = PFQuery(className: ParseMessageClass)
         messageQuery.whereKey(ParseMessageParentPhoto, equalTo: photo)
-        messageQuery.orderByAscending("createdAt")
+        messageQuery.orderByAscending(ParseMessageCreated)
+        messageQuery.includeKey(ParseMessageSender)
         
         messageQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }

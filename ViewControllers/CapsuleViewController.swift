@@ -11,6 +11,9 @@ import Parse
 
 class CapsuleViewController: UIViewController, TimelineComponentTarget {
     
+    private let cellNibName = "RCCapsuleCell"
+    private let cellReuseId = "recallCapsuleCell"
+    
     private let rowHeight: CGFloat = 290
     @IBOutlet weak var tableView: UITableView!
     
@@ -24,13 +27,8 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.timelineComponent = TimelineComponent(target: self)
-
-//        let nib = UINib(nibName: "TimeCapsuleTableViewCell", bundle: nil)
-//        tableView.registerNib(nib, forCellReuseIdentifier: "capsuleCell")
-        let nib = UINib(nibName: "RCCapsuleCell", bundle: nil)
-        tableView.registerNib(nib, forCellReuseIdentifier: "recallCapsuleCell")
+        registerTimelineComponent()
+        registerCellForTable()
 
         // Do any additional setup after loading the view.
     }
@@ -45,8 +43,18 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
         // Dispose of any resources that can be recreated.
     }
     
+    private func registerCellForTable() {
+        let nib = UINib(nibName: cellNibName, bundle: nil)
+        tableView.registerNib(nib, forCellReuseIdentifier: cellReuseId)
+        tableView.backgroundColor = UIColor.recallOffWhite()
+    }
+    
     
     // MARK: - TimelineComponent Methods
+    
+    private func registerTimelineComponent() {
+        self.timelineComponent = TimelineComponent(target: self)
+    }
     
     func loadInRange(range: Range<Int>, completionBlock: ([Photo]?) -> Void) {
         ParseHelper.timeCapsuleRequestForCurrentUser(range) { (results: [PFObject]?, error: NSError?) -> Void in
@@ -66,13 +74,8 @@ extension CapsuleViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        let cell: TimeCapsuleTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("capsuleCell") as! TimeCapsuleTableViewCell
-//        
-//        let photo = timelineComponent.content[indexPath.row]
-//        photo.downloadImage()
-//        cell.photo = photo
         
-        let cell: RCCapsuleCell = tableView.dequeueReusableCellWithIdentifier("recallCapsuleCell") as! RCCapsuleCell
+        let cell: RCCapsuleCell = tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! RCCapsuleCell
         let photo = timelineComponent.content[indexPath.row]
         photo.downloadImage()
         cell.photo = photo

@@ -143,4 +143,63 @@ class RealmHelper {
         }
     }
     
+    static func getMessagesForPhoto(photo: Photo) -> Results<MessageRealm>? {
+        var messages = Results<MessageRealm>?()
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in getMessages of RealmHelper: %@", error)
+        }
+        
+        realmIf: if let realm = realm {
+            guard let photoId = photo.objectId else {break realmIf}
+            let predicate = NSPredicate(format: "parseParentPhotoObjectId = %@", photoId)
+            messages = realm.objects(MessageRealm).filter(predicate)
+        }
+        
+        return messages
+    }
+    
+    static func saveMessagesFromParse(messages: [Message]) {
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveMessages of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            realm.beginWrite()
+            for message in messages {
+                let realmMessage = MessageRealm(message: message)
+                realm.add(realmMessage, update: true)
+            }
+            
+            do {
+                try realm.commitWrite()
+            } catch let error as NSError {
+                NSLog("error committing in saveMessages of RealmHelper: %@", error)
+            }
+        }
+    }
+    
+    static func saveMessageAlreadyCreated(message: MessageRealm) {
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveMessageeeeee of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            realm.beginWrite()
+            realm.add(message, update: true)
+            do {
+                try realm.commitWrite()
+            } catch let error as NSError {
+                NSLog("error committing in saveMessageeee of RealmHelper: %@", error)
+            }
+        }
+    }
 }

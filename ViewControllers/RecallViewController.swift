@@ -11,10 +11,11 @@ import Parse
 
 class RecallViewController: UIViewController, TimelineComponentTarget {
     
-    private let cellNibName = "TimelineTableViewCell"
+    private let cellNibName = "RCTimelineCell"
     private let cellReuseId = "timelineCell"
     private let messagesViewNibName = "MessagesViewController"
 
+    private let rowHeight: CGFloat = 290
     @IBOutlet weak var tableView: UITableView!
     
     // MARK: - TimelineComponent properties
@@ -45,6 +46,7 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
     private func registerCellForTable() {
         let nib = UINib(nibName: cellNibName, bundle: nil)
         tableView.registerNib(nib, forCellReuseIdentifier: cellReuseId)
+        tableView.backgroundColor = UIColor.recallOffWhite()
     }
     
     // MARK: - TimelineComponent Methods
@@ -71,13 +73,18 @@ extension RecallViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: TimelineTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! TimelineTableViewCell
+//        let cell: TimelineTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! TimelineTableViewCell
+        let cell: RCTimelineCell = self.tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! RCTimelineCell
         
         let photo = timelineComponent.content[indexPath.row]
         photo.downloadImage()
         cell.photo = photo
         
         return cell
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return self.rowHeight
     }
     
 }

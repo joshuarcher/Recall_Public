@@ -12,6 +12,7 @@ import QuartzCore
 class RCCapsuleCell: UITableViewCell {
     
     private var innerView = UIView.newAutoLayoutView()
+    private var innerShadowView = UIView.newAutoLayoutView()
     private var recallImageView = UIImageView.newAutoLayoutView()
     private var timeLabel = UILabel.newAutoLayoutView()
     private var recallDate: NSDate?
@@ -87,13 +88,27 @@ extension RCCapsuleCell {
     func layoutViews() {
         self.backgroundColor = UIColor.recallOffWhite()
         
+        self.addSubview(innerShadowView)
+        innerShadowView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        innerShadowView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+        innerShadowView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+        innerShadowView.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+        innerShadowView.backgroundColor = UIColor.whiteColor()
+        let innerShadowLayer = innerShadowView.layer
+        innerShadowLayer.cornerRadius = 6
+        innerShadowLayer.shadowOffset = CGSizeZero
+        innerShadowLayer.shadowRadius = 6
+        innerShadowLayer.shadowColor = UIColor.grayColor().CGColor
+        innerShadowLayer.shadowOpacity = 0.33
+        innerShadowLayer.masksToBounds = false
+        
         self.addSubview(innerView)
         innerView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         innerView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         innerView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         innerView.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        innerView.backgroundColor = UIColor.recallRed()
-        innerView.layer.cornerRadius = 5
+        innerView.backgroundColor = UIColor.recallOffWhite()
+        innerView.layer.cornerRadius = 6
         innerView.clipsToBounds = true
         
         innerView.addSubview(recallImageView)
@@ -118,7 +133,7 @@ extension RCCapsuleCell {
         self.addSubview(timeLabel)
         timeLabel.autoAlignAxisToSuperviewAxis(.Vertical)
         timeLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 11)
-        timeLabel.textColor = UIColor.recallOffWhite()
+        timeLabel.textColor = UIColor.recallRed()
         timeLabel.font = UIFont.boldSystemFontOfSize(20)
         //visualEffect()
     }
