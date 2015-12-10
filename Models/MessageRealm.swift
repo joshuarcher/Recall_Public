@@ -16,6 +16,7 @@ class MessageRealm: Object, JSQMessageData {
     dynamic var parseMessageText: String? = nil
     dynamic var parseCreatedAt: NSDate = NSDate()
     dynamic var parseParentPhotoObjectId: String? = nil
+    dynamic var isParseObject: Bool = true
     
     convenience init(message: Message) {
         self.init()
@@ -35,10 +36,20 @@ class MessageRealm: Object, JSQMessageData {
     
     convenience init(text: String, sender: String, photoId: String) {
         self.init()
+        let date = NSDate()
         self.parseMessageText = text
         self.parseSenderUserName = sender
         self.parseParentPhotoObjectId = photoId
-        self.parseCreatedAt = NSDate()
+        self.parseCreatedAt = date
+        self.parseObjectId = tempHash(date)
+        self.isParseObject = false
+    }
+    
+    func tempHash(date: NSDate) -> String {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddhhmmss" // 14 charactersss
+        let dateString = dateFormatter.stringFromDate(date)
+        return dateString
     }
     
     override static func primaryKey() -> String? {

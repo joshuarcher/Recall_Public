@@ -202,4 +202,38 @@ class RealmHelper {
             }
         }
     }
+    
+    static func purgeNonParseMessages() {
+        var messagesToPurge = Results<MessageRealm>?()
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveMessageeeeee of RealmHelper: %@", error)
+            return
+        }
+        
+        if let realm = realm {
+            let predicate = NSPredicate(format: "isParseObject = %@", false)
+            messagesToPurge = realm.objects(MessageRealm).filter(predicate)
+        } else {
+            return
+        }
+        
+        if let messagesToPurge = messagesToPurge {
+            if let realm = realm {
+                do {
+                    try realm.write {
+                        realm.delete(messagesToPurge)
+                    }
+                } catch let error as NSError {
+                    NSLog("Error trying to purge messages in purgeNonParseMessages: %@", error)
+                }
+            }
+//            for message in messagesToPurge {
+//                
+//            }
+        }
+        
+    }
 }

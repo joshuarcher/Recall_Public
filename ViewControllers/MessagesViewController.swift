@@ -43,7 +43,7 @@ class MessagesViewController: JSQMessagesViewController {
     
     override func viewWillAppear(animated: Bool) {
         getMessagesFromRealm()
-        syncParseWithMessages()
+        syncParseWithMessages(false)
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,6 +56,16 @@ class MessagesViewController: JSQMessagesViewController {
         self.collectionView?.collectionViewLayout.springinessEnabled = true
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        // purge temporary messages, sync new from parse
+        super.viewWillDisappear(animated)
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        syncParseWithMessages(true)
+        RealmHelper.purgeNonParseMessages()
+    }
+    
     // MARK: - Helper methods
     
     func getMessagesFromRealm() {
@@ -66,7 +76,7 @@ class MessagesViewController: JSQMessagesViewController {
         self.realmMessages = RealmHelper.getMessagesForPhoto(photo)
     }
     
-    func syncParseWithMessages() {
+    func syncParseWithMessages(isDisappear: Bool) {
         guard let photo = photo else {
             NSLog("Photo is nil when syncing parse messages")
             return
@@ -76,8 +86,9 @@ class MessagesViewController: JSQMessagesViewController {
                 let messages: [Message] = results as? [Message] ?? []
                 RealmHelper.saveMessagesFromParse(messages)
             }
-            
-            self.finishReceivingMessage()
+            if !isDisappear {
+                self.finishReceivingMessage()
+            }
         }
     }
     
@@ -117,22 +128,7 @@ class MessagesViewController: JSQMessagesViewController {
 extension MessagesViewController {
     
     func tempRealmWrite(message: MessageRealm) {
-        var realm: Realm?
-        do {
-            realm = try self.realmMessages?.realm
-        } catch let error as NSError {
-            NSLog("issues trying realm in tempRealmWrite: %@", error)
-        }
-        
-        if let realm = realm {
-            realm.beginWrite()
-            realm.add(message)
-            do {
-                try realm.commitWrite()
-            } catch let error as NSError {
-                NSLog("error committing write in temRealmWrite: %@", error)
-            }
-        }
+        RealmHelper.saveMessageAlreadyCreated(message)
     }
     
     func tempSendMessage(text: String!, sender: String!) {
