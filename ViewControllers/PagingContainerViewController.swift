@@ -11,6 +11,8 @@ import UIKit
 class PagingContainerViewController: UIViewController {
     
     private let scrollUpdateNotification = "scrollDidScroll"
+    private let scrollButtonTappedNotification = "scrollButtonTapped"
+    private let hideNavButtonsNotification = "hideNavButtons"
     
     private let capsuleViewNib = "CapsuleViewController"
     private let timelineViewNib = "RecallViewController"
@@ -29,12 +31,22 @@ class PagingContainerViewController: UIViewController {
         self.setUpView()
         UIApplication.sharedApplication().statusBarHidden = true
         PushNotificationHelper.signUpForNotifications()
+        subscribeNotifications()
         // Do any additional setup after loading the view.
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        postDissappearNotification(true)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        postDissappearNotification(false)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     // MARK: - Actions
@@ -66,6 +78,44 @@ class PagingContainerViewController: UIViewController {
         let dictionary: NSDictionary = NSDictionary(object: contentOffset, forKey: "contentOffset")
         notificationCenter.postNotificationName(scrollUpdateNotification, object: self.scrollView, userInfo: dictionary as [NSObject : AnyObject])
         // print("posting notification")
+    }
+    
+    func subscribeNotifications() {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        // this notification is from the button being tapped
+        notificationCenter.addObserver(self, selector: "receiveButtonNotification:", name: scrollButtonTappedNotification, object: nil)
+    }
+    
+    func receiveButtonNotification(notification: NSNotification) {
+        if let userInfo = notification.userInfo {
+            guard let buttonType = userInfo["buttonType"] as? Int else {print("nope");return}
+            // 0 -> right button
+            // 1 -> left button
+            print(buttonType)
+            updateScrollViewOffset(buttonType)
+        }
+    }
+    
+    func updateScrollViewOffset(buttonType: Int) {
+        let screenWidth = self.view.frame.size.width
+        let offsetY = self.scrollView.contentOffset.y
+        var scrollPoint: CGPoint?
+        
+        if buttonType == 0 {
+            scrollPoint = CGPointMake(screenWidth, offsetY)
+        } else if buttonType == 1 {
+            scrollPoint = CGPointMake(0, offsetY)
+        }
+        
+        guard let point = scrollPoint else {return}
+        self.scrollView.setContentOffset(point, animated: true)
+    }
+    
+    func postDissappearNotification(dissappearing: Bool) {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        let dictionary: NSDictionary = NSDictionary(object: dissappearing, forKey: "dissappearing")
+        
+        notificationCenter.postNotificationName(hideNavButtonsNotification, object: nil, userInfo: dictionary as [NSObject : AnyObject])
     }
     
     // MARK: - Helper methods
@@ -104,7 +154,7 @@ class PagingContainerViewController: UIViewController {
             }
         }
     }
-
+    
 }
 
 extension PagingContainerViewController: UIScrollViewDelegate {
