@@ -13,6 +13,7 @@ class UserDefaultsHelper {
     static let userDefaults = NSUserDefaults.standardUserDefaults()
     
     static let digitsVerified = "digitsVerified"
+    static let digitsID = "digitsID"
     
     /*
     digitsVerifiedPhone - Bool
@@ -24,7 +25,17 @@ class UserDefaultsHelper {
             return
         } else {
             userDefaults.setBool(false, forKey: digitsVerified)
+            if let userID = userDefaults.stringForKey(digitsID) {
+                // already have something stored, don't do anything
+                print("string stored for digitsID already: \(userID)")
+            } else {
+                userDefaults.setObject("", forKey: digitsID)
+            }
         }
+    }
+    
+    static func getDigitsUserId() -> String? {
+        return userDefaults.stringForKey(digitsID)
     }
     
     static func isDigitsVerified() -> Bool {
@@ -32,8 +43,9 @@ class UserDefaultsHelper {
         return verified
     }
     
-    static func verifyDigits() {
+    static func verifyDigits(userID: String) {
         userDefaults.setBool(true, forKey: digitsVerified)
+        userDefaults.setObject(userID, forKey: digitsID)
     }
     
 }

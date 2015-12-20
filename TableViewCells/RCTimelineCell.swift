@@ -65,7 +65,7 @@ extension RCTimelineCell {
         innerShadowView.backgroundColor = UIColor.whiteColor()
         let innerShadowLayer = innerShadowView.layer
         innerShadowLayer.cornerRadius = 6
-        innerShadowLayer.shadowOffset = CGSizeZero
+        innerShadowLayer.shadowOffset = CGSizeMake(0, 3)
         innerShadowLayer.shadowRadius = 6
         innerShadowLayer.shadowColor = UIColor.grayColor().CGColor
         innerShadowLayer.shadowOpacity = 0.33
@@ -80,11 +80,6 @@ extension RCTimelineCell {
         innerView.clipsToBounds = true
         let innerLayer = innerView.layer
         innerLayer.cornerRadius = 6
-        // taken out to transfer shadow layer to another subview of the cell
-//        innerLayer.shadowOffset = CGSizeZero
-//        innerLayer.shadowRadius = 6
-//        innerLayer.shadowColor = UIColor.grayColor().CGColor
-//        innerLayer.shadowOpacity = 0.3
         
         innerView.addSubview(recallImageView)
         recallImageView.autoPinEdgeToSuperviewEdge(.Left)

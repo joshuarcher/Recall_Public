@@ -10,6 +10,8 @@ import UIKit
 
 class PagingContainerViewController: UIViewController {
     
+    private let scrollUpdateNotification = "scrollDidScroll"
+    
     private let capsuleViewNib = "CapsuleViewController"
     private let timelineViewNib = "RecallViewController"
     private let composeSegue = "showRecallCompose"
@@ -55,6 +57,17 @@ class PagingContainerViewController: UIViewController {
         }
     }
     
+    // MARK: - NSNotifications for scroll view
+    
+    func postButtonNotification() {
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        // post to update on nav bar
+        let contentOffset: CGFloat = self.scrollView.contentOffset.x
+        let dictionary: NSDictionary = NSDictionary(object: contentOffset, forKey: "contentOffset")
+        notificationCenter.postNotificationName(scrollUpdateNotification, object: self.scrollView, userInfo: dictionary as [NSObject : AnyObject])
+        // print("posting notification")
+    }
+    
     // MARK: - Helper methods
     
     func setUpView() {
@@ -92,4 +105,10 @@ class PagingContainerViewController: UIViewController {
         }
     }
 
+}
+
+extension PagingContainerViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        postButtonNotification()
+    }
 }

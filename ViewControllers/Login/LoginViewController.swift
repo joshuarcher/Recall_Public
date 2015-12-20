@@ -88,18 +88,6 @@ class LoginViewController: UIViewController {
             } else {
                 performSegueWithIdentifier(toDigitsSegue, sender: self)
             }
-//            
-//            if let keychainNo = KeychainHelper.getKeychainUserPhone() {
-//                if let parsePhoneNo = user["phone"] {
-//                    print(parsePhoneNo)
-//                } else {
-//                    performSegueWithIdentifier(toDigitsSegue, sender: self)
-//                    return
-//                }
-//                self.performSegueWithIdentifier(toAppSegue, sender: self)
-//            } else {
-//                self.performSegueWithIdentifier(toDigitsSegue, sender: self)
-//            }
         }
         else {
             print("user is not logged in after login")

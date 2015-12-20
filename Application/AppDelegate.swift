@@ -43,7 +43,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.statusBarHidden = true
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        var initViewControllerID = "LoginViewController"
+//        var initViewControllerID = "LoginViewController"
+        var initViewControllerID = "LoginFlowViewController"
         
         
         if let userParse = PFUser.currentUser() {
@@ -56,7 +57,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 initViewControllerID = "DigitsVerifyViewController"
             }
         } else {
-            initViewControllerID = "LoginViewController"
+            initViewControllerID = "LoginFlowViewController"
+//            initViewControllerID = "LoginViewController"
         }
         
         let initialViewController = storyboard.instantiateViewControllerWithIdentifier(initViewControllerID)

@@ -29,7 +29,6 @@ class RCCapsuleCell: UITableViewCell {
                 if let date = photo.displayDate {
                     self.timeLabel.text = GenHelper.timeFromString(date, cell: "capsule")
                     self.recallDate = date
-//                    updateLabel()
                     startUpdates()
                 }
             }
@@ -96,7 +95,7 @@ extension RCCapsuleCell {
         innerShadowView.backgroundColor = UIColor.whiteColor()
         let innerShadowLayer = innerShadowView.layer
         innerShadowLayer.cornerRadius = 6
-        innerShadowLayer.shadowOffset = CGSizeZero
+        innerShadowLayer.shadowOffset = CGSizeMake(0, 3)
         innerShadowLayer.shadowRadius = 6
         innerShadowLayer.shadowColor = UIColor.grayColor().CGColor
         innerShadowLayer.shadowOpacity = 0.33

@@ -99,6 +99,9 @@ extension UIColor {
     static func recallOffWhite() -> UIColor {
         return UIColor(red: 0.973, green: 0.973, blue: 0.973, alpha: 1)
     }
+    static func recallRedLight() -> UIColor {
+        return UIColor(red:1.00, green:0.68, blue:0.68, alpha:1.0)
+    }
 }
 
 

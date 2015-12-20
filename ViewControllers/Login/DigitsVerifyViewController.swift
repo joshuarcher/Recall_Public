@@ -60,7 +60,7 @@ class DigitsVerifyViewController: UIViewController {
                 if let userDigitsID = FabricHelper.getDigitsUserID(), number = number {
                     PFUser.setCurrentUserDigitsID(userDigitsID)
                     PFUser.setCurrentUserPhone(number)
-                    UserDefaultsHelper.verifyDigits()
+                    UserDefaultsHelper.verifyDigits(userDigitsID)
                 }
             } else {
                 self.presentDigitsFailAlert()
@@ -74,7 +74,7 @@ class DigitsVerifyViewController: UIViewController {
                 if let phoneNumber = phoneNumber, digitsUserId = digitsUserId {
                     PFUser.setCurrentUserPhone(phoneNumber)
                     PFUser.setCurrentUserDigitsID(digitsUserId)
-                    UserDefaultsHelper.verifyDigits()
+                    UserDefaultsHelper.verifyDigits(digitsUserId)
                     // Parse user data is saved, continue to next screen
                     self.presentNextView()
                 }
