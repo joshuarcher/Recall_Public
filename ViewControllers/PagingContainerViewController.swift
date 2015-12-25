@@ -23,9 +23,9 @@ class PagingContainerViewController: UIViewController {
     
     var photoTakingHelper: PhotoTakingHelper?
     var imageToCompose: UIImage?
-    
+
     // MARK: - View Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpView()
@@ -34,7 +34,7 @@ class PagingContainerViewController: UIViewController {
         subscribeNotifications()
         // Do any additional setup after loading the view.
     }
-    
+
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         postDissappearNotification(true)
@@ -64,9 +64,7 @@ class PagingContainerViewController: UIViewController {
     }
     
     @IBAction func unwindToSegue(segue: UIStoryboardSegue) {
-        if let identifier = segue.identifier {
-            print("Identifier \(identifier)")
-        }
+        
     }
     
     // MARK: - NSNotifications for scroll view

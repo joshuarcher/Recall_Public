@@ -19,6 +19,12 @@ class TagFriendsViewController: UIViewController {
     
     var realmFriends: Results<FriendRealm>?
     
+    var taggedFriends: [String]! {
+        didSet {
+            updateTagButton()
+        }
+    }
+    
     var usersToTag: [PFUser]? {
         didSet {
             // commenting for trying realm
@@ -38,9 +44,13 @@ class TagFriendsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if taggedUsers == nil {
-            taggedUsers = []
+        if taggedFriends == nil {
+            taggedFriends = []
         }
+        
+//        if taggedUsers == nil {
+//            taggedUsers = []
+//        }
         
         //parseRequestFriends()
         // show button if there are tagged users
@@ -57,8 +67,9 @@ class TagFriendsViewController: UIViewController {
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         // if dissapearing to compose screen, pass it the friends it needs (lolz)
+        // this is going to have to change when I change around the navigation controller
         if let composeController = self.navigationController?.viewControllers[1] as? RecallComposeViewController {
-            composeController.taggedFriends = taggedUsers
+            composeController.taggedFriends = taggedFriends
         }
     }
     
@@ -120,6 +131,13 @@ extension TagFriendsViewController: UITableViewDataSource {
 
 extension TagFriendsViewController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if let realmFriends = realmFriends {
+            guard let taggedObjectId = realmFriends[indexPath.row].parseObjectId else {
+                print("No object Id for realmFriends in didSelectRowAtIndexPath")
+                return
+            }
+            taggedFriends.append(taggedObjectId)
+        }
         // commenting to test realm
 //        if let usersToTag = usersToTag {
 //            taggedUsers.append(usersToTag[indexPath.row])
@@ -127,6 +145,14 @@ extension TagFriendsViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        if let realmFriends = realmFriends {
+            guard let taggedObjectId = realmFriends[indexPath.row].parseObjectId else {
+                print("No object Id for realmFriends in didDeselectRowAtIndexPath")
+                return
+            }
+            taggedFriends.removeObject(taggedObjectId)
+        }
+        // taggedFriends.removeObject(taggedObjectId)
         // commenting to test realm
 //        if let usersToTag = usersToTag {
 //            taggedUsers.removeObject(usersToTag[indexPath.row])

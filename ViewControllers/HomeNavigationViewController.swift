@@ -123,9 +123,11 @@ class HomeNavigationViewController: UINavigationController {
     
     func updateOverlayView(withBool isDissappearing: Bool) {
         if isDissappearing {
-            self.overlayView.alpha = 0
+            self.overlayView.hidden = true
+            // self.overlayView.alpha = 0
         } else if !isDissappearing {
-            self.overlayView.alpha = 1
+            self.overlayView.hidden = false
+            //self.overlayView.alpha = 1
             self.view.bringSubviewToFront(self.overlayView)
         }
     }

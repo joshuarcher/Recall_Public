@@ -22,6 +22,7 @@ class Photo: PFObject, PFSubclassing {
     
     var image: Observable<UIImage?> = Observable(nil)
     var tagged: Observable<[PFUser]?> = Observable(nil)
+    var taggedFriends: Observable<[String]?> = Observable(nil)
     var dateDisplay: Observable<NSDate?> = Observable(nil)
     
     // MARK: - PFSublclassing Protocol
@@ -59,16 +60,33 @@ class Photo: PFObject, PFSubclassing {
             }
             fromUser = PFUser.currentUser()
             self.imageSent = imageFile
-            if let users = tagged.value {
+            if let taggedFriendsArray = taggedFriends.value {
+                let users = parseUsers(fromStrings: taggedFriendsArray)
                 for user in users {
                     taggedUsers?.addObject(user)
                 }
             }
+//            let users = parseUsers(fromStrings: self.taggedFriends.value)
+//            if let users = tagged.value {
+//                for user in users {
+//                    taggedUsers?.addObject(user)
+//                }
+//            }
             displayDate = dateDisplay.value
             saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
                 UIApplication.sharedApplication().endBackgroundTask(self.photoUploadTask!)
             }
         }
+    }
+    
+    func parseUsers(fromStrings objectIds: [String]) -> [PFUser] {
+        var users: [PFUser] = []
+        for userId in objectIds {
+            let user = PFUser(withoutDataWithObjectId: userId)
+            users.append(user)
+        }
+        
+        return users
     }
     
     func downloadImage() {

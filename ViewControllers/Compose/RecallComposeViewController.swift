@@ -19,7 +19,13 @@ class RecallComposeViewController: UIViewController {
     
     var imageTaken: UIImage?
     
-    var taggedFriends: [PFUser]! {
+//    var taggedFriends: [PFUser]! {
+//        didSet {
+//            taggedFriendsCountLabel.text = String(taggedFriends.count)
+//        }
+//    }
+    
+    var taggedFriends: [String]! {
         didSet {
             taggedFriendsCountLabel.text = String(taggedFriends.count)
         }
@@ -42,6 +48,10 @@ class RecallComposeViewController: UIViewController {
             recallPostImage.image = imageTaken
         }
         
+        if imageTaken == nil {
+            imageTaken = UIImage(named: "JayDronah")
+        }
+        
         if taggedFriends == nil {
             taggedFriends = []
         }
@@ -51,6 +61,11 @@ class RecallComposeViewController: UIViewController {
         }
 
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        print(taggedFriends)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -80,8 +95,9 @@ class RecallComposeViewController: UIViewController {
     @IBAction func uploadButtonTapped(sender: AnyObject) {
         let photo = Photo()
         photo.image.value = imageTaken
-
-        photo.tagged.value = taggedFriends
+        photo.taggedFriends.value = taggedFriends
+        // need to add relationship from strings of objectIds
+        // photo.tagged.value = taggedFriends
         photo.dateDisplay.value = getDateToSend()
         photo.uploadPost()
         
@@ -152,4 +168,5 @@ extension RecallComposeViewController {
         }
         return NSDate().dateByAddingTimeInterval(86400*daysToAdd)
     }
+    
 }
