@@ -50,7 +50,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let userParse = PFUser.currentUser() {
             if userParse["digitsID"] != nil {
                 // user logged in and has phone number, show app
-                initViewControllerID = "AppNavigationController"
+                // initViewControllerID = "AppNavigationController"
+                initViewControllerID = "RecallHomeNavigationController"
                 self.logUser(userParse)
             } else {
                 // digits ID not set, lets show the verify page
