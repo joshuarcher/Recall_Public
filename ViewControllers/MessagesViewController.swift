@@ -11,22 +11,22 @@
 3)
 */
 
+
 import UIKit
 import Parse
 import RealmSwift
+import JSQMessagesViewController
 
 class MessagesViewController: JSQMessagesViewController {
     
     var photo: Photo?
-    // var messages: [Message]?
-    var jMessages: [JMessage]?
     
     var realmMessages: Results<MessageRealm>?
     
     // MARK: - JSQMessages variables
     
-    var outgoingBubbleImageView = JSQMessagesBubbleImageFactory.outgoingMessageBubbleImageViewWithColor(UIColor.jsq_messageBubbleLightGrayColor())
-    var incomingBubbleImageView = JSQMessagesBubbleImageFactory.incomingMessageBubbleImageViewWithColor(UIColor.jsq_messageBubbleGreenColor())
+    var outgoingBubbleImageView: JSQMessagesBubbleImage?
+    var incomingBubbleImageView: JSQMessagesBubbleImage?
     
     // MARK: - View Lifecycle
 
@@ -34,7 +34,7 @@ class MessagesViewController: JSQMessagesViewController {
         super.viewDidLoad()
         setTitle()
         registerJSMessages()
-        savePictureMessage()
+        initializeBubbles()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -64,12 +64,18 @@ class MessagesViewController: JSQMessagesViewController {
     
     // MARK: - Helper methods
     
-    func savePictureMessage() {
-        if let photo = photo {
-            let photoMessage = MessageRealm(photoObject: photo)
-            RealmHelper.saveMessageAlreadyCreated(photoMessage)
-        }
+    func initializeBubbles() {
+        let factory = JSQMessagesBubbleImageFactory()
+        self.outgoingBubbleImageView = factory.outgoingMessagesBubbleImageWithColor(UIColor.recallRedLight())
+        self.incomingBubbleImageView = factory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
     }
+    
+//    func savePictureMessage() {
+//        if let photo = photo {
+//            let photoMessage = MessageRealm(photoObject: photo)
+//            RealmHelper.saveMessageAlreadyCreated(photoMessage)
+//        }
+//    }
     
     func getMessagesFromRealm() {
         guard let photo = photo else {
@@ -96,10 +102,11 @@ class MessagesViewController: JSQMessagesViewController {
     }
     
     func registerJSMessages() {
-        jMessages = []
         
         let _ = Message()
-        self.sender = PFUser.currentUser()?.username
+        let currentUser = PFUser.currentUser()?.username
+        self.senderId = currentUser
+        self.senderDisplayName = currentUser
         
         self.collectionView?.collectionViewLayout.incomingAvatarViewSize = CGSizeZero
         self.collectionView?.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero
@@ -142,10 +149,18 @@ extension MessagesViewController {
         scrollToBottomAnimated(true)
     }
     
-    override func didPressSendButton(button: UIButton!, withMessageText text: String!, sender: String!, date: NSDate!) {
-        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+//    override func didPressSendButton(button: UIButton!, withMessageText text: String!, sender: String!, date: NSDate!) {
+//        JSQSystemSoundPlayer.jsq_playMessageSentSound()
+//        
+//        sendMessage(text, sender: sender)
+//        
+//        finishSendingMessage()
+//    }
+    
+    override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
+        JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
         
-        sendMessage(text, sender: sender)
+        sendMessage(text, sender: senderDisplayName)
         
         finishSendingMessage()
     }
@@ -161,28 +176,39 @@ extension MessagesViewController {
         return realmMessages[indexPath.item]
     }
     
-    override func collectionView(collectionView: JSQMessagesCollectionView!, bubbleImageViewForItemAtIndexPath indexPath: NSIndexPath!) -> UIImageView! {
+//    override func collectionView(collectionView: JSQMessagesCollectionView!, bubbleImageViewForItemAtIndexPath indexPath: NSIndexPath!) -> UIImageView! {
+//        guard let realmMessages = realmMessages else {return nil}
+//        let message = realmMessages[indexPath.item]
+//        
+//        if message.sender() == senderDisplayName {
+//            return UIImageView(image: outgoingBubbleImageView.image, highlightedImage: outgoingBubbleImageView.highlightedImage)
+//        }
+//        
+//        return UIImageView(image: incomingBubbleImageView.image, highlightedImage: incomingBubbleImageView.highlightedImage)
+//    }
+    
+    override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         guard let realmMessages = realmMessages else {return nil}
         let message = realmMessages[indexPath.item]
         
-        if message.sender() == sender {
-            return UIImageView(image: outgoingBubbleImageView.image, highlightedImage: outgoingBubbleImageView.highlightedImage)
+        if message.senderDisplayName() == senderDisplayName {
+            return outgoingBubbleImageView
         }
         
-        return UIImageView(image: incomingBubbleImageView.image, highlightedImage: incomingBubbleImageView.highlightedImage)
+        return incomingBubbleImageView
     }
     
-    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageViewForItemAtIndexPath indexPath: NSIndexPath!) -> UIImageView! {
-//        guard let jMessages = jMessages else { return nil }
-//        let message = jMessages[indexPath.item]
-//        if let avatar = avatars[message.sender()] {
-//            return UIImageView(image: avatar)
-//        } else {
-//            setupAvatarImage(message.sender(), imageUrl: message.imageUrl(), incoming: true)
-//            return UIImageView(image:avatars[message.sender()])
-//        }
-        return nil
-    }
+//    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageViewForItemAtIndexPath indexPath: NSIndexPath!) -> UIImageView! {
+////        guard let jMessages = jMessages else { return nil }
+////        let message = jMessages[indexPath.item]
+////        if let avatar = avatars[message.sender()] {
+////            return UIImageView(image: avatar)
+////        } else {
+////            setupAvatarImage(message.sender(), imageUrl: message.imageUrl(), incoming: true)
+////            return UIImageView(image:avatars[message.sender()])
+////        }
+//        return nil
+//    }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let realmMessages = realmMessages else { return 0 }
@@ -207,10 +233,10 @@ extension MessagesViewController {
         guard let realmMessages = realmMessages else {  return cell }
         let message = realmMessages[indexPath.item]
         
-        if message.sender() == sender {
+        if message.senderDisplayName() == senderDisplayName {
             cell.textView!.textColor = UIColor.blackColor()
         } else {
-            cell.textView!.textColor = UIColor.whiteColor()
+            cell.textView!.textColor = UIColor.blackColor()
         }
         
         let attributes : [String:AnyObject] = [NSForegroundColorAttributeName:cell.textView!.textColor!.description, NSUnderlineStyleAttributeName: 1]
@@ -227,7 +253,7 @@ extension MessagesViewController {
         let message = realmMessages[indexPath.item]
         
         // Sent by current user, skip
-        if message.sender() == sender {
+        if message.senderDisplayName() == senderDisplayName {
             return nil;
         }
         
@@ -235,12 +261,12 @@ extension MessagesViewController {
         if indexPath.item > 0 {
             let previousMessage = realmMessages[indexPath.item - 1]
             
-            if previousMessage.sender() == message.sender() {
+            if previousMessage.senderDisplayName() == message.senderDisplayName() {
                 return nil;
             }
         }
         
-        return NSAttributedString(string:message.sender())
+        return NSAttributedString(string:message.senderDisplayName())
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
@@ -249,7 +275,7 @@ extension MessagesViewController {
         let message = realmMessages[indexPath.item]
         
         // Sent by current user, skip
-        if message.sender() == sender {
+        if message.senderDisplayName() == senderDisplayName {
             return CGFloat(0.0);
         }
         
@@ -257,7 +283,7 @@ extension MessagesViewController {
         if indexPath.item > 0 {
             let previousMessage = realmMessages[indexPath.item - 1]
             
-            if previousMessage.sender() == message.sender() {
+            if previousMessage.senderDisplayName() == message.senderDisplayName() {
                 return CGFloat(0.0);
             }
         }
@@ -266,3 +292,4 @@ extension MessagesViewController {
     }
     
 }
+

@@ -8,26 +8,30 @@
 
 import Foundation
 import RealmSwift
+import JSQMessagesViewController
 
 class MessageRealm: Object, JSQMessageData {
     
     dynamic var parseObjectId: String? = nil
     dynamic var parseSenderUserName: String? = nil
+    dynamic var parseSenderObjId: String? = nil
     dynamic var parseMessageText: String? = nil
     dynamic var parseCreatedAt: NSDate = NSDate()
     dynamic var parseParentPhotoObjectId: String? = nil
     dynamic var isParseObject: Bool = true
-    dynamic var imageUrl_: String? = nil
+    dynamic var mediaImageUrl: String? = nil
     
     convenience init(message: Message) {
         self.init()
         if let objectId = message.objectId,
                 username = message.fromUser?.username,
+                userObjId = message.fromUser?.objectId,
                 text = message.messageText,
                 date = message.createdAt,
                 photoId = message.parentPhoto?.objectId {
             self.parseObjectId = objectId
             self.parseSenderUserName = username
+            self.parseSenderObjId = userObjId
             self.parseMessageText = text
             self.parseCreatedAt = date
             self.parseParentPhotoObjectId = photoId
@@ -45,18 +49,17 @@ class MessageRealm: Object, JSQMessageData {
         self.isParseObject = false
     }
     
-    convenience init(photoObject: Photo) {
-        self.init()
-        self.parseObjectId = photoObject.objectId
-        self.parseParentPhotoObjectId = photoObject.objectId
-        if let date = photoObject.createdAt, user = photoObject.fromUser, image = photoObject.imageSent {
-            if let sender = user.username, url = image.url {
-                self.parseCreatedAt = date
-                self.parseSenderUserName = sender
-                self.imageUrl_ = url
-            }
-        }
-    }
+//    convenience init(photoObject: Photo) {
+//        self.init()
+//        self.parseObjectId = photoObject.objectId
+//        self.parseParentPhotoObjectId = photoObject.objectId
+//        if let date = photoObject.createdAt, user = photoObject.fromUser, image = photoObject.imageSent {
+//            if let sender = user.username {
+//                self.parseCreatedAt = date
+//                self.parseSenderUserName = sender
+//            }
+//        }
+//    }
     
     func tempHash(date: NSDate) -> String {
         let dateFormatter = NSDateFormatter()
@@ -77,10 +80,18 @@ class MessageRealm: Object, JSQMessageData {
         return text
     }
     
-    func sender() -> String! {
+    func senderId() -> String! {
         var sender = "troll"
         if let user = parseSenderUserName {
             sender = user
+        }
+        return sender
+    }
+    
+    func senderDisplayName() -> String! {
+        var sender = "troll"
+        if let name = parseSenderUserName {
+            sender = name
         }
         return sender
     }
@@ -89,8 +100,25 @@ class MessageRealm: Object, JSQMessageData {
         return parseCreatedAt
     }
     
-    func imageUrl() -> String? {
-        return imageUrl_;
+    func isMediaMessage() -> Bool {
+        if let _ = mediaImageUrl {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func media() -> JSQMessageMediaData! {
+        guard let mediaImage = mediaImageUrl else {return JSQMediaItem()}
+        let image = UIImage(named: mediaImage)
+        return JSQPhotoMediaItem(image: image)
+    }
+    
+    func messageHash() -> UInt {
+        let dateString = tempHash(parseCreatedAt)
+        return UInt(dateString)!
     }
     
 }
+
+

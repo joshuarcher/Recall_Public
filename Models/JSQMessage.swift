@@ -6,6 +6,7 @@
 //  Copyright © 2015 Joshua Archer. All rights reserved.
 //
 
+/*
 import Foundation
 
 class JMessage: NSObject, JSQMessageData {
@@ -57,3 +58,6 @@ class JMessage: NSObject, JSQMessageData {
         return imageUrl_;
     }
 }
+
+*/
+
