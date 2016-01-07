@@ -37,6 +37,7 @@
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" pagingEnabled="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6ZJ-4T-EVj">
                                 <rect key="frame" x="0.0" y="44" width="600" height="556"/>
+                                <color key="backgroundColor" red="0.97647058819999999" green="0.97647058819999999" blue="0.97647058819999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <outlet property="delegate" destination="GMA-iX-IXa" id="uWr-4h-7JB"/>
                                 </connections>
@@ -656,19 +657,19 @@
         <image name="AddFriendCheck" width="40" height="40"/>
         <image name="AddFriendPlus" width="41" height="41"/>
         <image name="ComposeExit" width="30" height="30"/>
-        <image name="CustomDateButton" width="34" height="33"/>
-        <image name="CustomDateButtonRed" width="38" height="37"/>
-        <image name="FiveButton" width="34" height="33"/>
+        <image name="CustomDateButton" width="33" height="33"/>
+        <image name="CustomDateButtonRed" width="36" height="37"/>
+        <image name="FiveButton" width="33" height="33"/>
         <image name="FiveButtonRed" width="38" height="37"/>
         <image name="ForwardArrow" width="15" height="25"/>
         <image name="JayDronah" width="375" height="375"/>
-        <image name="OneButton" width="34" height="33"/>
+        <image name="OneButton" width="32" height="33"/>
         <image name="OneButtonRed" width="38" height="37"/>
         <image name="RoundPictureButton" width="77" height="77"/>
-        <image name="SevenButton" width="34" height="33"/>
+        <image name="SevenButton" width="33" height="33"/>
         <image name="SevenButtonRed" width="38" height="37"/>
         <image name="TagFriendUnselected" width="40" height="40"/>
-        <image name="ThreeButton" width="34" height="33"/>
+        <image name="ThreeButton" width="33" height="33"/>
         <image name="ThreeButtonRed" width="40" height="39"/>
         <image name="TwelveButton" width="33" height="33"/>
         <image name="TwelveButtonRed" width="37" height="37"/>

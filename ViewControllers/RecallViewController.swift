@@ -73,7 +73,6 @@ extension RecallViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        let cell: TimelineTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! TimelineTableViewCell
         let cell: RCTimelineCell = self.tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! RCTimelineCell
         
         let photo = timelineComponent.content[indexPath.row]

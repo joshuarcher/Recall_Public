@@ -18,7 +18,7 @@ import RealmSwift
 class MessagesViewController: JSQMessagesViewController {
     
     var photo: Photo?
-    var messages: [Message]?
+    // var messages: [Message]?
     var jMessages: [JMessage]?
     
     var realmMessages: Results<MessageRealm>?
@@ -34,11 +34,7 @@ class MessagesViewController: JSQMessagesViewController {
         super.viewDidLoad()
         setTitle()
         registerJSMessages()
-        
-        // commenting for trying realm
-//        // download messages
-//        guard let photo = photo else {return}
-//        getMessagesFromParse(photo)
+        savePictureMessage()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -68,6 +64,13 @@ class MessagesViewController: JSQMessagesViewController {
     
     // MARK: - Helper methods
     
+    func savePictureMessage() {
+        if let photo = photo {
+            let photoMessage = MessageRealm(photoObject: photo)
+            RealmHelper.saveMessageAlreadyCreated(photoMessage)
+        }
+    }
+    
     func getMessagesFromRealm() {
         guard let photo = photo else {
             NSLog("Photo is nil when getting messages from Realm")
@@ -93,8 +96,8 @@ class MessagesViewController: JSQMessagesViewController {
     }
     
     func registerJSMessages() {
-        // commenting for trying realm
-//        jMessages = []
+        jMessages = []
+        
         let _ = Message()
         self.sender = PFUser.currentUser()?.username
         
@@ -109,18 +112,6 @@ class MessagesViewController: JSQMessagesViewController {
         self.navigationItem.title = formatter.stringFromDate(photo.createdAt!)
     }
     
-    func getMessagesFromParse(photo: Photo) {
-        ParseHelper.findMessagesForPhoto(photo, completionBlock: { (results: [PFObject]?, error: NSError?) -> Void in
-            let newMessages: [Message] = results as? [Message] ?? []
-            for new in newMessages {
-                let jNew = JMessage(text: new.messageText, sender: new.fromUser?.username)
-                self.jMessages?.append(jNew)
-                self.finishReceivingMessage()
-            }
-            self.messages = newMessages
-        })
-    }
-    
 }
 
 // MARK: - JSQMessages Collection view shtuffffff
@@ -132,14 +123,9 @@ extension MessagesViewController {
     }
     
     func tempSendMessage(text: String!, sender: String!) {
-//        let newMessage = JMessage(text: text, sender: sender)
-//        jMessages?.append(newMessage)
         guard let photo = photo else { return }
         let newMessage = MessageRealm(text: text, sender: sender, photoId: photo.objectId!)
         tempRealmWrite(newMessage)
-//        self.realmMessages?.realm?.add(newMessage)
-//        RealmHelper.saveMessageAlreadyCreated(newMessage)
-//        self.realmMessages = RealmHelper.getMessagesForPhoto(photo)
     }
     
     func sendMessage(text: String!, sender: String!) {
@@ -173,17 +159,11 @@ extension MessagesViewController {
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
         guard let realmMessages = realmMessages else { return nil }
         return realmMessages[indexPath.item]
-        // commenting for trying realm
-//        guard let jMessages = jMessages else { return nil }
-//        return jMessages[indexPath.item]
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, bubbleImageViewForItemAtIndexPath indexPath: NSIndexPath!) -> UIImageView! {
         guard let realmMessages = realmMessages else {return nil}
         let message = realmMessages[indexPath.item]
-        // commenting for trying realm
-//        guard let jMessages = jMessages else { return nil }
-//        let message = jMessages[indexPath.item]
         
         if message.sender() == sender {
             return UIImageView(image: outgoingBubbleImageView.image, highlightedImage: outgoingBubbleImageView.highlightedImage)
@@ -202,15 +182,23 @@ extension MessagesViewController {
 //            return UIImageView(image:avatars[message.sender()])
 //        }
         return nil
-        
     }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let realmMessages = realmMessages else { return 0 }
         return realmMessages.count
-        // commeting for trying realm
-//        guard let jMessages = jMessages else { return 0 }
-//        return jMessages.count
+    }
+    
+    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+//        guard let jMessages = jMessages else {return 1}
+//        
+//        if jMessages.count > 0 {
+//            return 2
+//        } else {
+//            return 1
+//        }
+        return 1
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -218,9 +206,6 @@ extension MessagesViewController {
         
         guard let realmMessages = realmMessages else {  return cell }
         let message = realmMessages[indexPath.item]
-        // commenting for trying realm
-//        guard let jMessages = jMessages else { return cell }
-//        let message = jMessages[indexPath.item]
         
         if message.sender() == sender {
             cell.textView!.textColor = UIColor.blackColor()
@@ -237,13 +222,11 @@ extension MessagesViewController {
     
     // View  usernames above bubbles
     override func collectionView(collectionView: JSQMessagesCollectionView!, attributedTextForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> NSAttributedString! {
+        
         guard let realmMessages = realmMessages else { return nil }
         let message = realmMessages[indexPath.item]
-        // commenting for trying realm
-//        guard let jMessages = jMessages else { return nil }
-//        let message = jMessages[indexPath.item];
         
-        // Sent by me, skip
+        // Sent by current user, skip
         if message.sender() == sender {
             return nil;
         }
@@ -251,8 +234,7 @@ extension MessagesViewController {
         // Same as previous sender, skip
         if indexPath.item > 0 {
             let previousMessage = realmMessages[indexPath.item - 1]
-            // commenting for trying realm
-//            let previousMessage = jMessages[indexPath.item - 1];
+            
             if previousMessage.sender() == message.sender() {
                 return nil;
             }
@@ -262,13 +244,11 @@ extension MessagesViewController {
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, layout collectionViewLayout: JSQMessagesCollectionViewFlowLayout!, heightForMessageBubbleTopLabelAtIndexPath indexPath: NSIndexPath!) -> CGFloat {
-        guard let realmMessages = realmMessages else { return 0 }
-        let message = realmMessages[indexPath.item]
-        // commenting for trying realm
-//        guard let jMessages = jMessages else { return 0 }
-//        let message = jMessages[indexPath.item]
         
-        // Sent by me, skip
+        guard let realmMessages = realmMessages else { return CGFloat(0.0) }
+        let message = realmMessages[indexPath.item]
+        
+        // Sent by current user, skip
         if message.sender() == sender {
             return CGFloat(0.0);
         }
@@ -276,8 +256,7 @@ extension MessagesViewController {
         // Same as previous sender, skip
         if indexPath.item > 0 {
             let previousMessage = realmMessages[indexPath.item - 1]
-            // commenting for trying realm
-//            let previousMessage = jMessages[indexPath.item - 1];
+            
             if previousMessage.sender() == message.sender() {
                 return CGFloat(0.0);
             }

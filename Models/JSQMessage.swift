@@ -18,6 +18,22 @@ class JMessage: NSObject, JSQMessageData {
         self.init(text: text, sender: sender, imageUrl: nil)
     }
     
+    convenience init(photoObject: Photo) {
+        var sender = ""
+        var imageUrl = ""
+        if let photoSender = photoObject.fromUser {
+            if let name = photoSender.username {
+                sender = name
+            }
+        }
+        if let image = photoObject.imageSent {
+            if let url = image.url {
+                imageUrl = url
+            }
+        }
+        self.init(text: "", sender: sender, imageUrl: imageUrl)
+    }
+    
     init(text: String?, sender: String?, imageUrl: String?) {
         self.text_ = text!
         self.sender_ = sender!

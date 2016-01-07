@@ -17,10 +17,10 @@ class MessageRealm: Object, JSQMessageData {
     dynamic var parseCreatedAt: NSDate = NSDate()
     dynamic var parseParentPhotoObjectId: String? = nil
     dynamic var isParseObject: Bool = true
+    dynamic var imageUrl_: String? = nil
     
     convenience init(message: Message) {
         self.init()
-        print(message)
         if let objectId = message.objectId,
                 username = message.fromUser?.username,
                 text = message.messageText,
@@ -43,6 +43,19 @@ class MessageRealm: Object, JSQMessageData {
         self.parseCreatedAt = date
         self.parseObjectId = tempHash(date)
         self.isParseObject = false
+    }
+    
+    convenience init(photoObject: Photo) {
+        self.init()
+        self.parseObjectId = photoObject.objectId
+        self.parseParentPhotoObjectId = photoObject.objectId
+        if let date = photoObject.createdAt, user = photoObject.fromUser, image = photoObject.imageSent {
+            if let sender = user.username, url = image.url {
+                self.parseCreatedAt = date
+                self.parseSenderUserName = sender
+                self.imageUrl_ = url
+            }
+        }
     }
     
     func tempHash(date: NSDate) -> String {
@@ -74,6 +87,10 @@ class MessageRealm: Object, JSQMessageData {
     
     func date() -> NSDate! {
         return parseCreatedAt
+    }
+    
+    func imageUrl() -> String? {
+        return imageUrl_;
     }
     
 }

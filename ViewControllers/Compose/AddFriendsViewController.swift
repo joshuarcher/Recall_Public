@@ -27,20 +27,6 @@ class AddFriendsViewController: UIViewController {
         }
     }
     
-    var usersInAddressBook: [PFUser]? {
-        didSet {
-            print("users in address:\(usersInAddressBook?.count)")
-            tableView.reloadData()
-            print(tableView.numberOfSections)
-        }
-    }
-    
-    var usersToAdd: [PFUser]? {
-        didSet {
-            tableView.reloadData()
-        }
-    }
-    
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
@@ -98,10 +84,6 @@ extension AddFriendsViewController: UITableViewDataSource {
         if realmContacts?.count > 0 {
             return 2
         }
-        // commenting for trying realm
-//        if usersInAddressBook?.count > 0 {
-//            return 2
-//        }
         return 1
     }
     
@@ -122,22 +104,13 @@ extension AddFriendsViewController: UITableViewDataSource {
         if tableView.numberOfSections == 1 {
             guard let realmUsers = realmUsers else {return 0}
             return realmUsers.count
-            // commenting for trying realm
-//            guard let usersToAdd = usersToAdd else {return 0}
-//            return usersToAdd.count
         } else if tableView.numberOfSections == 2 {
             if section == 0 {
                 guard let realmContacts = realmContacts else {return 0}
                 return realmContacts.count
-                // commenting for trying realm
-//                guard let usersInAddressBook = usersInAddressBook else {return 0}
-//                return usersInAddressBook.count
             } else if section == 1 {
                 guard let realmUsers = realmUsers else {return 0}
                 return realmUsers.count
-                // commenting for trying realm
-//                guard let usersToAdd = usersToAdd else {return 0}
-//                return usersToAdd.count
             }
         }
         return 0
@@ -150,27 +123,15 @@ extension AddFriendsViewController: UITableViewDataSource {
             if let realmUsers = realmUsers {
                 cell.realmUser = realmUsers[indexPath.row]
             }
-            // commenting for trying realm
-//            if let usersToAdd = usersToAdd {
-//                cell.cellUser = usersToAdd[indexPath.row] as PFUser
-//            }
         } else if tableView.numberOfSections == 2 {
             if indexPath.section == 0 {
                 if let realmContacts = realmContacts {
                     cell.realmContact = realmContacts[indexPath.row]
                 }
-                // commenting for trying realm
-//                if let usersInAddressBook = usersInAddressBook {
-//                    cell.cellUser = usersInAddressBook[indexPath.row] as PFUser
-//                }
             } else if indexPath.section == 1 {
                 if let realmUsers = realmUsers {
                     cell.realmUser = realmUsers[indexPath.row]
                 }
-                // commenting for trying realm
-//                if let usersToAdd = usersToAdd {
-//                    cell.cellUser = usersToAdd[indexPath.row] as PFUser
-//                }
             }
         }
         

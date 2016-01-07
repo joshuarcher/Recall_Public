@@ -2,17 +2,15 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "TwelveButton.png",
+      "filename" : "TwelveButton.pdf",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "TwelveButton@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "TwelveButton@3x.png",
       "scale" : "3x"
     }
   ],

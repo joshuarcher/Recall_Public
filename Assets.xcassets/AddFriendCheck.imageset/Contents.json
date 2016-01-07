@@ -2,17 +2,15 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "AddFriendCheck.png",
+      "filename" : "AddFriendCheck.pdf",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "AddFriendCheck@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "AddFriendCheck@3x.png",
       "scale" : "3x"
     }
   ],

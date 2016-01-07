@@ -66,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.rootViewController = initialViewController
         self.window?.makeKeyAndVisible()
         
-        
+        // PFUser.requestPasswordResetForEmailInBackground("josharcher@me.com")
         
         return true
     }

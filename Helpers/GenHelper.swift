@@ -104,6 +104,21 @@ extension UIColor {
     }
 }
 
+extension String {
+    func containsSpaces() -> Bool {
+        // returns range in which string has spaces
+        let range = self.rangeOfCharacterFromSet(NSCharacterSet.whitespaceCharacterSet())
+        
+        // if range is nil, no whitespace
+        if let _ = range {
+            return true
+        } else {
+            return false
+        }
+        
+    }
+}
+
 
 // MARK: - Device Properties
 
