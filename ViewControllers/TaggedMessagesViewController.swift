@@ -27,7 +27,7 @@ class TaggedMessagesViewController: UIViewController {
         if let users = users {
             self.taggedUsers = users
             let count = users.count
-            newFrame.size.height = CGFloat(count) * 44
+            newFrame.size.height = (CGFloat(count) * 44)
         } else {
             newFrame.size.height = 44
         }
@@ -36,7 +36,7 @@ class TaggedMessagesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // registerCellForTable()
+        registerCellForTable()
         self.view.backgroundColor = UIColor.clearColor()
         self.tableView.backgroundColor = UIColor.clearColor()
         // Do any additional setup after loading the view.
@@ -227,18 +227,48 @@ extension TaggedMessagesViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: TaggedMessagesTableViewCell = tableView.dequeueReusableCellWithIdentifier(reuseIdFromNib) as! TaggedMessagesTableViewCell
+        let cell: TaggedMessagesTableViewCell = tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! TaggedMessagesTableViewCell
         guard let taggedUsers = taggedUsers else {
-            cell.textLabel?.text = "error fetching tagged users"
+            cell.usernameLabel.text = "error fetching tagged users"
             return cell
         }
         if let username = taggedUsers[indexPath.row].username {
-            cell.textLabel?.text = username
+            if let currentUser = PFUser.currentUser() {
+                if username == currentUser.username {
+                    cell.usernameLabel.text = "you"
+                } else {
+                    cell.usernameLabel.text = username
+                }
+            }
+            
         } else {
-            cell.textLabel?.text = "troll"
+            cell.usernameLabel.text = "troll"
         }
         
         return cell
+    }
+    
+}
+
+extension TaggedMessagesViewController: UITableViewDelegate {
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        // remove inset
+        if cell.respondsToSelector("setSeparatorInset:") {
+            cell.separatorInset = UIEdgeInsetsZero
+        }
+        
+        // don't inherit margin settings
+        if cell.respondsToSelector("setPreservesSuperviewLayoutMargins:") {
+            cell.preservesSuperviewLayoutMargins = false
+        }
+        
+        // explicityl set layout margins
+        if cell.respondsToSelector("setLayoutMargins:") {
+            cell.layoutMargins = UIEdgeInsetsZero
+        }
+        
     }
     
 }

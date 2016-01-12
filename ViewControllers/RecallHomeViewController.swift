@@ -149,7 +149,8 @@ class RecallHomeViewController: UIViewController {
                 profileButton.setImage(profileButtonImage, forState: .Normal)
                 let gesture = UITapGestureRecognizer(target: self, action: "profileButtonTapped")
                 profileButton.addGestureRecognizer(gesture)
-                profileButton.imageEdgeInsets = UIEdgeInsetsMake(4, 0, 4, 14)
+                profileButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10 , 26)
+                
             }
             
         }

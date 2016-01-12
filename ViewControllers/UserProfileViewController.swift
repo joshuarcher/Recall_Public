@@ -24,7 +24,6 @@ class UserProfileViewController: UIViewController {
         self.collectionView.backgroundView = nil
         self.collectionView.backgroundColor = UIColor.clearColor()
         // panGestureRecognizer.addTarget(self, action: "handleGesture:")
-        // collectionView.scrollEnabled = false
         // Do any additional setup after loading the view.
     }
     
@@ -39,6 +38,16 @@ class UserProfileViewController: UIViewController {
         }
     }
     
+    @IBAction func settingsButtonPressed(sender: AnyObject) {
+        showSettingsViewController()
+    }
+    
+    func showSettingsViewController() {
+        let nextVc = SettingsViewController(nibName: "SettingsViewController", bundle: nil)
+        self.presentViewControllerFromTopViewController(nextVc)
+    }
+    
+    /*
     func handleGesture(gesture: UIPanGestureRecognizer) {
         
         // let constraintConstant = collectionTopLeadingConstraint.constant
@@ -59,54 +68,6 @@ class UserProfileViewController: UIViewController {
         default:
             break
         }
-        
-        
-        
-        /*
-        if gesture.state == .Began {
-            print("startingLocation: \(gesture.locationInView(gesture.view))")
-        }
-        
-        if gesture.state == .Changed {
-            print("changingLocation: \(gesture.locationInView(gesture.view))")
-            
-            let translation = gesture.translationInView(gesture.view)
-            print("translation: \(translation))")
-            
-            if constraintConstant <= 200 && constraintConstant >= 0 {
-                collectionTopLeadingConstraint.constant = constraintConstant + translation.y
-            }
-            
-            print("constant: \(constraintConstant)")
-            
-        }
-        
-        if gesture.state == .Ended {
-            print("endingLocation: \(gesture.locationInView(gesture.view))")
-        }
-        
-        if constraintConstant < 0 {
-            collectionTopLeadingConstraint.constant = 0
-        } else if constraintConstant > 200 {
-            collectionTopLeadingConstraint.constant = 200
-        }
-        */
-        
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
     }
     */
 
@@ -123,6 +84,10 @@ extension UserProfileViewController: UICollectionViewDataSource, UICollectionVie
             return UICollectionViewCell()
         }
         
+        if indexPath.row != 9 {
+            cell.label.text = "word"
+        }
+        
         return cell
     }
     
@@ -132,11 +97,18 @@ extension UserProfileViewController: UICollectionViewDataSource, UICollectionVie
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         let cellWidth = screenWidth/2
-        let size: CGSize = CGSizeMake(cellWidth, cellWidth)
         
-        return size
+        let row = indexPath.row
+        
+        if row == 0 || row == 1 {
+            let size: CGSize = CGSizeMake(cellWidth, cellWidth + 4)
+            return size
+        } else {
+            let size: CGSize = CGSizeMake(cellWidth, cellWidth)
+            return size
+        }
+        
     }
-    
 
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
         let spacing: CGFloat = 0
