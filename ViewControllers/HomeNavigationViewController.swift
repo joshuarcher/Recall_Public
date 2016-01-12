@@ -1,17 +1,19 @@
 //
-//  NewMessagesViewController.swift
+//  HomeNavigationViewController.swift
 //  Reecall
 //
-//  Created by Joshua Archer on 1/6/16.
+//  Created by Joshua Archer on 1/9/16.
 //  Copyright © 2016 Joshua Archer. All rights reserved.
 //
 
 import UIKit
 
-class NewMessagesViewController: UIViewController {
+class HomeNavigationViewController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationItem.backBarButtonItem?.title = ""
 
         // Do any additional setup after loading the view.
     }

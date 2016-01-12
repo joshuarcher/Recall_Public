@@ -25,6 +25,10 @@ class Photo: PFObject, PFSubclassing {
     var taggedFriends: Observable<[String]?> = Observable(nil)
     var dateDisplay: Observable<NSDate?> = Observable(nil)
     
+    enum Notifications {
+        static let viewAppeared = "homeControllerAppeared"
+    }
+    
     // MARK: - PFSublclassing Protocol
     
     static func parseClassName() -> String {
@@ -66,17 +70,20 @@ class Photo: PFObject, PFSubclassing {
                     taggedUsers?.addObject(user)
                 }
             }
-//            let users = parseUsers(fromStrings: self.taggedFriends.value)
-//            if let users = tagged.value {
-//                for user in users {
-//                    taggedUsers?.addObject(user)
-//                }
-//            }
+            
             displayDate = dateDisplay.value
             saveInBackgroundWithBlock { (success: Bool, error: NSError?) -> Void in
                 UIApplication.sharedApplication().endBackgroundTask(self.photoUploadTask!)
+                if success {
+                    self.reloadCapsuleView()
+                }
             }
         }
+    }
+    
+    func reloadCapsuleView() {
+        let defaultCenter = NSNotificationCenter.defaultCenter()
+        defaultCenter.postNotificationName(Notifications.viewAppeared, object: nil)
     }
     
     func parseUsers(fromStrings objectIds: [String]) -> [PFUser] {

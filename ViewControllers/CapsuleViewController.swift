@@ -17,6 +17,10 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
     private let rowHeight: CGFloat = 290
     @IBOutlet weak var tableView: UITableView!
     
+    enum Notifications {
+        static let viewAppeared = "homeControllerAppeared"
+    }
+    
     // MARK: - TimelineComponent properties
     
     var timelineComponent: TimelineComponent<Photo, CapsuleViewController>!
@@ -36,6 +40,12 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         timelineComponent.loadInitialIfRequired()
+        subscribeToNotifications()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        unsubscribeToNotifications()
     }
 
     override func didReceiveMemoryWarning() {
@@ -61,6 +71,22 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
             let photos = results as? [Photo] ?? []
             completionBlock(photos)
         }
+    }
+    
+    // MARK: - Notification Methods
+    
+    func subscribeToNotifications() {
+        let defaultCenter = NSNotificationCenter.defaultCenter()
+        defaultCenter.addObserver(self, selector: "reloadTableView", name: Notifications.viewAppeared, object: nil)
+    }
+    
+    func unsubscribeToNotifications() {
+        let defaultCenter = NSNotificationCenter.defaultCenter()
+        defaultCenter.removeObserver(self)
+    }
+    
+    func reloadTableView() {
+        timelineComponent.refresh(self)
     }
     
 }

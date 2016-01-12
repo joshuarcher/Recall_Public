@@ -19,9 +19,17 @@ import JSQMessagesViewController
 
 class MessagesViewController: JSQMessagesViewController {
     
+    private let taggedFriendsImage = "TaggedButton"
+    
     var photo: Photo?
     
     var realmMessages: Results<MessageRealm>?
+    
+    var taggedMessages: TaggedMessagesViewController?
+    
+    var taggedUsers: [PFUser]?
+    
+    var fromUser: PFUser?
     
     // MARK: - JSQMessages variables
     
@@ -35,10 +43,35 @@ class MessagesViewController: JSQMessagesViewController {
         setTitle()
         registerJSMessages()
         initializeBubbles()
+        findUsernames()
+    }
+    
+    func findUsernames() {
+        var usersTagged: [PFUser] = []
+        if let fromUser = fromUser {
+            usersTagged.append(fromUser)
+        }
+        if let photo = photo, tagged = photo.taggedUsers {
+            ParseHelper.taggedUsersMessages(forRelation: tagged, completionBlock: { (results: [PFObject]?, error: NSError?) -> Void in
+                if let resultUsers = results as? [PFUser] {
+                    for user in resultUsers {
+                        usersTagged.append(user)
+                        self.taggedUsers = usersTagged
+                    }
+                }
+                if let error = error {
+                    NSLog("error getting taggedUsers: %@", error)
+                }
+            })
+        } else {
+            NSLog("Something wrong with photo in findUsersnames()")
+        }
+        self.taggedUsers = usersTagged
     }
     
     override func viewWillAppear(animated: Bool) {
         getMessagesFromRealm()
+        savePictureMessage()
         syncParseWithMessages(false)
     }
 
@@ -60,6 +93,7 @@ class MessagesViewController: JSQMessagesViewController {
     override func viewDidDisappear(animated: Bool) {
         syncParseWithMessages(true)
         RealmHelper.purgeNonParseMessages()
+        deletePictureFile()
     }
     
     // MARK: - Helper methods
@@ -70,12 +104,26 @@ class MessagesViewController: JSQMessagesViewController {
         self.incomingBubbleImageView = factory.incomingMessagesBubbleImageWithColor(UIColor.jsq_messageBubbleLightGrayColor())
     }
     
-//    func savePictureMessage() {
-//        if let photo = photo {
-//            let photoMessage = MessageRealm(photoObject: photo)
-//            RealmHelper.saveMessageAlreadyCreated(photoMessage)
-//        }
-//    }
+    func savePictureMessage() {
+        if let photo = photo {
+            let photoMessage = MessageRealm(photoObject: photo)
+            if let image = photo.imageSent {
+                image.getDataInBackgroundWithBlock({ (data: NSData?, error: NSError?) -> Void in
+                    if let data = data, objId = photo.objectId {
+                        FileManager.saveImageData(toPath: objId, data: data)
+                        photoMessage.setImagePathForObject(objId)
+                        RealmHelper.saveMessageAlreadyCreated(photoMessage)
+                    }
+                })
+            }
+        }
+    }
+    
+    func deletePictureFile() {
+        if let photo = photo, objId = photo.objectId {
+            FileManager.deleteImageData(atPath: objId)
+        }
+    }
     
     func getMessagesFromRealm() {
         guard let photo = photo else {
@@ -117,6 +165,37 @@ class MessagesViewController: JSQMessagesViewController {
         formatter.dateStyle = .ShortStyle
         guard let photo = photo else {return}
         self.navigationItem.title = formatter.stringFromDate(photo.createdAt!)
+        setNavButton()
+    }
+    
+    func setNavButton() {
+        guard let navC = self.navigationController, topView = navC.topViewController else {return}
+        let buttonImage = UIImage(named: taggedFriendsImage)
+        let button = UIBarButtonItem(image: buttonImage, style: .Plain, target: self, action: "handleButtonPress")
+        
+        topView.navigationItem.rightBarButtonItem = button
+    }
+    
+    func handleButtonPress() {
+        print("nav button pressed")
+        toggleTaggedView()
+    }
+    
+    func toggleTaggedView() {
+        
+        if taggedMessages == nil {
+            guard let taggedUsers = taggedUsers else {print("no taggedUsers in toggleTaggedView"); return }
+            print(taggedUsers.count)
+            let frame = CGRectMake(0, 44, self.view.frame.width, 220)
+            taggedMessages = TaggedMessagesViewController(withFrame: frame, andUsers: taggedUsers)
+            guard let taggedMessages = taggedMessages else {print("not instantiated");return}
+            self.view.addSubview(taggedMessages.view)
+        } else {
+            guard let taggedMessages = taggedMessages else {print("not there"); return }
+            taggedMessages.toggleTable()
+            //taggedMessages.toggleHeight()
+            //taggedMessages.view.hidden = !taggedMessages.view.hidden
+        }
     }
     
 }
@@ -215,32 +294,20 @@ extension MessagesViewController {
         return realmMessages.count
     }
     
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-//        guard let jMessages = jMessages else {return 1}
-//        
-//        if jMessages.count > 0 {
-//            return 2
-//        } else {
-//            return 1
-//        }
-        return 1
-    }
-    
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         
-        guard let realmMessages = realmMessages else {  return cell }
+        guard let realmMessages = realmMessages, textView = cell.textView else {  return cell }
         let message = realmMessages[indexPath.item]
         
         if message.senderDisplayName() == senderDisplayName {
-            cell.textView!.textColor = UIColor.blackColor()
+            textView.textColor = UIColor.blackColor()
         } else {
-            cell.textView!.textColor = UIColor.blackColor()
+            textView.textColor = UIColor.blackColor()
         }
         
-        let attributes : [String:AnyObject] = [NSForegroundColorAttributeName:cell.textView!.textColor!.description, NSUnderlineStyleAttributeName: 1]
-        cell.textView!.linkTextAttributes = attributes
+        let attributes : [String:AnyObject] = [NSForegroundColorAttributeName:textView.textColor!.description, NSUnderlineStyleAttributeName: 1]
+        textView.linkTextAttributes = attributes
         
         return cell
     }

@@ -18,6 +18,8 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
     private let rowHeight: CGFloat = 290
     @IBOutlet weak var tableView: UITableView!
     
+    
+    
     // MARK: - TimelineComponent properties
     
     var timelineComponent: TimelineComponent<Photo, RecallViewController>!
@@ -99,6 +101,7 @@ extension RecallViewController: UITableViewDelegate {
         let photo = timelineComponent.content[indexPath.row]
         let nextVc: MessagesViewController = MessagesViewController(nibName: messagesViewNibName, bundle: nil)
         nextVc.photo = photo
+        nextVc.fromUser = photo.fromUser
         self.navigationController?.pushViewController(nextVc, animated: true)
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }

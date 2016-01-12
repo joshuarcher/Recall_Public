@@ -124,6 +124,14 @@ class RecallComposeViewController: UIViewController {
         }
         print(String(getDateToSend()))
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        guard let ident = segue.identifier else { return }
+        if ident == tagFriendsSegue {
+            let nextVc = segue.destinationViewController as! TagFriendsViewController
+            nextVc.taggedFriends = self.taggedFriends
+        }
+    }
 
 }
 

@@ -20,20 +20,32 @@ class RecallHomeViewController: UIViewController {
     
     private var overlayButtonOne: UIButton?
     private var overlayButtonTwo: UIButton?
+    private var profileButton: UIButton?
     
     var photoTakingHelper: PhotoTakingHelper?
     var imageToCompose: UIImage?
+    
+    enum Notifications {
+        static let viewAppeared = "homeControllerAppeared"
+    }
+    
+    // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpView()
         self.setUpButtons()
+        PushNotificationHelper.signUpForNotifications()
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -93,10 +105,14 @@ class RecallHomeViewController: UIViewController {
         }
     }
     
+    func sendAppearNotification() {
+        
+    }
+    
     // MARK: - Button Methods
     
     func setUpButtons() {
-        if overlayButtonOne == nil && overlayButtonTwo == nil {
+        if overlayButtonOne == nil && overlayButtonTwo == nil && profileButton == nil {
             // image for buttons
             let image = UIImage(named: "CustomTabBarHourGlassImage")
             
@@ -122,6 +138,20 @@ class RecallHomeViewController: UIViewController {
                 let gesture = UITapGestureRecognizer(target: self, action: "secondButtonTapped")
                 buttonTwo.addGestureRecognizer(gesture)
             }
+            
+            let profileButtonImage = UIImage(named: "ProfileButton")
+            
+            // set original frame on the left side
+            let profileButtonFrame = CGRectMake(0, 0, 60, 44)
+            profileButton = UIButton(frame: profileButtonFrame)
+            if let profileButton = profileButton {
+                topBarView.addSubview(profileButton)
+                profileButton.setImage(profileButtonImage, forState: .Normal)
+                let gesture = UITapGestureRecognizer(target: self, action: "profileButtonTapped")
+                profileButton.addGestureRecognizer(gesture)
+                profileButton.imageEdgeInsets = UIEdgeInsetsMake(4, 0, 4, 14)
+            }
+            
         }
     }
     
@@ -136,6 +166,14 @@ class RecallHomeViewController: UIViewController {
         print("second button Tapped")
         updateScrollViewOffset(1)
     }
+    
+    func profileButtonTapped() {
+        print("profile button tapped")
+        let nextVc: UserProfileViewController = UserProfileViewController(nibName: "UserProfileViewController", bundle: nil)
+        presentViewController(nextVc, animated: true) { () -> Void in
+            print("presented")
+        }
+    }
 
 }
 
@@ -145,6 +183,7 @@ extension RecallHomeViewController {
         let scrollOffset = scrollView.contentOffset.x
         updateButton(scrollOffset)
         updateButtonTwo(scrollOffset)
+        fadeProfileButton(scrollOffset)
     }
     
     func updateScrollViewOffset(buttonType: Int) {
@@ -163,6 +202,7 @@ extension RecallHomeViewController {
     }
     
     // MARK: - Button Animation Methods
+    // TODO: make this highly more efficient....
     
     func updateButton(contentOffset: CGFloat) {
         let barWidth = self.view.frame.width
@@ -170,7 +210,7 @@ extension RecallHomeViewController {
         let startxDistance = barWidth - 40
         let difference = startxDistance - endxDistance
         let spotToMove = barWidth - ((difference * (contentOffset/barWidth)) + 40)
-        let animationPercatage = contentOffset/barWidth
+        let animationPercatage = contentOffset/(barWidth/4)
         fadeButton(animationPercatage)
         moveButton(spotToMove)
     }
@@ -180,7 +220,7 @@ extension RecallHomeViewController {
         let startxDistance = barWidth/2 - 20
         let difference = startxDistance - 0
         let spotToMove = (1 - (contentOffset/barWidth)) * difference
-        let animationPercentage = contentOffset/barWidth
+        let animationPercentage = contentOffset/(barWidth/4)
         fadeButtonTwo(animationPercentage)
         moveButtonTwo(spotToMove)
     }
@@ -192,7 +232,24 @@ extension RecallHomeViewController {
     
     func fadeButtonTwo(animatedPercFade: CGFloat) {
         guard let button = overlayButtonTwo else {return}
-        button.alpha = animatedPercFade
+        button.alpha = -3 + animatedPercFade
+    }
+    
+    func fadeProfileButton(scrollOffset: CGFloat) {
+        guard let button = profileButton else {return}
+        let barWidth = self.view.frame.width
+        let fade = scrollOffset/(barWidth/4)
+        button.alpha = 1 - fade
+        moveProfileButton(scrollOffset, width: barWidth)
+    }
+    
+    func moveProfileButton(scrollOffset: CGFloat, width: CGFloat) {
+        guard let button = profileButton else {return}
+        var buttonFrame = button.frame
+        let endX = -width/4
+        let spotToMove = (scrollOffset/width) * endX
+        buttonFrame.origin.x = spotToMove
+        button.frame = buttonFrame
     }
     
     func moveButton(buttonLocation: CGFloat) {

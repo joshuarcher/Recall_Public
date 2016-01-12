@@ -54,6 +54,8 @@ class RCCapsuleCell: UITableViewCell {
                 if true {
                     //let selector: Selector = "updateLabel"
                     self.timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: Selector("updateLabel"), userInfo: nil, repeats: true)
+                    let time = self.timer
+                    NSRunLoop.mainRunLoop().addTimer(time!, forMode: NSRunLoopCommonModes)
                 }
             }
         }
@@ -76,7 +78,6 @@ class RCCapsuleCell: UITableViewCell {
             let strSeconds = String(format: "%02d", seconds)
             
             self.timeLabel.text = "\(strHours):\(strMinutes):\(strSeconds)"
-            
         }
     }
     

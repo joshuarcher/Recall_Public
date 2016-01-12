@@ -19,18 +19,9 @@ class TagFriendsViewController: UIViewController {
     
     var realmFriends: Results<FriendRealm>?
     
-    var taggedFriends: [String]! {
-        didSet {
-            updateTagButton()
-        }
-    }
+    var taggedFriends: [String]!
     
-    var taggedUsers: [PFUser]! {
-        didSet {
-            //commenting for trying realm
-            updateTagButton()
-        }
-    }
+    var cellsToSelect: [NSIndexPath]!
     
     // MARK: - View Lifecycle
     
@@ -39,6 +30,9 @@ class TagFriendsViewController: UIViewController {
         
         if taggedFriends == nil {
             taggedFriends = []
+        }
+        if cellsToSelect == nil {
+            cellsToSelect = []
         }
         
         //parseRequestFriends()
@@ -51,6 +45,11 @@ class TagFriendsViewController: UIViewController {
         super.viewWillAppear(animated)
         getFriendsFromRealm()
         parseRequestFriends()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        updateSelectedCells()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -89,8 +88,8 @@ class TagFriendsViewController: UIViewController {
     }
     
     func updateTagButton() {
-        guard let taggedUsers = taggedUsers else {return}
-        if taggedUsers.count == 0 {
+        guard let taggedFriends = taggedFriends else {return}
+        if taggedFriends.count == 0 {
             tagFriendsButton.hidden = true
         }
         else {
@@ -113,9 +112,17 @@ extension TagFriendsViewController: UITableViewDataSource {
         let cell: TagFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(tagFriendCellReuseId) as! TagFriendTableViewCell
         if let realmFriends = realmFriends {
             cell.usernameLabel.text = realmFriends[indexPath.row].parseUsername
+            
+            if let taggedFriends = taggedFriends, objId = realmFriends[indexPath.row].parseObjectId {
+                if taggedFriends.contains(objId) {
+                    cellsToSelect.append(indexPath)
+                }
+            }
         }
         return cell
     }
+    
+    
 }
 
 extension TagFriendsViewController: UITableViewDelegate {
@@ -125,7 +132,8 @@ extension TagFriendsViewController: UITableViewDelegate {
                 print("No object Id for realmFriends in didSelectRowAtIndexPath")
                 return
             }
-            taggedFriends.append(taggedObjectId)
+            addToTagged(taggedObjectId)
+            updateTagButton()
         }
     }
     
@@ -136,6 +144,21 @@ extension TagFriendsViewController: UITableViewDelegate {
                 return
             }
             taggedFriends.removeObject(taggedObjectId)
+            updateTagButton()
         }
     }
+    
+    func addToTagged(objectId: String) {
+        if !taggedFriends.contains(objectId) {
+            taggedFriends.append(objectId)
+        }
+    }
+    
+    func updateSelectedCells() {
+        
+        for cell in cellsToSelect {
+            tableView.selectRowAtIndexPath(cell, animated: true, scrollPosition: .None)
+        }
+    }
+    
 }

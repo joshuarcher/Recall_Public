@@ -8,6 +8,7 @@
 
 import Foundation
 import RealmSwift
+import Parse
 import JSQMessagesViewController
 
 class MessageRealm: Object, JSQMessageData {
@@ -19,7 +20,7 @@ class MessageRealm: Object, JSQMessageData {
     dynamic var parseCreatedAt: NSDate = NSDate()
     dynamic var parseParentPhotoObjectId: String? = nil
     dynamic var isParseObject: Bool = true
-    dynamic var mediaImageUrl: String? = nil
+    dynamic var mediaImagePath: String? = nil
     
     convenience init(message: Message) {
         self.init()
@@ -49,17 +50,18 @@ class MessageRealm: Object, JSQMessageData {
         self.isParseObject = false
     }
     
-//    convenience init(photoObject: Photo) {
-//        self.init()
-//        self.parseObjectId = photoObject.objectId
-//        self.parseParentPhotoObjectId = photoObject.objectId
-//        if let date = photoObject.createdAt, user = photoObject.fromUser, image = photoObject.imageSent {
-//            if let sender = user.username {
-//                self.parseCreatedAt = date
-//                self.parseSenderUserName = sender
-//            }
-//        }
-//    }
+    convenience init(photoObject: Photo) {
+        self.init()
+        self.parseObjectId = photoObject.objectId
+        self.parseParentPhotoObjectId = photoObject.objectId
+        if let date = photoObject.createdAt, user = photoObject.fromUser, image = photoObject.imageSent {
+            self.parseSenderObjId = user.objectId
+            if let sender = user.username {
+                self.parseCreatedAt = date
+                self.parseSenderUserName = sender
+            }
+        }
+    }
     
     func tempHash(date: NSDate) -> String {
         let dateFormatter = NSDateFormatter()
@@ -101,17 +103,31 @@ class MessageRealm: Object, JSQMessageData {
     }
     
     func isMediaMessage() -> Bool {
-        if let _ = mediaImageUrl {
+        if let _ = mediaImagePath {
             return true
         } else {
             return false
         }
     }
     
+    func setImagePathForObject(path: String) {
+        self.mediaImagePath = path
+    }
+    
     func media() -> JSQMessageMediaData! {
-        guard let mediaImage = mediaImageUrl else {return JSQMediaItem()}
-        let image = UIImage(named: mediaImage)
-        return JSQPhotoMediaItem(image: image)
+//        guard let mediaImageUrl = mediaImageUrl else {return JSQMediaItem()}
+//        let image = UIImage(contentsOfFile: mediaImageUrl)
+        guard let mediaImagePath = mediaImagePath else { return JSQMediaItem() }
+        let image = FileManager.getImage(fromPath: mediaImagePath)
+        let mediaItem = JSQPhotoMediaItem(image: image)
+        
+        return mediaItem
+    }
+    
+    func getDataFromUrl(url:NSURL, completion: ((data: NSData?, response: NSURLResponse?, error: NSError? ) -> Void)) {
+        NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) in
+            completion(data: data, response: response, error: error)
+            }.resume()
     }
     
     func messageHash() -> UInt {

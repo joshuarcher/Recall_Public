@@ -68,6 +68,7 @@ class ParseHelper {
         
         guard let user = PFUser.currentUser() else { return }
         
+        // default photo
         let targetQuery = PFQuery(className: ParsePhotoClass)
         targetQuery.whereKey("objectId", equalTo: "XT1ohbnpej")
         
@@ -94,6 +95,7 @@ class ParseHelper {
         
         guard let user = PFUser.currentUser() else { return }
         
+        // default photo
         let targetQuery = PFQuery(className: ParsePhotoClass)
         targetQuery.whereKey("objectId", equalTo: "XT1ohbnpej")
         
@@ -114,6 +116,14 @@ class ParseHelper {
         finalQuery.limit = range.endIndex - range.startIndex
         
         finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+    }
+    
+    static func taggedUsersMessages(forRelation relation: PFRelation, completionBlock: PFQueryArrayResultBlock) {
+        if let query = relation.query() {
+            query.findObjectsInBackgroundWithBlock(completionBlock)
+        } else {
+            completionBlock(nil, nil)
+        }
     }
     
     // MARK: - Parse Friend Shtuff

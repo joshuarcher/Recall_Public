@@ -629,10 +629,10 @@
             </objects>
             <point key="canvasLocation" x="-1229" y="887"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Home Navigation View Controller-->
         <scene sceneID="Znj-8T-k1y">
             <objects>
-                <navigationController storyboardIdentifier="RecallHomeNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="z29-1B-nds" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="RecallHomeNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="z29-1B-nds" customClass="HomeNavigationViewController" customModule="Recall" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="OVC-8H-1ir">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
