@@ -172,7 +172,7 @@ class RecallHomeViewController: UIViewController {
         print("profile button tapped")
         let nextVc: UserProfileViewController = UserProfileViewController(nibName: "UserProfileViewController", bundle: nil)
         presentViewController(nextVc, animated: true) { () -> Void in
-            print("presented")
+            print("Profile presented")
         }
     }
 

@@ -62,6 +62,12 @@ class ParseHelper {
     // User Relation
     static let ParseUserUsername = "username"
     
+    // userSaved Relation
+    static let ParseSavedClass = "userSaved"
+    static let ParseSavedUser = "user"
+    static let ParseSavedPhoto = "photoSaved"
+   
+    
     // MARK: - Parse Timeline Queries
     
     static func timeCapsuleRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
@@ -232,6 +238,35 @@ class ParseHelper {
         feedbackObject.setValue(four, forKey: ParseFeedbackFour)
         
         feedbackObject.saveInBackground()
+    }
+    
+    // MARK: - Parse Saved Methods
+    
+    static func saveRelationshipSaved(forPhotoId photoObjectId: String) {
+        guard let user = PFUser.currentUser() else {
+            NSLog("No current user in saveRelationshipSaved")
+            return
+        }
+        let photoObject = PFObject(withoutDataWithClassName: ParsePhotoClass, objectId: photoObjectId)
+        
+        let savedRelation = PFObject(className: ParseSavedClass)
+        savedRelation[ParseSavedUser] = user
+        savedRelation[ParseSavedPhoto] = photoObject
+        
+        savedRelation.saveInBackgroundWithBlock(nil)
+    }
+    
+    static func didUserSavePhoto(photo: Photo, completionBlock: PFQueryArrayResultBlock) {
+        // should return only the current user
+        guard let user = PFUser.currentUser() else {
+            NSLog("no current user in userSavedForPhoto")
+            return
+        }
+        let saveQuery = PFQuery(className: ParseSavedClass)
+        saveQuery.whereKey(ParseSavedPhoto, equalTo: photo)
+        saveQuery.whereKey(ParseSavedUser, equalTo: user)
+        
+        saveQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
 }

@@ -133,6 +133,7 @@ class MessagesViewController: JSQMessagesViewController {
         self.realmMessages = RealmHelper.getMessagesForPhoto(photo)
     }
     
+    
     func syncParseWithMessages(isDisappear: Bool) {
         guard let photo = photo else {
             NSLog("Photo is nil when syncing parse messages")
@@ -172,6 +173,7 @@ class MessagesViewController: JSQMessagesViewController {
         guard let navC = self.navigationController, topView = navC.topViewController else {return}
         let buttonImage = UIImage(named: taggedFriendsImage)
         let button = UIBarButtonItem(image: buttonImage, style: .Plain, target: self, action: "handleButtonPress")
+        button.imageInsets = UIEdgeInsetsMake(3, 0, 3, 4)
         
         topView.navigationItem.rightBarButtonItem = button
     }

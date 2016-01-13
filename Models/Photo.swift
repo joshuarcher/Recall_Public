@@ -17,6 +17,7 @@ class Photo: PFObject, PFSubclassing {
     @NSManaged var fromUser: PFUser?
     @NSManaged var taggedUsers: PFRelation?
     @NSManaged var displayDate: NSDate?
+    @NSManaged var usersSaved: PFRelation?
     
     var photoUploadTask: UIBackgroundTaskIdentifier?
     
@@ -24,6 +25,7 @@ class Photo: PFObject, PFSubclassing {
     var tagged: Observable<[PFUser]?> = Observable(nil)
     var taggedFriends: Observable<[String]?> = Observable(nil)
     var dateDisplay: Observable<NSDate?> = Observable(nil)
+    var saved: Observable<Bool?> = Observable(nil)
     
     enum Notifications {
         static let viewAppeared = "homeControllerAppeared"
@@ -114,6 +116,46 @@ class Photo: PFObject, PFSubclassing {
             })
         }
         
+    }
+    
+    func fetchSaves() {
+        if (saved.value != nil) {
+            return
+        }
+        
+        ParseHelper.didUserSavePhoto(self) { (results: [PFObject]?, error: NSError?) -> Void in
+            if let results = results {
+                var doesIt = false
+                for result in results {
+                    if let userObjId = result[ParseHelper.ParseSavedUser].objectId, currentUserId = PFUser.currentUser()?.objectId {
+                        if userObjId == currentUserId {
+                            print("matched\n\(userObjId) : \(currentUserId)")
+                            doesIt = true
+                            break
+                        }
+                    }
+                }
+                self.saved.value = doesIt
+            }
+            if let error = error {
+                NSLog("Error checking if usersavedphoto. \nError: %@", error)
+            }
+        }
+    }
+    
+    func toggleSave() {
+        if let isSaved = self.saved.value {
+            if isSaved {
+                // unSave it TODO
+            } else {
+                // save it
+                self.saved.value = true
+                ParseHelper.saveRelationshipSaved(forPhotoId: self.objectId!)
+            }
+        } else {
+            self.saved.value = true
+            ParseHelper.saveRelationshipSaved(forPhotoId: self.objectId!)
+        }
     }
     
 }

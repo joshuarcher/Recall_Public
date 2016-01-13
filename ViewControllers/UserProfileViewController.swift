@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import RealmSwift
 
 class UserProfileViewController: UIViewController {
     
     private let cellNibName: String = "ProfileCollectionViewCell"
     private let cellReuseId: String = "profileRecallCell"
+    
+    var realmProfilePhotos: Results<PhotoProfileRealm>?
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -23,8 +26,15 @@ class UserProfileViewController: UIViewController {
         registerCellForCollection()
         self.collectionView.backgroundView = nil
         self.collectionView.backgroundColor = UIColor.clearColor()
+        getRealmPhotos()
         // panGestureRecognizer.addTarget(self, action: "handleGesture:")
         // Do any additional setup after loading the view.
+    }
+    
+    func getRealmPhotos() {
+        realmProfilePhotos = RealmHelper.getAllProfilePhotos()
+        print(realmProfilePhotos)
+        
     }
     
     private func registerCellForCollection() {

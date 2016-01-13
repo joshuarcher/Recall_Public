@@ -54,7 +54,7 @@
                             </variation>
                         </imageView>
                     </subviews>
-                    <color key="backgroundColor" red="0.91372549020000005" green="0.86666666670000003" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="0.91372549020000005" green="0.86666666670000003" blue="0.80000000000000004" alpha="0.69251478040540537" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstItem="nee-pf-ihU" firstAttribute="centerX" secondItem="kXT-kS-x4b" secondAttribute="centerX" id="4F1-1g-lw3"/>
                         <constraint firstItem="nee-pf-ihU" firstAttribute="top" secondItem="kXT-kS-x4b" secondAttribute="top" constant="52" id="L5g-tx-fq1"/>
@@ -100,7 +100,7 @@
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" red="0.91764705879999997" green="0.34509803919999998" blue="0.34509803919999998" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.97254901960784312" green="0.97254901960784312" blue="0.97254901960784312" alpha="1" colorSpace="calibratedRGB"/>
             <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="kXT-kS-x4b" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="6fs-Dg-bIo"/>

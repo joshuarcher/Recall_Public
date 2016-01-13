@@ -13,6 +13,7 @@ import RealmSwift
 class RealmHelper {
     
     static let parseUsername = "parseUsername"
+    static let parseCreatedAt = "parseCreatedAt"
     
     // MARK: - FriendRealm
     
@@ -99,6 +100,24 @@ class RealmHelper {
                 NSLog("error committing in saveContacts of RealmHelper: %@", error)
             }
         }
+    }
+    
+    // MARK: - PhotosRealm
+    
+    static func getAllProfilePhotos() -> Results<PhotoProfileRealm>? {
+        var photos = Results<PhotoProfileRealm>?()
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in getProfilePhotos of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            photos = realm.objects(PhotoProfileRealm).sorted(parseCreatedAt)
+        }
+        
+        return photos
     }
     
     // MARK: - AllUsersRealm
@@ -230,9 +249,6 @@ class RealmHelper {
                     NSLog("Error trying to purge messages in purgeNonParseMessages: %@", error)
                 }
             }
-//            for message in messagesToPurge {
-//                
-//            }
         }
         
     }

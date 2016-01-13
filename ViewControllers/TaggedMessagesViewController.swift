@@ -228,6 +228,7 @@ extension TaggedMessagesViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: TaggedMessagesTableViewCell = tableView.dequeueReusableCellWithIdentifier(cellReuseId) as! TaggedMessagesTableViewCell
+        
         guard let taggedUsers = taggedUsers else {
             cell.usernameLabel.text = "error fetching tagged users"
             return cell
@@ -253,6 +254,7 @@ extension TaggedMessagesViewController: UITableViewDataSource {
 extension TaggedMessagesViewController: UITableViewDelegate {
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        // line from edge to edge
         
         // remove inset
         if cell.respondsToSelector("setSeparatorInset:") {

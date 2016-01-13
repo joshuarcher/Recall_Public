@@ -18,6 +18,7 @@ class SettingsViewController: UIViewController {
 
     @IBAction func dismissButtonPressed(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
+        
     }
     
     override func didReceiveMemoryWarning() {
