@@ -10,10 +10,15 @@ import UIKit
 
 class ProfileCollectionViewCell: UICollectionViewCell {
 
+//    @IBOutlet weak var leftConstraint: NSLayoutConstraint!
+//    @IBOutlet weak var rightConstraint: NSLayoutConstraint!
+    
     @IBOutlet weak var leftConstraint: NSLayoutConstraint!
     @IBOutlet weak var rightConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
+    
+    var realmPhoto: PhotoProfileRealm?
     
     override func awakeFromNib() {
         super.awakeFromNib()

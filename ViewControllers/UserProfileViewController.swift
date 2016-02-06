@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import Parse
 
 class UserProfileViewController: UIViewController {
     
@@ -16,19 +17,30 @@ class UserProfileViewController: UIViewController {
     
     var realmProfilePhotos: Results<PhotoProfileRealm>?
 
+    @IBOutlet weak var userProfileImage: UIImageView!
+    @IBOutlet weak var userProfileName: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
     @IBOutlet weak var viewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var panGestureRecognizer: UIPanGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCellForCollection()
         self.collectionView.backgroundView = nil
         self.collectionView.backgroundColor = UIColor.clearColor()
-        getRealmPhotos()
         // panGestureRecognizer.addTarget(self, action: "handleGesture:")
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        getRealmPhotos()
+        setUpUserDefaults()
+    }
+    
+    func setUpUserDefaults() {
+        if let currentUser = PFUser.currentUser(), username = currentUser.username {
+            self.userProfileName.text = username
+        }
     }
     
     func getRealmPhotos() {
@@ -56,47 +68,41 @@ class UserProfileViewController: UIViewController {
         let nextVc = SettingsViewController(nibName: "SettingsViewController", bundle: nil)
         self.presentViewControllerFromTopViewController(nextVc)
     }
-    
-    /*
-    func handleGesture(gesture: UIPanGestureRecognizer) {
-        
-        // let constraintConstant = collectionTopLeadingConstraint.constant
-        
-        switch (gesture.state) {
-        case .Began:
-            print("startingLocation: \(gesture.locationInView(gesture.view))")
-            
-            break
-        case .Changed:
-            print("changingLocation: \(gesture.locationInView(gesture.view))")
-            
-            break
-        case .Ended:
-            print("endingLocation: \(gesture.locationInView(gesture.view))")
-            
-            break
-        default:
-            break
-        }
-    }
-    */
 
 }
 
 extension UserProfileViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        if let realmProfilePhotos = realmProfilePhotos {
+            return realmProfilePhotos.count
+        }
+        return 0
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseId, forIndexPath: indexPath) as? ProfileCollectionViewCell else {
             return UICollectionViewCell()
         }
-        
-        if indexPath.row != 9 {
-            cell.label.text = "word"
+        if let realmProfilePhotos = realmProfilePhotos {
+            let realmPhoto = realmProfilePhotos[indexPath.row]
+            cell.realmPhoto = realmPhoto
+            if let imagePath = realmPhoto.imageSentFilePath {
+                let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
+                dispatch_async(queue, { () -> Void in
+                    let image = FileManager.getProfileImage(fromPath: imagePath)
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        if (image != nil) {
+                            cell.imageView.image = image
+                        } else {
+                            NSLog("No image at file path for index")
+                        }
+                    })
+                })
+            }
         }
+        
         
         return cell
     }

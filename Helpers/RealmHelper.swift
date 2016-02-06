@@ -120,6 +120,36 @@ class RealmHelper {
         return photos
     }
     
+    static func purgeNullPhotos() {
+        var photosToPurge = Results<PhotoProfileRealm>?()
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveMessageeeeee of RealmHelper: %@", error)
+            return
+        }
+        
+        if let realm = realm {
+            let predicate = NSPredicate(format: "parseObjectId = NULL")
+            photosToPurge = realm.objects(PhotoProfileRealm).filter(predicate)
+        } else {
+            return
+        }
+        
+        if let photosToPurge = photosToPurge {
+            if let realm = realm {
+                do {
+                    try realm.write {
+                        realm.delete(photosToPurge)
+                    }
+                } catch let error as NSError {
+                    NSLog("Error trying to purge photos in purgeNullPhotos: %@", error)
+                }
+            }
+        }
+    }
+    
     // MARK: - AllUsersRealm
     
     // return users for AddFriendsViewController
@@ -252,4 +282,5 @@ class RealmHelper {
         }
         
     }
+    
 }

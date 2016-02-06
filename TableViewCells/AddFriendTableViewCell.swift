@@ -13,16 +13,16 @@ class AddFriendTableViewCell: UITableViewCell {
     
     var realmContact: ContactRealm? {
         didSet {
-            if (realmUser == nil) {
-                usernameLabel.text = realmContact?.parseUsername
+            if let realmContact = realmContact {
+                usernameLabel.text = realmContact.parseUsername
             }
         }
     }
     
     var realmUser: AllUsersRealm? {
         didSet {
-            if (realmContact == nil) {
-                usernameLabel.text = realmUser?.parseUsername
+            if let realmUser = realmUser {
+                usernameLabel.text = realmUser.parseUsername
             }
         }
     }

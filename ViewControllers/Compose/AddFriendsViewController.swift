@@ -71,10 +71,16 @@ class AddFriendsViewController: UIViewController {
     func syncParseWithUsers() {
         ParseHelper.addFriendsRequestForCurrentUser { (results: [PFObject]?, error: NSError?) -> Void in
             let users = results as? [PFUser] ?? []
+            print(users)
+            print("hey")
+            
             RealmHelper.saveAllUsersFromParse(users)
             self.getUsersFromRealm()
+            print(self.realmUsers)
         }
     }
+    
+    
 
 }
 
@@ -133,6 +139,13 @@ extension AddFriendsViewController: UITableViewDataSource {
                     cell.realmUser = realmUsers[indexPath.row]
                 }
             }
+        }
+        
+        if let user = cell.realmUser {
+            print("_____________________________")
+            print(user)
+            print(user.parseUsername)
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         }
         
         return cell

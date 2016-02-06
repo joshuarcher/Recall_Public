@@ -48,6 +48,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         if let userParse = PFUser.currentUser() {
+            // ["currentUserId": objectId]
+//            if let objectId = userParse.objectId {
+//                PFCloud.callFunctionInBackground("saveSignUpPhoto", withParameters: ["currentUserId": objectId], block: { (response: AnyObject?, error: NSError?) -> Void in
+//                    if let response = response {
+//                        print(response)
+//                    }
+//                    if let error = error {
+//                        NSLog("Error from cloud code function: ", error)
+//                    }
+//                })
+//            }
             if userParse["digitsID"] != nil {
                 // user logged in and has phone number, show app
                 // initViewControllerID = "AppNavigationController"
@@ -67,6 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.makeKeyAndVisible()
         
         // PFUser.requestPasswordResetForEmailInBackground("josharcher@me.com")
+        
+        RealmHelper.purgeNullPhotos()
         
         return true
     }
@@ -116,8 +129,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        PFPush.handlePush(userInfo)
+        
+        if (application.applicationState == .Active) {
+            // reload messages
+            print("helloooooo")
+            let defaultCenter = NSNotificationCenter.defaultCenter()
+            defaultCenter.postNotificationName(Notifications.pushReceived, object: nil)
+        } else {
+            print(userInfo)
+            PFPush.handlePush(userInfo)
+        }
         print("got push notification")
+    }
+    
+    enum Notifications {
+        static let pushReceived = "PushNotificationReceived"
     }
 }
 

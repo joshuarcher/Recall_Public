@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CustomImagePickerViewController" customModule="Recall" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionView" destination="Tdh-zv-dYy" id="oHE-dt-Fux"/>
+                <outlet property="previewTopConstraint" destination="Fo8-wZ-7o2" id="KuK-eY-Efl"/>
+                <outlet property="previewView" destination="aKx-Nz-l10" id="dsL-SU-SJT"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="971"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="Tdh-zv-dYy">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="971"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QGl-tq-sFP">
+                        <size key="itemSize" width="50" height="50"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="fJR-01-Lce"/>
+                        <outlet property="delegate" destination="-1" id="amE-QI-qCb"/>
+                    </connections>
+                </collectionView>
+                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aKx-Nz-l10" customClass="CameraPreviewView" customModule="Recall" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="800"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qdF-ro-Uid">
+                            <rect key="frame" x="8" y="8" width="40" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="40" id="Nrx-4o-dLX"/>
+                                <constraint firstAttribute="height" constant="40" id="l8e-0x-td7"/>
+                            </constraints>
+                            <state key="normal" image="ComposeExit"/>
+                            <connections>
+                                <action selector="exitButtonTapped:" destination="-1" eventType="touchUpInside" id="nct-NP-g5h"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Td-3v-OSc">
+                            <rect key="frame" x="260" y="712" width="80" height="80"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="6Td-3v-OSc" secondAttribute="height" multiplier="1:1" id="8aI-sn-QOS"/>
+                                <constraint firstAttribute="height" constant="80" id="ZLp-BT-Sqv"/>
+                            </constraints>
+                            <state key="normal" image="CameraButton"/>
+                            <connections>
+                                <action selector="cameraButtonTapped:" destination="-1" eventType="touchUpInside" id="uMT-1k-rAL"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KF4-A7-eeV">
+                            <rect key="frame" x="543" y="732" width="49" height="40"/>
+                            <state key="normal" image="CameraFlip"/>
+                            <connections>
+                                <action selector="cameraFlipTapped:" destination="-1" eventType="touchUpInside" id="0dd-te-nfy"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="0.58823529409999997" green="0.58823529409999997" blue="0.58823529409999997" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstItem="KF4-A7-eeV" firstAttribute="centerY" secondItem="6Td-3v-OSc" secondAttribute="centerY" id="7Q8-tS-FNz"/>
+                        <constraint firstAttribute="bottom" secondItem="6Td-3v-OSc" secondAttribute="bottom" constant="8" id="BM8-XV-2SX"/>
+                        <constraint firstItem="qdF-ro-Uid" firstAttribute="top" secondItem="aKx-Nz-l10" secondAttribute="top" constant="8" id="FCq-SV-s5E"/>
+                        <constraint firstItem="6Td-3v-OSc" firstAttribute="centerX" secondItem="aKx-Nz-l10" secondAttribute="centerX" id="OYD-En-wRC"/>
+                        <constraint firstAttribute="width" secondItem="aKx-Nz-l10" secondAttribute="height" multiplier="3:4" id="QAL-zo-1NR"/>
+                        <constraint firstAttribute="trailing" secondItem="KF4-A7-eeV" secondAttribute="trailing" constant="8" id="eBF-hF-8mT"/>
+                        <constraint firstItem="qdF-ro-Uid" firstAttribute="leading" secondItem="aKx-Nz-l10" secondAttribute="leading" constant="8" id="nH2-7Q-WnD"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="aKx-Nz-l10" secondAttribute="trailing" id="2G3-Yq-Igs"/>
+                <constraint firstItem="aKx-Nz-l10" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Fo8-wZ-7o2"/>
+                <constraint firstItem="aKx-Nz-l10" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="JKR-dO-AQk"/>
+                <constraint firstAttribute="trailing" secondItem="Tdh-zv-dYy" secondAttribute="trailing" id="JnK-CD-wPc"/>
+                <constraint firstItem="Tdh-zv-dYy" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="RQh-8g-NVn"/>
+                <constraint firstAttribute="bottom" secondItem="Tdh-zv-dYy" secondAttribute="bottom" id="kLi-Mc-O2H"/>
+                <constraint firstItem="Tdh-zv-dYy" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="uuk-XP-d3x"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="325" y="632.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="CameraButton" width="75" height="75"/>
+        <image name="CameraFlip" width="49" height="40"/>
+        <image name="ComposeExit" width="30" height="30"/>
+    </resources>
+</document>

@@ -50,13 +50,14 @@ class TagFriendsViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         updateSelectedCells()
+        print("hey: \(taggedFriends)")
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         // if dissapearing to compose screen, pass it the friends it needs (lolz)
         // this is going to have to change when I change around the navigation controller
-        if let composeController = self.navigationController?.viewControllers[1] as? RecallComposeViewController {
+        if let composeController = self.navigationController?.viewControllers[3] as? RecallComposeViewController {
             composeController.taggedFriends = taggedFriends
         }
     }

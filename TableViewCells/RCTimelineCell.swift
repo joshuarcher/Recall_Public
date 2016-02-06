@@ -105,10 +105,10 @@ extension RCTimelineCell {
         innerShadowView.backgroundColor = UIColor.whiteColor()
         let innerShadowLayer = innerShadowView.layer
         innerShadowLayer.cornerRadius = 6
-        innerShadowLayer.shadowOffset = CGSizeMake(0, 3)
-        innerShadowLayer.shadowRadius = 6
+        innerShadowLayer.shadowOffset = CGSizeMake(0, 1)//CGSizeMake(0, 3)
+        innerShadowLayer.shadowRadius = 1
         innerShadowLayer.shadowColor = UIColor.grayColor().CGColor
-        innerShadowLayer.shadowOpacity = 0.33
+        innerShadowLayer.shadowOpacity = 0.66
         innerShadowLayer.masksToBounds = false
         
         self.addSubview(innerView)
@@ -123,16 +123,16 @@ extension RCTimelineCell {
         
         innerView.addSubview(recallImageView)
         recallImageView.autoPinEdgeToSuperviewEdge(.Left)
-        recallImageView.autoPinEdgeToSuperviewEdge(.Bottom)
+        recallImageView.autoPinEdgeToSuperviewEdge(.Top)
         recallImageView.autoPinEdgeToSuperviewEdge(.Right)
-        recallImageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 40)
+        recallImageView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 40)
         recallImageView.contentMode = UIViewContentMode.ScaleAspectFill
         //recallImageView.layer.masksToBounds = true
         recallImageView.clipsToBounds = true
         
         innerView.addSubview(senderLabel)
         senderLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-        senderLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 11)
+        senderLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 11)
         //senderLabel.font = senderLabel.font.fontWithSize(16)
         senderLabel.font = UIFont(name: ".SFUIText-SemiBold", size: 16)
         senderLabel.sizeToFit()
@@ -140,7 +140,7 @@ extension RCTimelineCell {
         
         innerView.addSubview(dateLabel)
         dateLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-        dateLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 11)
+        dateLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 11)
         dateLabel.font = UIFont(name: ".SFUIText-SemiBold", size: 16)
         dateLabel.sizeToFit()
         dateLabel.textColor = UIColor.recallRed()
@@ -155,8 +155,73 @@ extension RCTimelineCell {
         savedButton.autoSetDimension(.Height, toSize: 44)
         savedButton.autoSetDimension(.Width, toSize: 60)
         savedButton.autoPinEdgeToSuperviewEdge(.Left, withInset: 0)
-        savedButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0)
+        savedButton.autoPinEdgeToSuperviewEdge(.Top, withInset: 0)
         
     }
+    
+//    func layoutViews() {
+//        self.backgroundColor = UIColor.recallOffWhite()
+//        
+//        self.addSubview(innerShadowView)
+//        innerShadowView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+//        innerShadowView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+//        innerShadowView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+//        innerShadowView.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+//        innerShadowView.backgroundColor = UIColor.whiteColor()
+//        let innerShadowLayer = innerShadowView.layer
+//        innerShadowLayer.cornerRadius = 6
+//        innerShadowLayer.shadowOffset = CGSizeMake(0, 3)
+//        innerShadowLayer.shadowRadius = 6
+//        innerShadowLayer.shadowColor = UIColor.grayColor().CGColor
+//        innerShadowLayer.shadowOpacity = 0.33
+//        innerShadowLayer.masksToBounds = false
+//        
+//        self.addSubview(innerView)
+//        innerView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+//        innerView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
+//        innerView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+//        innerView.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+//        innerView.backgroundColor = UIColor.recallOffWhite()
+//        innerView.clipsToBounds = true
+//        let innerLayer = innerView.layer
+//        innerLayer.cornerRadius = 6
+//        
+//        innerView.addSubview(recallImageView)
+//        recallImageView.autoPinEdgeToSuperviewEdge(.Left)
+//        recallImageView.autoPinEdgeToSuperviewEdge(.Bottom)
+//        recallImageView.autoPinEdgeToSuperviewEdge(.Right)
+//        recallImageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 40)
+//        recallImageView.contentMode = UIViewContentMode.ScaleAspectFill
+//        //recallImageView.layer.masksToBounds = true
+//        recallImageView.clipsToBounds = true
+//        
+//        innerView.addSubview(senderLabel)
+//        senderLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
+//        senderLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 11)
+//        //senderLabel.font = senderLabel.font.fontWithSize(16)
+//        senderLabel.font = UIFont(name: ".SFUIText-SemiBold", size: 16)
+//        senderLabel.sizeToFit()
+//        senderLabel.textColor = UIColor.recallRed()
+//        
+//        innerView.addSubview(dateLabel)
+//        dateLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
+//        dateLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 11)
+//        dateLabel.font = UIFont(name: ".SFUIText-SemiBold", size: 16)
+//        dateLabel.sizeToFit()
+//        dateLabel.textColor = UIColor.recallRed()
+//        
+//        let normalImage = UIImage(named: "JournalUnsaved")
+//        let selectedImage = UIImage(named: "JournalSaved")
+//        savedButton.setImage(normalImage, forState: .Normal)
+//        savedButton.setImage(selectedImage, forState: .Selected)
+//        savedButton.imageEdgeInsets = UIEdgeInsetsMake(2, 4, 2, 28)
+//        savedButton.addTarget(self, action: "saveButtonPressed:", forControlEvents: .TouchUpInside)
+//        innerView.addSubview(savedButton)
+//        savedButton.autoSetDimension(.Height, toSize: 44)
+//        savedButton.autoSetDimension(.Width, toSize: 60)
+//        savedButton.autoPinEdgeToSuperviewEdge(.Left, withInset: 0)
+//        savedButton.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 0)
+//        
+//    }
     
 }

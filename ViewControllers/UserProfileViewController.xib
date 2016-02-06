@@ -7,6 +7,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UserProfileViewController" customModule="Recall" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="PIU-ef-WMR" id="iN7-Pe-ww8"/>
+                <outlet property="userProfileImage" destination="nee-pf-ihU" id="4Pa-Qf-UpB"/>
+                <outlet property="userProfileName" destination="oFt-jZ-q92" id="Atf-zU-0Rv"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
                 <outlet property="viewHeightConstraint" destination="nyO-UV-GkJ" id="H25-cZ-5Hk"/>
             </connections>
@@ -87,26 +89,12 @@
                         <action selector="dismissButtonPressed:" destination="-1" eventType="touchUpInside" id="JMC-it-rbf"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DqH-tP-482">
-                    <rect key="frame" x="540" y="0.0" width="60" height="44"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="44" id="EeR-63-TyD"/>
-                        <constraint firstAttribute="width" constant="60" id="R2C-sb-f29"/>
-                    </constraints>
-                    <inset key="contentEdgeInsets" minX="18" minY="10" maxX="9" maxY="10"/>
-                    <state key="normal" image="SettingsProfile"/>
-                    <connections>
-                        <action selector="settingsButtonPressed:" destination="-1" eventType="touchUpInside" id="Vgv-dM-9C5"/>
-                    </connections>
-                </button>
             </subviews>
             <color key="backgroundColor" red="0.97254901960784312" green="0.97254901960784312" blue="0.97254901960784312" alpha="1" colorSpace="calibratedRGB"/>
             <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="kXT-kS-x4b" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="6fs-Dg-bIo"/>
-                <constraint firstAttribute="trailing" secondItem="DqH-tP-482" secondAttribute="trailing" id="FHN-l8-iWo"/>
                 <constraint firstItem="PIU-ef-WMR" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="UVC-1p-fal"/>
-                <constraint firstItem="DqH-tP-482" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="ZMy-qf-HAC"/>
                 <constraint firstAttribute="bottom" secondItem="PIU-ef-WMR" secondAttribute="bottom" id="cX8-Nx-iUJ"/>
                 <constraint firstItem="kXT-kS-x4b" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="een-40-bY7"/>
                 <constraint firstAttribute="trailing" secondItem="kXT-kS-x4b" secondAttribute="trailing" id="mDb-5P-bUz"/>
@@ -122,6 +110,5 @@
     <resources>
         <image name="DismissDown" width="34" height="20"/>
         <image name="JayDronah" width="375" height="375"/>
-        <image name="SettingsProfile" width="44" height="35"/>
     </resources>
 </document>

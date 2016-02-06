@@ -39,12 +39,19 @@ class RecallComposeViewController: UIViewController {
     @IBOutlet weak var taggedFriendsCountLabel: UILabel!
     
     // MARK: - View Lifecycle
+    
+    convenience init(withImage image: UIImage) {
+        self.init()
+        self.imageTaken = image
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // set image from picture taker
+        
         if let imageTaken = imageTaken {
+//            recallPostImage = UIImageView(image: imageTaken)
             recallPostImage.image = imageTaken
         }
         

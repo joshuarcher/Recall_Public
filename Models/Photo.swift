@@ -37,9 +37,9 @@ class Photo: PFObject, PFSubclassing {
         return ParseHelper.ParsePhotoClass
     }
     
-    override init() {
-        super.init()
-    }
+//    override init() {
+//        super.init()
+//    }
     
     override class func initialize() {
         var onceToken: dispatch_once_t = 0

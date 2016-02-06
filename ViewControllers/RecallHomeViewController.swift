@@ -54,13 +54,23 @@ class RecallHomeViewController: UIViewController {
     }
     
     @IBAction func cameraButtonTapped(sender: AnyObject) {
+        composeImage()
+//        if UIImagePickerController.isCameraDeviceAvailable(.Rear) {
+//            photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) -> Void in
+//                self.imageToCompose = image
+//                self.performSegueWithIdentifier(self.composeSegue, sender: sender)
+//            })
+//        } else {
+//            self.performSegueWithIdentifier(composeSegue, sender: sender)
+//        }
+    }
+    
+    func composeImage() {
         if UIImagePickerController.isCameraDeviceAvailable(.Rear) {
-            photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) -> Void in
-                self.imageToCompose = image
-                self.performSegueWithIdentifier(self.composeSegue, sender: sender)
-            })
+            let nextVC = CustomImagePickerViewController()
+            self.navigationController?.pushViewController(nextVC, animated: true)
         } else {
-            self.performSegueWithIdentifier(composeSegue, sender: sender)
+            self.performSegueWithIdentifier(composeSegue, sender: self)
         }
     }
     
@@ -72,23 +82,26 @@ class RecallHomeViewController: UIViewController {
     
     func setUpView() {
         
-        let timeCapsuleView = CapsuleViewController(nibName: capsuleViewNib, bundle: nil)
-        
-        // add to scrollView
-        self.addChildViewController(timeCapsuleView)
-        self.scrollView.addSubview(timeCapsuleView.view)
-        timeCapsuleView.didMoveToParentViewController(self)
-        
+//        let timeCapsuleView = CapsuleViewController(nibName: capsuleViewNib, bundle: nil)
         let timelineView = RecallViewController(nibName: timelineViewNib, bundle: nil)
         
-        // set frame to be to the right of the capsule view
-        var timelineFrame = timelineView.view.frame
-        timelineFrame.origin.x = self.view.frame.size.width
-        timelineView.view.frame = timelineFrame
-        
-        // add to scroll view
+        // add to scrollView
         self.addChildViewController(timelineView)
         self.scrollView.addSubview(timelineView.view)
+        timelineView.didMoveToParentViewController(self)
+        
+        
+//        let timelineView = RecallViewController(nibName: timelineViewNib, bundle: nil)
+        let timeCapsuleView = CapsuleViewController(nibName: capsuleViewNib, bundle: nil)
+        
+        // set frame to be to the right of the capsule view
+        var timeCapsuleFrame = timeCapsuleView.view.frame
+        timeCapsuleFrame.origin.x = self.view.frame.size.width
+        timeCapsuleView.view.frame = timeCapsuleFrame
+        
+        // add to scroll view
+        self.addChildViewController(timeCapsuleView)
+        self.scrollView.addSubview(timeCapsuleView.view)
         timelineView.didMoveToParentViewController(self)
         
         // two views wide, height does not include nav bar

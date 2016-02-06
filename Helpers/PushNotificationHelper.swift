@@ -47,6 +47,7 @@ class PushNotificationHelper {
         push.sendPushInBackground()
     }
     
+    
     static func sendMessagePushNotification(forPhoto photo: Photo, withMessage message: String) {
         // users that are taggeed
         guard let taggedUsers = photo.taggedUsers, fromUser = photo.fromUser, userObjId = photo.fromUser?.objectId else {
@@ -58,6 +59,7 @@ class PushNotificationHelper {
             NSLog("Error unwrapping taggedUsers query and PFUser query")
             return
         }
+        
         // don't include current user
         taggedUsersQuery.whereKey(parseObjectId, notEqualTo: currentUser)
         

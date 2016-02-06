@@ -35,7 +35,36 @@ class Message: PFObject, PFSubclassing {
         }
     }
     
+    convenience init(withText text: String, andPhoto photo: Photo) {
+        self.init()
+        self.messageText = text
+        self.parentPhoto = photo
+    }
+    
     // MARK: - Helper functions
+    
+    func sendMessageSelf() {
+        self.fromUser = PFUser.currentUser()
+        guard let parentPhoto = parentPhoto else {print("what the fuck");return}
+        
+        saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
+            if success {
+                print("message saved successfully")
+                let message = "\(self.fromUser!.username!) said: \(self.messageText!)"
+                PushNotificationHelper.sendMessagePushNotification(forPhoto: parentPhoto, withMessage: message)
+                let relation = parentPhoto.relationForKey("messages")
+                relation.addObject(self)
+                parentPhoto.saveInBackgroundWithBlock({ (seccess: Bool, error: NSError?) -> Void in
+                    if success {
+                        print("relation saved successfully")
+                    }
+                })
+            }
+            if let error = error {
+                NSLog("error saving message: %@", error)
+            }
+        })
+    }
     
     func sendMessageForPhoto(photo: Photo) {
         if let mText = mText.value {

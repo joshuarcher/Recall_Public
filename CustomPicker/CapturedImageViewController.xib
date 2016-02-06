@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CapturedImageViewController" customModule="Recall" customModuleProvider="target">
+            <connections>
+                <outlet property="capturedImageView" destination="2zO-qb-bkX" id="6Da-GA-T0u"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2zO-qb-bkX">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F3K-Yr-Rb2">
+                    <rect key="frame" x="0.0" y="550" width="600" height="50"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cbk-Uj-O1g">
+                            <rect key="frame" x="532" y="5" width="60" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="60" id="RaP-RG-96S"/>
+                                <constraint firstAttribute="height" constant="40" id="lrN-bk-i3e"/>
+                            </constraints>
+                            <state key="normal" title="Select">
+                                <color key="titleColor" red="0.97647058819999999" green="0.97647058819999999" blue="0.97647058819999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="pickedButtonTapped:" destination="-1" eventType="touchUpInside" id="RGj-nX-tmK"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uv5-Gu-0hW">
+                            <rect key="frame" x="8" y="5" width="60" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="60" id="5R6-GG-4Mh"/>
+                                <constraint firstAttribute="height" constant="40" id="nLv-YG-aZl"/>
+                            </constraints>
+                            <state key="normal" title="Back">
+                                <color key="titleColor" red="0.97647058819999999" green="0.97647058819999999" blue="0.97647058819999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="backButtonTapped:" destination="-1" eventType="touchUpInside" id="p54-fT-CpG"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="0.91764705879999997" green="0.34509803919999998" blue="0.34509803919999998" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstItem="Uv5-Gu-0hW" firstAttribute="leading" secondItem="F3K-Yr-Rb2" secondAttribute="leading" constant="8" id="Fhy-sW-rbx"/>
+                        <constraint firstAttribute="height" constant="50" id="YeN-jT-zMQ"/>
+                        <constraint firstAttribute="trailing" secondItem="cbk-Uj-O1g" secondAttribute="trailing" constant="8" id="Z6u-AZ-APN"/>
+                        <constraint firstItem="cbk-Uj-O1g" firstAttribute="centerY" secondItem="F3K-Yr-Rb2" secondAttribute="centerY" id="rbJ-l0-ved"/>
+                        <constraint firstItem="Uv5-Gu-0hW" firstAttribute="centerY" secondItem="F3K-Yr-Rb2" secondAttribute="centerY" id="rqF-8J-dx5"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="2zO-qb-bkX" secondAttribute="trailing" id="9ZR-8Z-nHy"/>
+                <constraint firstAttribute="bottom" secondItem="F3K-Yr-Rb2" secondAttribute="bottom" id="It8-BU-aIU"/>
+                <constraint firstAttribute="trailing" secondItem="F3K-Yr-Rb2" secondAttribute="trailing" id="OXZ-IQ-PhU"/>
+                <constraint firstItem="2zO-qb-bkX" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="eF6-DR-BvV"/>
+                <constraint firstAttribute="bottom" secondItem="2zO-qb-bkX" secondAttribute="bottom" id="rAt-4j-Svc"/>
+                <constraint firstItem="2zO-qb-bkX" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="vwV-2M-Hsl"/>
+                <constraint firstItem="F3K-Yr-Rb2" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="wIo-Tz-qHb"/>
+            </constraints>
+        </view>
+    </objects>
+</document>

@@ -86,7 +86,7 @@ class ParseHelper {
         ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
         ownerPhotoQuery.whereKey(ParsePhotoDisplayDate, greaterThan: NSDate())
         
-        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery, targetQuery])
+        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
         
         finalQuery.includeKey(ParsePhotoFromUser)
         finalQuery.orderByAscending(ParsePhotoDisplayDate)
@@ -113,7 +113,7 @@ class ParseHelper {
         ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
         ownerPhotoQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
         
-        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery, targetQuery])
+        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
         
         finalQuery.includeKey(ParsePhotoFromUser)
         finalQuery.orderByDescending(ParsePhotoDisplayDate)

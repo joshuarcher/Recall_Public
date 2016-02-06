@@ -19,6 +19,10 @@ import JSQMessagesViewController
 
 class MessagesViewController: JSQMessagesViewController {
     
+    enum Notifications {
+        static let pushReceived = "PushNotificationReceived"
+    }
+    
     private let taggedFriendsImage = "TaggedButton"
     
     var photo: Photo?
@@ -73,6 +77,7 @@ class MessagesViewController: JSQMessagesViewController {
         getMessagesFromRealm()
         savePictureMessage()
         syncParseWithMessages(false)
+        subscribeToNotifications()
     }
 
     override func didReceiveMemoryWarning() {
@@ -94,6 +99,7 @@ class MessagesViewController: JSQMessagesViewController {
         syncParseWithMessages(true)
         RealmHelper.purgeNonParseMessages()
         deletePictureFile()
+        unsubscribeToNotifications()
     }
     
     // MARK: - Helper methods
@@ -169,6 +175,8 @@ class MessagesViewController: JSQMessagesViewController {
         setNavButton()
     }
     
+    // MARK: - TaggedFriends Toggle
+    
     func setNavButton() {
         guard let navC = self.navigationController, topView = navC.topViewController else {return}
         let buttonImage = UIImage(named: taggedFriendsImage)
@@ -200,6 +208,23 @@ class MessagesViewController: JSQMessagesViewController {
         }
     }
     
+    // MARK: - PushNotification Updates
+    
+    func handlePushNotification() {
+        syncParseWithMessages(false)
+        RealmHelper.purgeNonParseMessages()
+    }
+    
+    func subscribeToNotifications() {
+        let defaultCenter = NSNotificationCenter.defaultCenter()
+        defaultCenter.addObserver(self, selector: "handlePushNotification", name: Notifications.pushReceived, object: nil)
+    }
+    
+    func unsubscribeToNotifications() {
+        let defaultCenter = NSNotificationCenter.defaultCenter()
+        defaultCenter.removeObserver(self)
+    }
+    
 }
 
 // MARK: - JSQMessages Collection view shtuffffff
@@ -218,10 +243,13 @@ extension MessagesViewController {
     
     func sendMessage(text: String!, sender: String!) {
         tempSendMessage(text, sender: sender)
-        let newMessageAgain = Message()
-        newMessageAgain.mText.value = text
         guard let photo = photo else { return }
-        newMessageAgain.sendMessageForPhoto(photo)
+        let newMessageAgain = Message(withText: text, andPhoto: photo)
+        newMessageAgain.sendMessageSelf()
+//        let newMessageAgain = Message()
+//        newMessageAgain.mText.value = text
+//        guard let photo = photo else { return }
+//        newMessageAgain.sendMessageForPhoto(photo)
     }
     
     func receivedMessagePressed(sender: UIBarButtonItem) {
