@@ -40,9 +40,6 @@ class CapturedImageViewController: UIViewController {
     
     @IBAction func backButtonTapped(sender: AnyObject) {
         self.navigationController?.popViewControllerAnimated(true)
-//        self.dismissViewControllerAnimated(true) { () -> Void in
-//            print("dismissed")
-//        }
     }
 
     @IBAction func pickedButtonTapped(sender: AnyObject) {

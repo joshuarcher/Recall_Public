@@ -16,7 +16,7 @@ var RecordingContext = "RecordingContext"
 
 class CustomImagePickerViewController: UIViewController {
     
-    // MARK: - AVCapture shtuff
+    // MARK: - AVCapture Session Variables
     weak var capturedImage: UIImage?
     
     var sessionQueue: dispatch_queue_t!
@@ -38,7 +38,7 @@ class CustomImagePickerViewController: UIViewController {
     var flashActive: Bool? = false
     
     
-    // MARK: - CollectionView Shtuff
+    // MARK: - CollectionView Variables
     
     private let cellNibName = "CustomImagePickerCollectionViewCell"
     private let cellReuseId = "customPickerCell"
@@ -50,7 +50,6 @@ class CustomImagePickerViewController: UIViewController {
     let screenWidthOThree = UIScreen.mainScreen().bounds.size.width/3
     
     let imageManager = PHImageManager.defaultManager()
-    
     let cachingManger = PHCachingImageManager()
     var photoAssets: [PHAsset] = [] {
         willSet {
@@ -60,8 +59,11 @@ class CustomImagePickerViewController: UIViewController {
             // let width = self.collectionView.frame.width/3
             let size: CGSize = CGSizeMake(screenWidthOThree, screenWidthOThree)
             cachingManger.startCachingImagesForAssets(self.photoAssets, targetSize: size, contentMode: .AspectFill, options: nil)
+            collectionView.reloadData()
         }
     }
+    
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,6 +91,8 @@ class CustomImagePickerViewController: UIViewController {
     override func viewDidDisappear(animated: Bool) {
         //self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
+    
+    
     
     func initialImageRequest() {
         
