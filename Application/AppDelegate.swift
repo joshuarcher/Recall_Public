@@ -11,13 +11,7 @@ import Parse
 import Fabric
 import DigitsKit
 import Crashlytics
-
-/*
-DigitsVerifyViewController
-LoginViewController
-SignUpViewController
-AppNavigationController
-*/
+//import Mixpanel
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -27,38 +21,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
-        Fabric.with([Digits.self, Crashlytics.self])
+        Fabric.with([Digits.self, Crashlytics.self, Answers.self])
         
-        // Register parse ID
-        // Parse.enableLocalDatastore()
         Parse.setApplicationId("BWQm6KKz966A5aH0PLNufiBd5BoHobddqnxj5ZBC", clientKey: "uCDKJNDJOSIC12YVQimx9NzrR98ARS3OCkE60eQD")
-        
-        // PushNotificationHelper.signUpForNotifications()
         
         // changing ACL default
         let acl = PFACL()
-        acl.setPublicReadAccess(true)
+        acl.publicReadAccess = true
         PFACL.setDefaultACL(acl, withAccessForCurrentUser: true)
         
         application.statusBarHidden = true
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        var initViewControllerID = "LoginViewController"
         var initViewControllerID = "LoginFlowViewController"
         
         
         if let userParse = PFUser.currentUser() {
-            // ["currentUserId": objectId]
-//            if let objectId = userParse.objectId {
-//                PFCloud.callFunctionInBackground("saveSignUpPhoto", withParameters: ["currentUserId": objectId], block: { (response: AnyObject?, error: NSError?) -> Void in
-//                    if let response = response {
-//                        print(response)
-//                    }
-//                    if let error = error {
-//                        NSLog("Error from cloud code function: ", error)
-//                    }
-//                })
-//            }
             if userParse["digitsID"] != nil {
                 // user logged in and has phone number, show app
                 // initViewControllerID = "AppNavigationController"
@@ -70,16 +48,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         } else {
             initViewControllerID = "LoginFlowViewController"
-//            initViewControllerID = "LoginViewController"
         }
         
         let initialViewController = storyboard.instantiateViewControllerWithIdentifier(initViewControllerID)
         self.window?.rootViewController = initialViewController
         self.window?.makeKeyAndVisible()
         
-        // PFUser.requestPasswordResetForEmailInBackground("josharcher@me.com")
-        
         RealmHelper.purgeNullPhotos()
+//        let mixpanel = Mixpanel.sharedInstanceWithToken("288d3ac43290ac86dcccb77f49e1f3cc")
+//        mixpanel.track("Video play")
+//        // 288d3ac43290ac86dcccb77f49e1f3cc
         
         return true
     }
@@ -89,6 +67,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Crashlytics.sharedInstance().setUserName(user.username)
             Crashlytics.sharedInstance().setUserEmail(user.email)
         }
+    }
+
+    func escapeToLogin() {
+        let appDomain = NSBundle.mainBundle().bundleIdentifier
+        NSUserDefaults.standardUserDefaults().removePersistentDomainForName(appDomain!)
+        
+        let initViewControllerID = "LoginFlowViewController"
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let initialViewController = storyboard.instantiateViewControllerWithIdentifier(initViewControllerID)
+        self.window?.rootViewController = initialViewController
+        self.window?.makeKeyAndVisible()
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -107,6 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        Answers.logCustomEventWithName("App Open", customAttributes: nil)
     }
 
     func applicationWillTerminate(application: UIApplication) {

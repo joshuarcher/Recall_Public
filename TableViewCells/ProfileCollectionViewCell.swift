@@ -7,22 +7,34 @@
 //
 
 import UIKit
+import Bond
 
 class ProfileCollectionViewCell: UICollectionViewCell {
-
-//    @IBOutlet weak var leftConstraint: NSLayoutConstraint!
-//    @IBOutlet weak var rightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var leftConstraint: NSLayoutConstraint!
     @IBOutlet weak var rightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var imageView: UIImageView!
     
-    var realmPhoto: PhotoProfileRealm?
+    // removed this to focus on shipping. just used convenience kit instead
+    // var realmPhoto: PhotoProfileRealm?
+    
+    var photoDisposable: DisposableType?
+    
+    var photo: Photo? {
+        didSet {
+            photoDisposable?.dispose()
+            
+            if let photo = photo {
+                photoDisposable = photo.image.bindTo(imageView.bnd_image)
+            }
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
+
 
 }

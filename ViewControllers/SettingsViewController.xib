@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SettingsViewController" customModule="Recall" customModuleProvider="target">
             <connections>
+                <outlet property="tableView" destination="BkC-6O-a2P" id="PFl-Iw-HIf"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -14,24 +15,49 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kda-Bs-BVw">
-                    <rect key="frame" x="283.5" y="277" width="34" height="46"/>
-                    <state key="normal" image="JournalUnsaved"/>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="BkC-6O-a2P">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="jJO-5f-Rnq"/>
+                        <outlet property="delegate" destination="-1" id="Dhk-qA-CoH"/>
+                    </connections>
+                </tableView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kda-Bs-BVw">
+                    <rect key="frame" x="0.0" y="0.0" width="60" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="rFB-hF-qM9"/>
+                        <constraint firstAttribute="width" constant="60" id="umn-Xi-5Q5"/>
+                    </constraints>
+                    <inset key="contentEdgeInsets" minX="0.0" minY="0.0" maxX="4" maxY="0.0"/>
+                    <state key="normal" image="DismissDown"/>
                     <state key="selected" image="JournalSaved"/>
                     <connections>
                         <action selector="dismissButtonPressed:" destination="-1" eventType="touchUpInside" id="5f7-E9-PSE"/>
                     </connections>
                 </button>
             </subviews>
-            <color key="backgroundColor" red="0.1019607843" green="0.67843137249999996" blue="0.36078431370000003" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.97254901959999995" green="0.97254901959999995" blue="0.97254901959999995" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
+                <constraint firstItem="Kda-Bs-BVw" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="8gd-Tu-DHP"/>
+                <constraint firstAttribute="bottom" secondItem="BkC-6O-a2P" secondAttribute="bottom" id="AAC-vE-mdk"/>
+                <constraint firstItem="BkC-6O-a2P" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Bpf-Wh-Waq"/>
                 <constraint firstItem="Kda-Bs-BVw" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="Owj-Ky-dW5"/>
                 <constraint firstItem="Kda-Bs-BVw" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="Twc-cK-rKh"/>
+                <constraint firstItem="BkC-6O-a2P" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="pcp-eE-3Y3"/>
+                <constraint firstItem="Kda-Bs-BVw" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="pia-K5-5TX"/>
+                <constraint firstAttribute="trailing" secondItem="BkC-6O-a2P" secondAttribute="trailing" id="xhD-5Q-LLv"/>
             </constraints>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="Owj-Ky-dW5"/>
+                    <exclude reference="Twc-cK-rKh"/>
+                </mask>
+            </variation>
         </view>
     </objects>
     <resources>
+        <image name="DismissDown" width="34" height="20"/>
         <image name="JournalSaved" width="34" height="45"/>
-        <image name="JournalUnsaved" width="34" height="46"/>
     </resources>
 </document>

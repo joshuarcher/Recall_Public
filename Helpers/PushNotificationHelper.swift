@@ -54,9 +54,9 @@ class PushNotificationHelper {
             NSLog("Error unwrapping photo's tagged users and fromUser")
             return
         }
-        
-        guard let taggedUsersQuery = taggedUsers.query(), userPhotoOwnerQuery = PFUser.query(), currentUser = PFUser.currentUser()?.objectId else {
-            NSLog("Error unwrapping taggedUsers query and PFUser query")
+        let taggedUsersQuery = taggedUsers.query()
+        guard let userPhotoOwnerQuery = PFUser.query(), currentUser = PFUser.currentUser()?.objectId else {
+            NSLog("Error unwrapping userOwnerQuery and current user objId in sendMessagePushNotification")
             return
         }
         
@@ -64,7 +64,7 @@ class PushNotificationHelper {
         taggedUsersQuery.whereKey(parseObjectId, notEqualTo: currentUser)
         
         userPhotoOwnerQuery.whereKey(parseObjectId, equalTo: userObjId)
-        userPhotoOwnerQuery.whereKey(parseObjectId, notEqualTo: currentUser)
+        // userPhotoOwnerQuery.whereKey(parseObjectId, notEqualTo: currentUser)
 
         let totalQuery = PFQuery.orQueryWithSubqueries([taggedUsersQuery, userPhotoOwnerQuery])
         

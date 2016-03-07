@@ -24,8 +24,8 @@ class PhotoTakingHelper: NSObject {
         
         super.init()
         
-        //showPhotoSourceSelection()
-        showPhotoTaker()
+        showPhotoSourceSelection()
+//        showPhotoTaker()
     }
     
     // We only want to show the phtotaker

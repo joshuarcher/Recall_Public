@@ -139,6 +139,8 @@ class PasswordViewController: UIViewController {
         // clear credentials
         emailTextField.text = ""
         passwordTextField.text = ""
+        emailTextField.endEditing(true)
+        passwordTextField.endEditing(true)
     }
     
     func sendNotification(forError errorType: String) {

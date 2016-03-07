@@ -85,6 +85,7 @@ class UsernameViewController: UIViewController {
         }
         // clear credentials
         usernameTextField.text = ""
+        usernameTextField.endEditing(true)
         showSignUpButton()
     }
     
@@ -144,6 +145,10 @@ class UsernameViewController: UIViewController {
         signUpButton.autoPinEdge(.Top, toEdge: .Bottom, ofView: credentialView)
         signUpButton.autoPinEdgeToSuperviewEdge(.Left)
         signUpButton.autoPinEdgeToSuperviewEdge(.Right)
+        
+        
+        
+        
     }
 
 }

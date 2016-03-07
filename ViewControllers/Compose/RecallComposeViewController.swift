@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import Crashlytics
 
 class RecallComposeViewController: UIViewController {
     
@@ -18,12 +19,6 @@ class RecallComposeViewController: UIViewController {
     var photoTakingHelper: PhotoTakingHelper?
     
     var imageTaken: UIImage?
-    
-//    var taggedFriends: [PFUser]! {
-//        didSet {
-//            taggedFriendsCountLabel.text = String(taggedFriends.count)
-//        }
-//    }
     
     var taggedFriends: [String]! {
         didSet {
@@ -181,6 +176,7 @@ extension RecallComposeViewController {
         default:
             break;
         }
+        Answers.logCustomEventWithName("Time Interval Sent", customAttributes: ["days":daysToAdd])
         return NSDate().dateByAddingTimeInterval(86400*daysToAdd)
     }
     

@@ -8,6 +8,7 @@
 
 import UIKit
 import QuartzCore
+import Bond
 
 class RCCapsuleCell: UITableViewCell {
     
@@ -63,6 +64,7 @@ class RCCapsuleCell: UITableViewCell {
     
     func updateLabel() {
         if let recallDate = recallDate {
+            
             var timeInt: Double = NSDate().timeIntervalSinceDate(recallDate) * -1
             
             let hours = Int(timeInt / 3600)
@@ -86,24 +88,27 @@ class RCCapsuleCell: UITableViewCell {
 extension RCCapsuleCell {
     
     func layoutViews() {
-        self.backgroundColor = UIColor.recallOffWhite()
+        self.backgroundColor = UIColor.clearColor()
+        let innerViewHeight: CGFloat = 282
         
         self.addSubview(innerShadowView)
-        innerShadowView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        innerShadowView.autoSetDimension(.Height, toSize: innerViewHeight)
+        //innerShadowView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         innerShadowView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         innerShadowView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         innerShadowView.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
         innerShadowView.backgroundColor = UIColor.whiteColor()
         let innerShadowLayer = innerShadowView.layer
         innerShadowLayer.cornerRadius = 6
-        innerShadowLayer.shadowOffset = CGSizeMake(0, 3)
-        innerShadowLayer.shadowRadius = 6
+        innerShadowLayer.shadowOffset = CGSizeMake(0, 1)
+        innerShadowLayer.shadowRadius = 1
         innerShadowLayer.shadowColor = UIColor.grayColor().CGColor
-        innerShadowLayer.shadowOpacity = 0.33
+        innerShadowLayer.shadowOpacity = 0.66
         innerShadowLayer.masksToBounds = false
         
         self.addSubview(innerView)
-        innerView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
+        innerView.autoSetDimension(.Height, toSize: innerViewHeight)
+        //innerView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
         innerView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
         innerView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
         innerView.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
@@ -115,7 +120,7 @@ extension RCCapsuleCell {
         recallImageView.autoPinEdgeToSuperviewEdge(.Left)
         recallImageView.autoPinEdgeToSuperviewEdge(.Top)
         recallImageView.autoPinEdgeToSuperviewEdge(.Right)
-        recallImageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 40)
+        recallImageView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 40)
         recallImageView.contentMode = UIViewContentMode.ScaleAspectFill
         recallImageView.clipsToBounds = true
         let blurEffect = UIBlurEffect(style: .Light)
@@ -132,64 +137,11 @@ extension RCCapsuleCell {
         
         self.addSubview(timeLabel)
         timeLabel.autoAlignAxisToSuperviewAxis(.Vertical)
-        timeLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 11)
+        timeLabel.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 11)
         timeLabel.textColor = UIColor.recallRed()
         timeLabel.font = UIFont.boldSystemFontOfSize(20)
         //visualEffect()
     }
-    
-//    func layoutViews() {
-//        self.backgroundColor = UIColor.recallOffWhite()
-//        
-//        self.addSubview(innerShadowView)
-//        innerShadowView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-//        innerShadowView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-//        innerShadowView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-//        innerShadowView.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-//        innerShadowView.backgroundColor = UIColor.whiteColor()
-//        let innerShadowLayer = innerShadowView.layer
-//        innerShadowLayer.cornerRadius = 6
-//        innerShadowLayer.shadowOffset = CGSizeMake(0, 3)
-//        innerShadowLayer.shadowRadius = 6
-//        innerShadowLayer.shadowColor = UIColor.grayColor().CGColor
-//        innerShadowLayer.shadowOpacity = 0.33
-//        innerShadowLayer.masksToBounds = false
-//        
-//        self.addSubview(innerView)
-//        innerView.autoPinEdgeToSuperviewEdge(.Top, withInset: 4)
-//        innerView.autoPinEdgeToSuperviewEdge(.Bottom, withInset: 4)
-//        innerView.autoPinEdgeToSuperviewEdge(.Left, withInset: 8)
-//        innerView.autoPinEdgeToSuperviewEdge(.Right, withInset: 8)
-//        innerView.backgroundColor = UIColor.recallOffWhite()
-//        innerView.layer.cornerRadius = 6
-//        innerView.clipsToBounds = true
-//        
-//        innerView.addSubview(recallImageView)
-//        recallImageView.autoPinEdgeToSuperviewEdge(.Left)
-//        recallImageView.autoPinEdgeToSuperviewEdge(.Bottom)
-//        recallImageView.autoPinEdgeToSuperviewEdge(.Right)
-//        recallImageView.autoPinEdgeToSuperviewEdge(.Top, withInset: 40)
-//        recallImageView.contentMode = UIViewContentMode.ScaleAspectFill
-//        recallImageView.clipsToBounds = true
-//        let blurEffect = UIBlurEffect(style: .Light)
-//        let blurView = UIVisualEffectView(effect: blurEffect)
-//        blurView.translatesAutoresizingMaskIntoConstraints = false
-//        blurView.frame = recallImageView.bounds
-//        recallImageView.insertSubview(blurView, atIndex: 0)
-//        blurView.autoPinEdgesToSuperviewEdges()
-//        let vibrancy = UIVibrancyEffect(forBlurEffect: blurEffect)
-//        let vibrancyView = UIVisualEffectView(effect: vibrancy)
-//        vibrancyView.translatesAutoresizingMaskIntoConstraints = false
-//        blurView.contentView.addSubview(vibrancyView)
-//        vibrancyView.autoPinEdgesToSuperviewEdges()
-//        
-//        self.addSubview(timeLabel)
-//        timeLabel.autoAlignAxisToSuperviewAxis(.Vertical)
-//        timeLabel.autoPinEdgeToSuperviewEdge(.Top, withInset: 11)
-//        timeLabel.textColor = UIColor.recallRed()
-//        timeLabel.font = UIFont.boldSystemFontOfSize(20)
-//        //visualEffect()
-//    }
     
     func visualEffect() {
         // lable

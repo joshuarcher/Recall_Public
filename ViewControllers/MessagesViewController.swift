@@ -16,6 +16,7 @@ import UIKit
 import Parse
 import RealmSwift
 import JSQMessagesViewController
+import Crashlytics
 
 class MessagesViewController: JSQMessagesViewController {
     
@@ -225,6 +226,18 @@ class MessagesViewController: JSQMessagesViewController {
         defaultCenter.removeObserver(self)
     }
     
+    // MARK: - Alert
+    func showFlagAlert() {
+        let alertController = UIAlertController(title: "Hey now", message: "Are you sure you would like to flag this group conversation for inappropriate content?", preferredStyle: .Alert)
+        
+        let flagAction = UIAlertAction(title: "Flag", style: .Destructive, handler: nil)
+        alertController.addAction(flagAction)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        presentViewController(alertController, animated: true, completion: nil)
+    }
+    
 }
 
 // MARK: - JSQMessages Collection view shtuffffff
@@ -246,10 +259,7 @@ extension MessagesViewController {
         guard let photo = photo else { return }
         let newMessageAgain = Message(withText: text, andPhoto: photo)
         newMessageAgain.sendMessageSelf()
-//        let newMessageAgain = Message()
-//        newMessageAgain.mText.value = text
-//        guard let photo = photo else { return }
-//        newMessageAgain.sendMessageForPhoto(photo)
+        Answers.logCustomEventWithName("Message Send", customAttributes: nil)
     }
     
     func receivedMessagePressed(sender: UIBarButtonItem) {
@@ -257,14 +267,6 @@ extension MessagesViewController {
         showTypingIndicator = !showTypingIndicator
         scrollToBottomAnimated(true)
     }
-    
-//    override func didPressSendButton(button: UIButton!, withMessageText text: String!, sender: String!, date: NSDate!) {
-//        JSQSystemSoundPlayer.jsq_playMessageSentSound()
-//        
-//        sendMessage(text, sender: sender)
-//        
-//        finishSendingMessage()
-//    }
     
     override func didPressSendButton(button: UIButton!, withMessageText text: String!, senderId: String!, senderDisplayName: String!, date: NSDate!) {
         JSQSystemSoundPlayer.jsq_playMessageReceivedSound()
@@ -275,7 +277,7 @@ extension MessagesViewController {
     }
     
     override func didPressAccessoryButton(sender: UIButton!) {
-        print("Camera pressed!")
+        showFlagAlert()
     }
     
     ///////////////////////////////
@@ -284,17 +286,6 @@ extension MessagesViewController {
         guard let realmMessages = realmMessages else { return nil }
         return realmMessages[indexPath.item]
     }
-    
-//    override func collectionView(collectionView: JSQMessagesCollectionView!, bubbleImageViewForItemAtIndexPath indexPath: NSIndexPath!) -> UIImageView! {
-//        guard let realmMessages = realmMessages else {return nil}
-//        let message = realmMessages[indexPath.item]
-//        
-//        if message.sender() == senderDisplayName {
-//            return UIImageView(image: outgoingBubbleImageView.image, highlightedImage: outgoingBubbleImageView.highlightedImage)
-//        }
-//        
-//        return UIImageView(image: incomingBubbleImageView.image, highlightedImage: incomingBubbleImageView.highlightedImage)
-//    }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         guard let realmMessages = realmMessages else {return nil}
@@ -306,18 +297,6 @@ extension MessagesViewController {
         
         return incomingBubbleImageView
     }
-    
-//    override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageViewForItemAtIndexPath indexPath: NSIndexPath!) -> UIImageView! {
-////        guard let jMessages = jMessages else { return nil }
-////        let message = jMessages[indexPath.item]
-////        if let avatar = avatars[message.sender()] {
-////            return UIImageView(image: avatar)
-////        } else {
-////            setupAvatarImage(message.sender(), imageUrl: message.imageUrl(), incoming: true)
-////            return UIImageView(image:avatars[message.sender()])
-////        }
-//        return nil
-//    }
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let realmMessages = realmMessages else { return 0 }

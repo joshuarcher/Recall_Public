@@ -66,7 +66,14 @@ class ParseHelper {
     static let ParseSavedClass = "userSaved"
     static let ParseSavedUser = "user"
     static let ParseSavedPhoto = "photoSaved"
-   
+    
+    // MARK: - User Logout
+    
+    static func logoutCurrentUser() {
+        if (PFUser.currentUser() != nil) {
+            PFUser.logOut()
+        }
+    }
     
     // MARK: - Parse Timeline Queries
     
@@ -86,6 +93,7 @@ class ParseHelper {
         ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
         ownerPhotoQuery.whereKey(ParsePhotoDisplayDate, greaterThan: NSDate())
         
+        // removed default photo
         let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
         
         finalQuery.includeKey(ParsePhotoFromUser)
@@ -113,6 +121,7 @@ class ParseHelper {
         ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
         ownerPhotoQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
         
+        // removed defualt photo
         let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
         
         finalQuery.includeKey(ParsePhotoFromUser)
@@ -125,11 +134,13 @@ class ParseHelper {
     }
     
     static func taggedUsersMessages(forRelation relation: PFRelation, completionBlock: PFQueryArrayResultBlock) {
-        if let query = relation.query() {
-            query.findObjectsInBackgroundWithBlock(completionBlock)
-        } else {
-            completionBlock(nil, nil)
-        }
+        let query = relation.query()
+        query.findObjectsInBackgroundWithBlock(completionBlock)
+//        if let query = relation.query() {
+//            query.findObjectsInBackgroundWithBlock(completionBlock)
+//        } else {
+//            completionBlock(nil, nil)
+//        }
     }
     
     // MARK: - Parse Friend Shtuff
@@ -269,6 +280,64 @@ class ParseHelper {
         saveQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
+    // MARK: - Parse Saved Retrieval Methods
+    
+    static func findSavedPhotosForCurrentUsers(completionBlock: PFQueryArrayResultBlock) {
+        guard let user = PFUser.currentUser() else { NSLog("current user nil in findSavedPhotos of ParseHelper");return }
+        
+        let savedQuery = PFQuery(className: ParseSavedClass)
+        savedQuery.whereKey(ParseSavedUser, equalTo: user)
+        
+//        let finalQuery = PFQuery(className: ParsePhotoClass)
+//        finalQuery.whereKey("objectId", matchesKey: ParseSavedPhoto, inQuery: savedQuery)
+//        
+//        finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+        
+        savedQuery.includeKey(ParseSavedPhoto)
+        savedQuery.findObjectsInBackgroundWithBlock(completionBlock)
+        
+    }
+    
+    // this is the replacement for above with a RANGE
+    
+    static func savedPhotosRequestTimeline(completionBlock: PFQueryArrayResultBlock) {
+        guard let user = PFUser.currentUser() else { NSLog("current user nil in savedPhotosRequestTimeline of ParseHelper");return }
+        
+        let savedQuery = PFQuery(className: ParseSavedClass)
+        savedQuery.whereKey(ParseSavedUser, equalTo: user)
+        savedQuery.orderByAscending("createdAt")
+        savedQuery.includeKey(ParseSavedPhoto)
+        
+        savedQuery.findObjectsInBackgroundWithBlock(completionBlock)
+    }
+    
+//    static func timelineRequestForCurrentUser(range: Range<Int>, completionBlock: PFQueryArrayResultBlock) {
+//        
+//        guard let user = PFUser.currentUser() else { return }
+//        
+//        // default photo
+//        let targetQuery = PFQuery(className: ParsePhotoClass)
+//        targetQuery.whereKey("objectId", equalTo: "XT1ohbnpej")
+//        
+//        let taggedQuery = PFQuery(className: ParsePhotoClass)
+//        taggedQuery.whereKey(ParsePhotoTagged, equalTo: user)
+//        taggedQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
+//        
+//        let ownerPhotoQuery = PFQuery(className: ParsePhotoClass)
+//        ownerPhotoQuery.whereKey(ParsePhotoFromUser, equalTo: user)
+//        ownerPhotoQuery.whereKey(ParsePhotoDisplayDate, lessThan: NSDate())
+//        
+//        // removed defualt photo
+//        let finalQuery = PFQuery.orQueryWithSubqueries([taggedQuery, ownerPhotoQuery])
+//        
+//        finalQuery.includeKey(ParsePhotoFromUser)
+//        finalQuery.orderByDescending(ParsePhotoDisplayDate)
+//        
+//        finalQuery.skip = range.startIndex
+//        finalQuery.limit = range.endIndex - range.startIndex
+//        
+//        finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
+//    }
 }
 
 // MARK: - PFUser capabilities

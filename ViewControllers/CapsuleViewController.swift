@@ -110,6 +110,9 @@ extension CapsuleViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.row == 0 {
+            return self.rowHeight + 4
+        }
         return self.rowHeight
     }
     
@@ -117,6 +120,20 @@ extension CapsuleViewController: UITableViewDataSource {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     
+//    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+//        return 1
+//    }
+//    
+//    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 4
+//    }
+//    
+//    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+//        guard let header: UITableViewHeaderFooterView = view as? UITableViewHeaderFooterView else {
+//            return
+//        }
+//        header.contentView.backgroundColor = UIColor.recallOffWhite()
+//    }
 }
 
 extension CapsuleViewController: UITableViewDelegate {

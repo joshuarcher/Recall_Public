@@ -12,10 +12,14 @@ import Parse
 
 class UserProfileViewController: UIViewController {
     
+    var photoTakingHelper: PhotoTakingHelper?
+    
     private let cellNibName: String = "ProfileCollectionViewCell"
     private let cellReuseId: String = "profileRecallCell"
     
     var realmProfilePhotos: Results<PhotoProfileRealm>?
+    
+    var parsePhotos: [Photo]?
 
     @IBOutlet weak var userProfileImage: UIImageView!
     @IBOutlet weak var userProfileName: UILabel!
@@ -23,18 +27,42 @@ class UserProfileViewController: UIViewController {
     
     @IBOutlet weak var viewHeightConstraint: NSLayoutConstraint!
     
+    // MARK: - View Control Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        initializePhotos()
         registerCellForCollection()
         self.collectionView.backgroundView = nil
         self.collectionView.backgroundColor = UIColor.clearColor()
-        // panGestureRecognizer.addTarget(self, action: "handleGesture:")
-        // Do any additional setup after loading the view.
+        setUpUserDefaults()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        getRealmPhotos()
-        setUpUserDefaults()
+    override func viewDidAppear(animated: Bool) {
+        addPhotoTouchEvent()
+        
+    }
+    
+    // MARK: - Init Methods
+    
+    private func addPhotoTouchEvent() {
+        let tap = UITapGestureRecognizer(target: self, action: "chooseProfilePhoto")
+        tap.numberOfTapsRequired = 1
+        userProfileImage.userInteractionEnabled = true
+        userProfileImage.addGestureRecognizer(tap)
+        
+    }
+    
+    private func initializePhotos() {
+        self.userProfileImage.layer.cornerRadius = 50
+        self.userProfileImage.layer.masksToBounds = true
+        parsePhotos = []
+        fetchSavedPhotosParse()
+    }
+    
+    private func registerCellForCollection() {
+        let nib = UINib(nibName: cellNibName, bundle: nil)
+        collectionView.registerNib(nib, forCellWithReuseIdentifier: cellReuseId)
     }
     
     func setUpUserDefaults() {
@@ -45,19 +73,25 @@ class UserProfileViewController: UIViewController {
     
     func getRealmPhotos() {
         realmProfilePhotos = RealmHelper.getAllProfilePhotos()
-        print(realmProfilePhotos)
+        print(realmProfilePhotos?.count)
         
     }
     
-    private func registerCellForCollection() {
-        let nib = UINib(nibName: cellNibName, bundle: nil)
-        collectionView.registerNib(nib, forCellWithReuseIdentifier: cellReuseId)
+    func fetchSavedPhotosParse() {
+        ParseHelper.savedPhotosRequestTimeline { (results: [PFObject]?, error: NSError?) -> Void in
+            if let results = results {
+                if let photos = results.map({ $0[ParseHelper.ParseSavedPhoto] }) as? [Photo] {
+                    self.parsePhotos = photos
+                    self.collectionView.reloadData()
+                }
+            }
+        }
     }
     
+    // MARK: - Actions
+    
     @IBAction func dismissButtonPressed(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true) { () -> Void in
-            print("profile view dismissed")
-        }
+        self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
     
     @IBAction func settingsButtonPressed(sender: AnyObject) {
@@ -66,48 +100,47 @@ class UserProfileViewController: UIViewController {
     
     func showSettingsViewController() {
         let nextVc = SettingsViewController(nibName: "SettingsViewController", bundle: nil)
-        self.presentViewControllerFromTopViewController(nextVc)
+        self.presentViewController(nextVc, animated: true) { () -> Void in
+            print("settings presented")
+        }
+    }
+    
+    func chooseProfilePhoto() {
+        // instanstiate photo taking class, provide callback for when photo is selected
+        photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) in
+            guard let image = image else {return}
+            self.userProfileImage.image = image
+        })
+        
     }
 
 }
 
+// MARK: - Collection View methods
+
 extension UserProfileViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let realmProfilePhotos = realmProfilePhotos {
-            return realmProfilePhotos.count
-        }
-        return 0
+        guard let parsePhotos = parsePhotos else { return 0 }
+        
+        return parsePhotos.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCellWithReuseIdentifier(cellReuseId, forIndexPath: indexPath) as? ProfileCollectionViewCell else {
             return UICollectionViewCell()
         }
-        if let realmProfilePhotos = realmProfilePhotos {
-            let realmPhoto = realmProfilePhotos[indexPath.row]
-            cell.realmPhoto = realmPhoto
-            if let imagePath = realmPhoto.imageSentFilePath {
-                let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
-                dispatch_async(queue, { () -> Void in
-                    let image = FileManager.getProfileImage(fromPath: imagePath)
-                    
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        if (image != nil) {
-                            cell.imageView.image = image
-                        } else {
-                            NSLog("No image at file path for index")
-                        }
-                    })
-                })
-            }
-        }
         
+        guard let parsePhotos = parsePhotos else { return cell }
+        
+        let photo = parsePhotos[indexPath.row]
+        photo.downloadImage()
+        cell.photo = photo
         
         return cell
     }
     
-    // Flow Layout
+    // MARK: - Flow Layout
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         let screenRect = UIScreen.mainScreen().bounds
@@ -137,6 +170,8 @@ extension UserProfileViewController: UICollectionViewDataSource, UICollectionVie
     }
     
 }
+
+// MARK: - Scroll View
 
 extension UserProfileViewController: UIScrollViewDelegate {
     

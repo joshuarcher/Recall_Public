@@ -104,6 +104,30 @@ class RealmHelper {
     
     // MARK: - PhotosRealm
     
+    static func saveProfilePhotosFromParse(photos: [Photo]) {
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveProfilePhotos of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            realm.beginWrite()
+            for photo in photos {
+                // cannot assume photo has fromUser or image
+                let realmPhoto = PhotoProfileRealm(photo: photo)
+                realm.add(realmPhoto, update: false)
+            }
+            do {
+                try realm.commitWrite()
+                print("committing photo write")
+            } catch let error as NSError {
+                NSLog("Error commiting in saveProfilePhotos of RealmHelper: %@", error)
+            }
+        }
+    }
+    
     static func getAllProfilePhotos() -> Results<PhotoProfileRealm>? {
         var photos = Results<PhotoProfileRealm>?()
         var realm: Realm?

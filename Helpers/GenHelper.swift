@@ -53,6 +53,39 @@ class GenHelper {
     
 }
 
+extension UITapGestureRecognizer {
+    
+    func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
+        // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(size: CGSize.zero)
+        let textStorage = NSTextStorage(attributedString: label.attributedText!)
+        
+        // Configure layoutManager and textStorage
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+        
+        // Configure textContainer
+        textContainer.lineFragmentPadding = 0.0
+        textContainer.lineBreakMode = label.lineBreakMode
+        textContainer.maximumNumberOfLines = label.numberOfLines
+        let labelSize = label.bounds.size
+        textContainer.size = labelSize
+        
+        // Find the tapped character location and compare it to the specified range
+        let locationOfTouchInLabel = self.locationInView(label)
+        let textBoundingBox = layoutManager.usedRectForTextContainer(textContainer)
+        let textContainerOffset = CGPointMake((labelSize.width - textBoundingBox.size.width) * 0.5 - textBoundingBox.origin.x,
+            (labelSize.height - textBoundingBox.size.height) * 0.5 - textBoundingBox.origin.y);
+        let locationOfTouchInTextContainer = CGPointMake(locationOfTouchInLabel.x - textContainerOffset.x,
+            locationOfTouchInLabel.y - textContainerOffset.y);
+        let indexOfCharacter = layoutManager.characterIndexForPoint(locationOfTouchInTextContainer, inTextContainer: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+        
+        return NSLocationInRange(indexOfCharacter, targetRange)
+    }
+    
+}
+
 extension NSDate {
     func yearsFrom(date:NSDate) -> Int{
         return NSCalendar.currentCalendar().components(NSCalendarUnit.Year, fromDate: date, toDate: self, options: .MatchFirst).year
@@ -90,6 +123,63 @@ extension NSDate {
     }
 }
 
+extension NSDate {
+    func isGreaterThanDate(dateToCompare: NSDate) -> Bool {
+        //Declare Variables
+        var isGreater = false
+        
+        //Compare Values
+        if self.compare(dateToCompare) == NSComparisonResult.OrderedDescending {
+            isGreater = true
+        }
+        
+        //Return Result
+        return isGreater
+    }
+    
+    func isLessThanDate(dateToCompare: NSDate) -> Bool {
+        //Declare Variables
+        var isLess = false
+        
+        //Compare Values
+        if self.compare(dateToCompare) == NSComparisonResult.OrderedAscending {
+            isLess = true
+        }
+        
+        //Return Result
+        return isLess
+    }
+    
+    func equalToDate(dateToCompare: NSDate) -> Bool {
+        //Declare Variables
+        var isEqualTo = false
+        
+        //Compare Values
+        if self.compare(dateToCompare) == NSComparisonResult.OrderedSame {
+            isEqualTo = true
+        }
+        
+        //Return Result
+        return isEqualTo
+    }
+    
+    func addDays(daysToAdd: Int) -> NSDate {
+        let secondsInDays: NSTimeInterval = Double(daysToAdd) * 60 * 60 * 24
+        let dateWithDaysAdded: NSDate = self.dateByAddingTimeInterval(secondsInDays)
+        
+        //Return Result
+        return dateWithDaysAdded
+    }
+    
+    func addHours(hoursToAdd: Int) -> NSDate {
+        let secondsInHours: NSTimeInterval = Double(hoursToAdd) * 60 * 60
+        let dateWithHoursAdded: NSDate = self.dateByAddingTimeInterval(secondsInHours)
+        
+        //Return Result
+        return dateWithHoursAdded
+    }
+}
+
 // MARK: - Colors
 
 extension UIColor {
@@ -118,8 +208,6 @@ extension String {
         
     }
 }
-
-
 // MARK: - Device Properties
 
 struct Device {

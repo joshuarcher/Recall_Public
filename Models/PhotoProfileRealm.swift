@@ -18,17 +18,29 @@ class PhotoProfileRealm: Object {
     dynamic var imageSentFilePath: String? = nil
     // dynamic var parseTaggedUsersIds: [String]? = nil
     
-    convenience init(photo: Photo, image: UIImage) {
+    convenience init(photo: Photo) {
+        self.init()
+        if let objId = photo.objectId, createdAt = photo.createdAt {
+            self.parseObjectId = objId
+            self.parseCreatedAt = createdAt
+        }
+    }
+    
+    convenience init(photo: Photo, image: UIImage?) {
         self.init()
         if let objId = photo.objectId,
             fromUser = photo.fromUser,
-            userUsername = fromUser.username,
             createdAt = photo.createdAt {
-            self.parseObjectId = objId
-            self.parseFromUserUsername = userUsername
-            self.parseCreatedAt = createdAt
-            saveImage(image)
-            // getTagged(tagged)
+                self.parseObjectId = objId
+                self.parseCreatedAt = createdAt
+                
+                if let userUsername = fromUser.username {
+                    self.parseFromUserUsername = userUsername
+                }
+            
+                if let image = image {
+                    saveImage(image)
+                }
         }
     }
     
@@ -39,6 +51,10 @@ class PhotoProfileRealm: Object {
                 saveSelf()
             }
         }
+    }
+    
+    private func fetchImage() {
+        let photo = Photo(withoutDataWithObjectId: self.parseObjectId)
     }
     
 //    private func getTagged(taggedRelation: PFRelation) {

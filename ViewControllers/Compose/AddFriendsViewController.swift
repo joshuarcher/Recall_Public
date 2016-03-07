@@ -71,12 +71,12 @@ class AddFriendsViewController: UIViewController {
     func syncParseWithUsers() {
         ParseHelper.addFriendsRequestForCurrentUser { (results: [PFObject]?, error: NSError?) -> Void in
             let users = results as? [PFUser] ?? []
-            print(users)
-            print("hey")
+//            print(users)
+//            print("hey")
             
             RealmHelper.saveAllUsersFromParse(users)
             self.getUsersFromRealm()
-            print(self.realmUsers)
+//            print(self.realmUsers)
         }
     }
     
@@ -98,7 +98,7 @@ extension AddFriendsViewController: UITableViewDataSource {
             return "all users"
         } else if tableView.numberOfSections == 2 {
             if section == 0 {
-                return "trolls in contacts"
+                return "users in contacts"
             } else if section == 1 {
                 return "all users"
             }
@@ -142,10 +142,10 @@ extension AddFriendsViewController: UITableViewDataSource {
         }
         
         if let user = cell.realmUser {
-            print("_____________________________")
-            print(user)
-            print(user.parseUsername)
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+//            print("_____________________________")
+//            print(user)
+//            print(user.parseUsername)
+//            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         }
         
         return cell

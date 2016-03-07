@@ -80,11 +80,13 @@ extension RecallViewController: UITableViewDataSource {
         photo.downloadImage()
         photo.fetchSaves()
         cell.photo = photo
-        
         return cell
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.row == 0 {
+            return self.rowHeight + 4
+        }
         return self.rowHeight
     }
     

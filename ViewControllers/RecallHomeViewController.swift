@@ -55,14 +55,6 @@ class RecallHomeViewController: UIViewController {
     
     @IBAction func cameraButtonTapped(sender: AnyObject) {
         composeImage()
-//        if UIImagePickerController.isCameraDeviceAvailable(.Rear) {
-//            photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) -> Void in
-//                self.imageToCompose = image
-//                self.performSegueWithIdentifier(self.composeSegue, sender: sender)
-//            })
-//        } else {
-//            self.performSegueWithIdentifier(composeSegue, sender: sender)
-//        }
     }
     
     func composeImage() {
@@ -184,9 +176,13 @@ class RecallHomeViewController: UIViewController {
     func profileButtonTapped() {
         print("profile button tapped")
         let nextVc: UserProfileViewController = UserProfileViewController(nibName: "UserProfileViewController", bundle: nil)
-        presentViewController(nextVc, animated: true) { () -> Void in
-            print("Profile presented")
-        }
+//        self.navigationController?.presentViewController(nextVc, animated: true, completion: nil)
+        self.presentViewController(nextVc, animated: true, completion: nil)
+    }
+    
+    func dismissToLogin() {
+        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        delegate.escapeToLogin()
     }
 
 }

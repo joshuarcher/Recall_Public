@@ -8,6 +8,7 @@
 
 import Foundation
 import Parse
+import Bond
 
 class Photo: PFObject, PFSubclassing {
     
@@ -36,10 +37,6 @@ class Photo: PFObject, PFSubclassing {
     static func parseClassName() -> String {
         return ParseHelper.ParsePhotoClass
     }
-    
-//    override init() {
-//        super.init()
-//    }
     
     override class func initialize() {
         var onceToken: dispatch_once_t = 0

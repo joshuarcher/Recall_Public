@@ -8,6 +8,7 @@
 
 import Foundation
 import Parse
+import Bond
 
 class Message: PFObject, PFSubclassing {
     
@@ -47,19 +48,13 @@ class Message: PFObject, PFSubclassing {
         self.fromUser = PFUser.currentUser()
         guard let parentPhoto = parentPhoto else {print("what the fuck");return}
         
-        saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
+        self.saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
             if success {
                 print("message saved successfully")
                 let message = "\(self.fromUser!.username!) said: \(self.messageText!)"
                 PushNotificationHelper.sendMessagePushNotification(forPhoto: parentPhoto, withMessage: message)
-                let relation = parentPhoto.relationForKey("messages")
-                relation.addObject(self)
-                parentPhoto.saveInBackgroundWithBlock({ (seccess: Bool, error: NSError?) -> Void in
-                    if success {
-                        print("relation saved successfully")
-                    }
-                })
             }
+            
             if let error = error {
                 NSLog("error saving message: %@", error)
             }
@@ -67,6 +62,8 @@ class Message: PFObject, PFSubclassing {
     }
     
     func sendMessageForPhoto(photo: Photo) {
+        
+        
         if let mText = mText.value {
             
             fromUser = PFUser.currentUser()
@@ -75,7 +72,6 @@ class Message: PFObject, PFSubclassing {
             
             saveInBackgroundWithBlock({ (success: Bool, error: NSError?) -> Void in
                 if success {
-                    print("message saved successfully")
                     let message = "\(self.fromUser!.username!) said: \(mText)"
                     PushNotificationHelper.sendMessagePushNotification(forPhoto: photo, withMessage: message)
                     let relation = photo.relationForKey("messages")
@@ -92,6 +88,7 @@ class Message: PFObject, PFSubclassing {
             })
             
         }
+        
     }
     
 }

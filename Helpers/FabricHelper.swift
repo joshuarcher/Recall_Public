@@ -83,6 +83,7 @@ class FabricHelper {
         let appearance = recallAppearance()
         digitsContacts.startContactsUploadWithDigitsAppearance(appearance, presenterViewController: nil, title: "Let's find friends :)") { (result, error) -> Void in
             if let error = error {
+                
                 NSLog("error starting contacts upload: %@", error)
             }
             if result != nil {
