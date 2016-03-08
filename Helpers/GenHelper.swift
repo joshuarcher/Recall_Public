@@ -55,6 +55,9 @@ class GenHelper {
 
 extension UITapGestureRecognizer {
     
+    // from @samwize http://stackoverflow.com/questions/1256887/create-tap-able-links-in-the-nsattributedtext-of-a-uilabel
+    
+    
     func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
         let layoutManager = NSLayoutManager()
