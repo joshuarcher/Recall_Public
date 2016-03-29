@@ -21,6 +21,10 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
         static let viewAppeared = "homeControllerAppeared"
     }
     
+    var photoObjects: [PFObject]?
+    
+    private weak var emptyView: UIView?
+    
     // MARK: - TimelineComponent properties
     
     var timelineComponent: TimelineComponent<Photo, CapsuleViewController>!
@@ -59,6 +63,35 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
         tableView.backgroundColor = UIColor.recallOffWhite()
     }
     
+    // MARK: Empty Data Set
+    
+    private func showEmptyDataSet() {
+        if timelineComponent.content.count > 0 {
+            if let _ = emptyView {
+                self.emptyView?.removeFromSuperview()
+                self.emptyView = nil
+            }
+        } else if timelineComponent.content.count == 0 {
+            addView()
+        }
+    }
+    
+    private func addView() {
+        let tableViewFrame = self.tableView.frame
+        if let emptyView = emptyView {
+            emptyView.frame = tableViewFrame
+            self.tableView.addSubview(emptyView)
+        } else {
+            let nibContents = NSBundle.mainBundle().loadNibNamed("CapsulesEmptyDataSetView", owner: nil, options: nil)
+            emptyView = nibContents.last as? UIView
+            if let emptyView = emptyView {
+                emptyView.frame = tableViewFrame
+                self.tableView.addSubview(emptyView)
+            }
+        }
+        
+    }
+    
     
     // MARK: - TimelineComponent Methods
     
@@ -69,6 +102,7 @@ class CapsuleViewController: UIViewController, TimelineComponentTarget {
     func loadInRange(range: Range<Int>, completionBlock: ([Photo]?) -> Void) {
         ParseHelper.timeCapsuleRequestForCurrentUser(range) { (results: [PFObject]?, error: NSError?) -> Void in
             let photos = results as? [Photo] ?? []
+            self.showEmptyDataSet()
             completionBlock(photos)
         }
     }

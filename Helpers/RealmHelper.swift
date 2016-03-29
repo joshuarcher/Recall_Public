@@ -14,6 +14,146 @@ class RealmHelper {
     
     static let parseUsername = "parseUsername"
     static let parseCreatedAt = "parseCreatedAt"
+    static let updatedAt = "updatedAt"
+    
+    // MARK: - ProfilePhoto
+    
+    static func findProfilePhoto() -> (ProfilePhoto)? {
+        var photo = (ProfilePhoto)?()
+        var realm: Realm?
+        
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in findProfilePhoto of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            do {
+                photo = realm.objects(ProfilePhoto).sorted(updatedAt).last
+            }
+        }
+        
+        return photo
+    }
+    
+    // MARK: - RealmUser
+    
+    static func updateContactAsFriend(userContact: RealmUser) {
+        var realm: Realm?
+        
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveContactAsFriend of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            do {
+                try realm.write {
+                    userContact.isFriend = true
+                }
+            } catch let error as NSError {
+                NSLog("Error writing to realm in saveContactAsFriend of RealmHelper: %@", error)
+            }
+        }
+    }
+    
+    static func getUserFriends() -> Results<RealmUser>? {
+        var friends = Results<RealmUser>?()
+        var realm: Realm?
+        
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in getUserFriends of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            friends = realm.objects(RealmUser).filter("isFriend == true").sorted(parseUsername)
+        }
+        
+        return friends
+    }
+    
+    static func getUserContacts() -> Results<RealmUser>? {
+        var friends = Results<RealmUser>?()
+        var realm: Realm?
+        
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in getUserContacts of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            friends = realm.objects(RealmUser).filter("isFriend == false AND isContact == true").sorted(parseUsername)
+        }
+        
+        return friends
+    }
+    
+    static func searchUsersTagging(searchText: String) -> Results<RealmUser>? {
+        var searchResult = Results<RealmUser>?()
+        var realm: Realm?
+        
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in searchUsersTagging: %@", error)
+        }
+        
+        if let realm = realm {
+            searchResult = realm.objects(RealmUser).filter("isFriend == false AND parseUsername BEGINSWITH '\(searchText)' OR parseUsername CONTAINS '\(searchText)'")
+        }
+        
+        return searchResult
+    }
+    
+    static func saveUserFriendsFromParse(users: [PFUser]) {
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveUserFriends of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            realm.beginWrite()
+            for user in users {
+                let realmFriend = RealmUser(user: user, followingUser: true)
+                realm.add(realmFriend, update: true)
+            }
+            do {
+                try realm.commitWrite()
+            } catch let error as NSError {
+                NSLog("error committing in saveFriends of RealmHelper: %@", error)
+            }
+        }
+    }
+    
+    static func saveUserContactsFromParse(users: [PFUser]) {
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in saveUserContacts of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            
+            realm.beginWrite()
+            for user in users {
+                let realmContact = RealmUser(user: user, userInContacts: true)
+                realm.add(realmContact, update: true)
+            }
+            do {
+                try realm.commitWrite()
+            } catch let error as NSError {
+                NSLog("error committing in saveUserContacts of RealmHelper: %@", error)
+            }
+        }
+    }
     
     // MARK: - FriendRealm
     
@@ -89,6 +229,7 @@ class RealmHelper {
         }
         
         if let realm = realm {
+            
             realm.beginWrite()
             for user in users {
                 let realmContact = ContactRealm(user: user)
@@ -305,6 +446,27 @@ class RealmHelper {
             }
         }
         
+    }
+    
+    // MARK: - DELETE ALL REALM
+    
+    static func deleteAllObjects() {
+        var realm: Realm?
+        do {
+            realm = try Realm()
+        } catch let error as NSError {
+            NSLog("Error trying realm in deleteAllObjects of RealmHelper: %@", error)
+        }
+        
+        if let realm = realm {
+            realm.beginWrite()
+            realm.deleteAll()
+            do {
+                try realm.commitWrite()
+            } catch let error as NSError {
+                NSLog("error committing in deleteAllObjects of RealmHelper: %@", error)
+            }
+        }
     }
     
 }

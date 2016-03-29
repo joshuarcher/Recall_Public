@@ -181,7 +181,7 @@ class MessagesViewController: JSQMessagesViewController {
     func setNavButton() {
         guard let navC = self.navigationController, topView = navC.topViewController else {return}
         let buttonImage = UIImage(named: taggedFriendsImage)
-        let button = UIBarButtonItem(image: buttonImage, style: .Plain, target: self, action: "handleButtonPress")
+        let button = UIBarButtonItem(image: buttonImage, style: .Plain, target: self, action: #selector(MessagesViewController.handleButtonPress))
         button.imageInsets = UIEdgeInsetsMake(3, 0, 3, 4)
         
         topView.navigationItem.rightBarButtonItem = button
@@ -218,7 +218,7 @@ class MessagesViewController: JSQMessagesViewController {
     
     func subscribeToNotifications() {
         let defaultCenter = NSNotificationCenter.defaultCenter()
-        defaultCenter.addObserver(self, selector: "handlePushNotification", name: Notifications.pushReceived, object: nil)
+        defaultCenter.addObserver(self, selector: #selector(MessagesViewController.handlePushNotification), name: Notifications.pushReceived, object: nil)
     }
     
     func unsubscribeToNotifications() {

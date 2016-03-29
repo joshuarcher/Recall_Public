@@ -16,12 +16,34 @@ class TagFriendsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var tagFriendsButton: UIButton!
+    @IBOutlet weak var taggedUsersLabel: UILabel!
     
-    var realmFriends: Results<FriendRealm>?
+    var realmUserFriends: Results<RealmUser>?
     
     var taggedFriends: [String]!
-    
     var cellsToSelect: [NSIndexPath]!
+    
+    // variables for image sending
+    var dateTuple: (Int, Int)?
+    var capturedImage: UIImage?
+    
+    // search bar
+    
+    enum State {
+        case DefaultMode
+        case SearchMode
+    }
+    
+    var state: State = .DefaultMode {
+        didSet {
+            switch (state) {
+            case .DefaultMode:
+                getFriendsFromRealm()
+            case .SearchMode:
+                return
+            }
+        }
+    }
     
     // MARK: - View Lifecycle
     
@@ -34,8 +56,6 @@ class TagFriendsViewController: UIViewController {
         if cellsToSelect == nil {
             cellsToSelect = []
         }
-        
-        //parseRequestFriends()
         // show button if there are tagged users
         updateTagButton()
         // Do any additional setup after loading the view.
@@ -43,6 +63,8 @@ class TagFriendsViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        self.state = .DefaultMode
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         getFriendsFromRealm()
         parseRequestFriends()
     }
@@ -50,22 +72,21 @@ class TagFriendsViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         updateSelectedCells()
-        print("hey: \(taggedFriends)")
+//        print("hey: \(taggedFriends)")
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        // if dissapearing to compose screen, pass it the friends it needs (lolz)
-        // this is going to have to change when I change around the navigation controller
-        if let composeController = self.navigationController?.viewControllers[3] as? RecallComposeViewController {
-            composeController.taggedFriends = taggedFriends
+        
+        if self.isMovingFromParentViewController() {
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
         }
     }
     
     // MARK: - Helper Functions
     
     func getFriendsFromRealm() {
-        self.realmFriends = RealmHelper.getFriends()
+        self.realmUserFriends = RealmHelper.getUserFriends()
     }
     
     // get friends from parse, then save them in Realm, reload view (Replace with synchronizer?)
@@ -82,7 +103,7 @@ class TagFriendsViewController: UIViewController {
                     }
                 }
                 
-                RealmHelper.saveFriendsFromParse(users)
+                RealmHelper.saveUserFriendsFromParse(users)
                 self.tableView.reloadData()
             }
         }
@@ -91,12 +112,26 @@ class TagFriendsViewController: UIViewController {
     func updateTagButton() {
         guard let taggedFriends = taggedFriends else {return}
         if taggedFriends.count == 0 {
-            tagFriendsButton.hidden = true
-        }
-        else {
-            tagFriendsButton.hidden = false
+            taggedUsersLabel.text = "personal"
+        } else {
+            taggedUsersLabel.text = "\(taggedFriends.count) others"
         }
     }
+    
+    @IBAction func sendButtonTapped(sender: AnyObject) {
+        sendRecall()
+        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    private func sendRecall() {
+        guard let capturedImage = self.capturedImage, dateTuple = self.dateTuple else { return }
+        let photo = Photo()
+        photo.image.value = capturedImage
+        photo.taggedFriends.value = taggedFriends
+        photo.dateDisplay.value = GenHelper.getDateToSend(dateTuple)
+        photo.uploadPost()
+    }
+    
 
 }
 
@@ -105,31 +140,38 @@ class TagFriendsViewController: UIViewController {
 extension TagFriendsViewController: UITableViewDataSource {
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let realmFriends = realmFriends else {return 0}
-        return realmFriends.count
+        guard let realmUserFriends = realmUserFriends else {return 0}
+        return realmUserFriends.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: TagFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(tagFriendCellReuseId) as! TagFriendTableViewCell
-        if let realmFriends = realmFriends {
-            cell.usernameLabel.text = realmFriends[indexPath.row].parseUsername
+        if let realmUserFriends = realmUserFriends {
+            cell.usernameLabel.text = realmUserFriends[indexPath.row].parseUsername
             
-            if let taggedFriends = taggedFriends, objId = realmFriends[indexPath.row].parseObjectId {
+            // select cell on load if already tagged
+            if let taggedFriends = taggedFriends, objId = realmUserFriends[indexPath.row].parseObjectId {
                 if taggedFriends.contains(objId) {
-                    cellsToSelect.append(indexPath)
+//                    cellsToSelect.append(indexPath)
+                    tableView.selectRowAtIndexPath(indexPath, animated: false, scrollPosition: .None)
                 }
             }
         }
         return cell
     }
     
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return CGFloat(50)
+    }
+    
     
 }
 
 extension TagFriendsViewController: UITableViewDelegate {
+    // add objectID to list of tagged users
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let realmFriends = realmFriends {
-            guard let taggedObjectId = realmFriends[indexPath.row].parseObjectId else {
+        if let realmUserFriends = realmUserFriends {
+            guard let taggedObjectId = realmUserFriends[indexPath.row].parseObjectId else {
                 print("No object Id for realmFriends in didSelectRowAtIndexPath")
                 return
             }
@@ -138,9 +180,11 @@ extension TagFriendsViewController: UITableViewDelegate {
         }
     }
     
+    // remove objectID form list of tagged users
     func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        if let realmFriends = realmFriends {
-            guard let taggedObjectId = realmFriends[indexPath.row].parseObjectId else {
+        
+        if let realmUserFriends = realmUserFriends {
+            guard let taggedObjectId = realmUserFriends[indexPath.row].parseObjectId else {
                 print("No object Id for realmFriends in didDeselectRowAtIndexPath")
                 return
             }
@@ -158,7 +202,7 @@ extension TagFriendsViewController: UITableViewDelegate {
     func updateSelectedCells() {
         
         for cell in cellsToSelect {
-            tableView.selectRowAtIndexPath(cell, animated: true, scrollPosition: .None)
+            tableView.selectRowAtIndexPath(cell, animated: false, scrollPosition: .None)
         }
     }
     

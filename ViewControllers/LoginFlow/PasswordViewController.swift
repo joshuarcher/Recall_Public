@@ -68,15 +68,15 @@ class PasswordViewController: UIViewController {
     
     func subscribeToNotifications() {
         let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: "updatePlaceHolders:", name: Notifications.loginPressed, object: nil)
-        notificationCenter.addObserver(self, selector: "updatePlaceHolders:", name: Notifications.signUpPressed, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(PasswordViewController.updatePlaceHolders(_:)), name: Notifications.loginPressed, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(PasswordViewController.updatePlaceHolders(_:)), name: Notifications.signUpPressed, object: nil)
     }
     
     func initializeTargets() {
-        self.emailTextField.addTarget(self, action: "showNextButton", forControlEvents: .EditingChanged)
-        self.passwordTextField.addTarget(self, action: "showNextButton", forControlEvents: .EditingChanged)
-        self.nextButton.addTarget(self, action: "buttonPressed:", forControlEvents: .TouchUpInside)
-        self.backButton.addTarget(self, action: "backButtonPressed:", forControlEvents: .TouchUpInside)
+        self.emailTextField.addTarget(self, action: #selector(PasswordViewController.showNextButton), forControlEvents: .EditingChanged)
+        self.passwordTextField.addTarget(self, action: #selector(PasswordViewController.showNextButton), forControlEvents: .EditingChanged)
+        self.nextButton.addTarget(self, action: #selector(PasswordViewController.buttonPressed(_:)), forControlEvents: .TouchUpInside)
+        self.backButton.addTarget(self, action: #selector(PasswordViewController.backButtonPressed(_:)), forControlEvents: .TouchUpInside)
     }
     
     func showNextButton() {
@@ -116,7 +116,7 @@ class PasswordViewController: UIViewController {
                 sendNotification(forError: ErrorType.password)
             }
             // if all is well....
-            else if emailText.characters.count >= 4 && passwordText.characters.count >= 5 {
+            else if emailText.characters.count >= 3 && passwordText.characters.count >= 5 {
                 setUserCredentials()
                 if !login {
                     showNextView()

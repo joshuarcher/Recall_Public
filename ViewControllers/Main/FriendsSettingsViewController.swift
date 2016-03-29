@@ -59,7 +59,6 @@ class FriendsSettingsViewController: UIViewController {
                 ParseHelper.addressBookFriendsForCurrentUser(digitUsers, completionBlock: { (results: [PFObject]?, error: NSError?) -> Void in
                     let users = results as? [PFUser] ?? []
                     RealmHelper.saveContactsFromParse(users)
-                    //self.getContactsFromRealm()
                 })
             }
         }
@@ -79,12 +78,14 @@ class FriendsSettingsViewController: UIViewController {
     }
 
     @IBAction func dismissButtonTapped(sender: AnyObject) {
-//        self.dismissViewControllerAnimated(true, completion: nil)
         self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 }
 
 extension FriendsSettingsViewController: UITableViewDataSource {
+    
+    // Table view shows 2 sections: Contacts and All Users
+    // Contacts gets loaded after All users, therefore there may be only one section
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if contactsRealm?.count > 0 {
@@ -123,7 +124,6 @@ extension FriendsSettingsViewController: UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        let cell: AddFriendTableViewCell = self.tableView.dequeueReusableCellWithIdentifier(addFriendReuseId) as! AddFriendTableViewCell
         guard let cell = tableView.dequeueReusableCellWithIdentifier(cellReuseId) as? FriendsSettingsTableViewCell else {
             return UITableViewCell()
         }

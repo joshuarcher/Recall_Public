@@ -28,7 +28,7 @@ class RCCapsuleCell: UITableViewCell {
                 // bind image of the post to the 'postImage' view
                 photoDisposable = photo.image.bindTo(recallImageView.bnd_image)
                 if let date = photo.displayDate {
-                    self.timeLabel.text = GenHelper.timeFromString(date, cell: "capsule")
+                    // self.timeLabel.text = GenHelper.timeFromString(date, cell: "capsule")
                     self.recallDate = date
                     startUpdates()
                 }
@@ -51,13 +51,19 @@ class RCCapsuleCell: UITableViewCell {
     func startUpdates() {
         if let recallDate = recallDate {
             let timeHours = (NSDate().timeIntervalSinceDate(recallDate) * -1) / 3600
-            if timeHours < 73 {
+            if timeHours < 1 {
                 if true {
                     //let selector: Selector = "updateLabel"
-                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: Selector("updateLabel"), userInfo: nil, repeats: true)
+                    self.timer = NSTimer.scheduledTimerWithTimeInterval(0.5, target: self, selector: #selector(RCCapsuleCell.updateLabel), userInfo: nil, repeats: true)
                     let time = self.timer
                     NSRunLoop.mainRunLoop().addTimer(time!, forMode: NSRunLoopCommonModes)
                 }
+            } else {
+                if self.timer != nil {
+                    self.timer?.invalidate()
+                    self.timer = nil
+                }
+                self.timeLabel.text = GenHelper.timeFromString(recallDate, cell: "capsule")
             }
         }
     }
@@ -68,18 +74,20 @@ class RCCapsuleCell: UITableViewCell {
             var timeInt: Double = NSDate().timeIntervalSinceDate(recallDate) * -1
             
             let hours = Int(timeInt / 3600)
-            timeInt -= NSTimeInterval(hours) * 3600
             
-            let minutes = Int(timeInt / 60)
-            timeInt -= NSTimeInterval(minutes) * 60
-            
-            let seconds = Int(timeInt)
-            
-            let strHours = String(format: "%02d", hours)
-            let strMinutes = String(format: "%02d", minutes)
-            let strSeconds = String(format: "%02d", seconds)
-            
-            self.timeLabel.text = "\(strHours):\(strMinutes):\(strSeconds)"
+            if hours < 1 {
+                timeInt -= NSTimeInterval(hours) * 3600
+                
+                let minutes = Int(timeInt / 60)
+                timeInt -= NSTimeInterval(minutes) * 60
+                
+                let seconds = Int(timeInt)
+                
+                let strMinutes = String(format: "%02d", minutes)
+                let strSeconds = String(format: "%02d", seconds)
+                
+                self.timeLabel.text = "\(strMinutes):\(strSeconds)"
+            }
         }
     }
     
@@ -151,7 +159,7 @@ extension RCCapsuleCell {
         timeLayer.shadowOpacity = 0.6
         timeLayer.shadowRadius = 5
         
-        let gesture: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "longPressed:")
+        let gesture: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(RCCapsuleCell.longPressed(_:)))
         gesture.minimumPressDuration = 0.09
         //visEffect.addGestureRecognizer(gesture)
     }

@@ -10,6 +10,44 @@ import Foundation
 import UIKit
 
 class GenHelper {
+    // MARK: - DatePicking
+    /*
+    component 0: number 1-x
+    component 1: hours, days, weeks, months
+    */
+    
+    static func getDateToSend(pickerTuple: (Int,Int)) -> NSDate {
+        let numberInterval = pickerTuple.0 + 1
+        var timeInterval: Double = 1/24
+        switch (pickerTuple.1) {
+        case 0:
+            timeInterval = 1/24
+            break;
+        case 1:
+            timeInterval = 1
+            break;
+        case 2:
+            timeInterval = 7
+            break;
+        case 3:
+            timeInterval = 5
+            break;
+        case 4:
+            timeInterval = 30
+            break;
+        default:
+            break;
+        }
+        
+        // ex: 11 days picked -> (10, 1)
+        //  -> 86400(seconds in day) * 11 * 1
+        // ex: 2 weeks picked -> (1, 2)
+        //  -> 86400 * 2 * 7
+        let secondsToAdd = Double(86400 * Double(numberInterval) * timeInterval)
+        
+        return NSDate().dateByAddingTimeInterval(secondsToAdd)
+    }
+    
     static func timeFromString(event: NSDate, cell: String) -> String {
         var toReturn: String = ""
         let now = NSDate()
@@ -53,10 +91,25 @@ class GenHelper {
     
 }
 
+// MARK: - Range array extenstion
+
+protocol ArrayRepresentable {
+    associatedtype ArrayType
+    
+    func toArray() -> [ArrayType]
+}
+
+extension Range : ArrayRepresentable {
+    func toArray() -> [Element] {
+        return [Element](self)
+    }
+}
+
+// MARK: - Tap Gesture Extension for Terms & Privacy
+
 extension UITapGestureRecognizer {
     
     // from @samwize http://stackoverflow.com/questions/1256887/create-tap-able-links-in-the-nsattributedtext-of-a-uilabel
-    
     
     func didTapAttributedTextInLabel(label: UILabel, inRange targetRange: NSRange) -> Bool {
         // Create instances of NSLayoutManager, NSTextContainer and NSTextStorage
@@ -195,7 +248,11 @@ extension UIColor {
     static func recallRedLight() -> UIColor {
         return UIColor(red:1.00, green:0.68, blue:0.68, alpha:1.0)
     }
+    static func recallOffGray() -> UIColor {
+        return UIColor(red:0.408, green:0.455, blue:0.463, alpha:1.0)
+    }
 }
+//[UIColor colorWithRed:0.408 green:0.455 blue:0.463 alpha:1] /*#687476*/
 
 extension String {
     func containsSpaces() -> Bool {

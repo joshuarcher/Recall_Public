@@ -23,6 +23,16 @@ class DigitsVerifyViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+//    override func viewWillAppear(animated: Bool) {
+//        super.viewWillAppear(animated)
+//        let digitsVerified = UserDefaultsHelper.isDigitsVerified()
+//        if digitsVerified {
+//            self.presentNextView()
+//        } else {
+//            self.checkDigits()
+//        }
+//    }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         let digitsVerified = UserDefaultsHelper.isDigitsVerified()

@@ -18,7 +18,8 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
     private let rowHeight: CGFloat = 290
     @IBOutlet weak var tableView: UITableView!
     
-    
+    private weak var emptyView: UIView?
+    var tableLoaded: Bool = false
     
     // MARK: - TimelineComponent properties
     
@@ -33,6 +34,10 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
         registerTimelineComponent()
         registerCellForTable()
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -51,6 +56,35 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
         tableView.backgroundColor = UIColor.recallOffWhite()
     }
     
+    // MARK: Empty Data Set
+    
+    private func showEmptyDataSet() {
+        if timelineComponent.content.count > 0 {
+            if let _ = emptyView {
+                self.emptyView?.removeFromSuperview()
+                self.emptyView = nil
+            }
+        } else if timelineComponent.content.count == 0 {
+            addView()
+        }
+    }
+    
+    private func addView() {
+        let tableViewFrame = self.tableView.frame
+        if let emptyView = emptyView {
+            emptyView.frame = tableViewFrame
+            self.tableView.addSubview(emptyView)
+        } else {
+            let nibContents = NSBundle.mainBundle().loadNibNamed("RecallsEmptyDataSetView", owner: nil, options: nil)
+            emptyView = nibContents.last as? UIView
+            if let emptyView = emptyView {
+                emptyView.frame = tableViewFrame
+                self.tableView.addSubview(emptyView)
+            }
+        }
+
+    }
+    
     // MARK: - TimelineComponent Methods
     
     private func registerTimelineComponent() {
@@ -61,6 +95,7 @@ class RecallViewController: UIViewController, TimelineComponentTarget {
         ParseHelper.timelineRequestForCurrentUser(range) { (results: [PFObject]?, error: NSError?) -> Void in
             let photos = results as? [Photo] ?? []
             completionBlock(photos)
+            self.showEmptyDataSet()
         }
     }
 

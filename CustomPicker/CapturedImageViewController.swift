@@ -44,14 +44,17 @@ class CapturedImageViewController: UIViewController {
 
     @IBAction func pickedButtonTapped(sender: AnyObject) {
         
-        
         if let imageTaken = imageTaken {
             
+//            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//            let VC = storyboard.instantiateViewControllerWithIdentifier("RecallCompose") as! RecallComposeViewController
+//            VC.imageTaken = imageTaken
+//            self.navigationController?.pushViewController(VC, animated: true)
+            // changed for new date picker
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let VC = storyboard.instantiateViewControllerWithIdentifier("RecallCompose") as! RecallComposeViewController
-            // let nextVC = RecallComposeViewController(withImage: imageTaken)
-            VC.imageTaken = imageTaken
-            self.navigationController?.pushViewController(VC, animated: true)
+            let nextVc = storyboard.instantiateViewControllerWithIdentifier("DatePickerViewController") as! DatePickerViewController
+            nextVc.capturedImage = imageTaken
+            self.navigationController?.pushViewController(nextVc, animated: true)
         }
     }
 

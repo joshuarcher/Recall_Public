@@ -257,17 +257,17 @@ extension TaggedMessagesViewController: UITableViewDelegate {
         // line from edge to edge
         
         // remove inset
-        if cell.respondsToSelector("setSeparatorInset:") {
+        if cell.respondsToSelector(Selector("setSeparatorInset:")) {
             cell.separatorInset = UIEdgeInsetsZero
         }
         
         // don't inherit margin settings
-        if cell.respondsToSelector("setPreservesSuperviewLayoutMargins:") {
+        if cell.respondsToSelector(Selector("setPreservesSuperviewLayoutMargins:")) {
             cell.preservesSuperviewLayoutMargins = false
         }
         
         // explicityl set layout margins
-        if cell.respondsToSelector("setLayoutMargins:") {
+        if cell.respondsToSelector(Selector("setLayoutMargins:")) {
             cell.layoutMargins = UIEdgeInsetsZero
         }
         

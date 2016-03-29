@@ -38,7 +38,7 @@ class RCTimelineCell: UITableViewCell {
                 if let user = photo.fromUser {
                     self.senderLabel.text = user.username
                 }
-                if let date = photo.displayDate {
+                if let date = photo.createdAt {
                     self.dateLabel.text = GenHelper.timeFromString(date, cell: "timeline")
                 }
             }
@@ -150,7 +150,7 @@ extension RCTimelineCell {
         savedButton.setImage(normalImage, forState: .Normal)
         savedButton.setImage(selectedImage, forState: .Selected)
         savedButton.imageEdgeInsets = UIEdgeInsetsMake(2, 4, 2, 28)
-        savedButton.addTarget(self, action: "saveButtonPressed:", forControlEvents: .TouchUpInside)
+        savedButton.addTarget(self, action: #selector(RCTimelineCell.saveButtonPressed(_:)), forControlEvents: .TouchUpInside)
         innerView.addSubview(savedButton)
         savedButton.autoSetDimension(.Height, toSize: 44)
         savedButton.autoSetDimension(.Width, toSize: 60)

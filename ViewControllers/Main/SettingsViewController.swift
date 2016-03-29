@@ -28,9 +28,7 @@ class SettingsViewController: UIViewController {
     }
 
     @IBAction func dismissButtonPressed(sender: AnyObject) {
-//        self.dismissViewControllerAnimated(true, completion: nil)
         self.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -66,7 +64,9 @@ extension SettingsViewController: UITableViewDelegate {
         case 0:
             if indexPath.row == 0 {
                 // Add contact
-                nextVC = FriendsSettingsViewController(nibName: "FriendsSettingsViewController", bundle: nil)
+                // nextVC = FriendsSettingsViewController(nibName: "FriendsSettingsViewController", bundle: nil)
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                nextVC = storyboard.instantiateViewControllerWithIdentifier("findFriendsViewController") as? FindFriendsViewController
             } else if indexPath.row == 1 {
                 // Add others
             }

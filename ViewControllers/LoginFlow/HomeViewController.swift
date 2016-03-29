@@ -38,8 +38,10 @@ class HomeViewController: UIViewController {
         attributedString.addAttribute(NSLinkAttributeName, value: "http://privacy", range: NSMakeRange(58, 14))
         termsLabel.attributedText = attributedString
         termsLabel.numberOfLines = 2
+        termsLabel.textColor = UIColor.recallOffWhite()
+        termsLabel.textAlignment = .Center
         termsLabel.font = UIFont.systemFontOfSize(12)
-        gestureText.addTarget(self, action: "termsTextTapped:")
+        gestureText.addTarget(self, action: #selector(HomeViewController.termsTextTapped(_:)))
         gestureText.numberOfTapsRequired = 1
         termsLabel.addGestureRecognizer(gestureText)
         termsLabel.userInteractionEnabled = true
@@ -81,7 +83,7 @@ class HomeViewController: UIViewController {
             print("Terms Tapped")
             nextVc = SFSafariViewController(URL: NSURL(string: "http://recall-that.com/terms.html")!)
             self.presentViewController(nextVc, animated: true, completion: nil)
-        } else if sender.didTapAttributedTextInLabel(self.termsLabel, inRange: NSMakeRange(58, 14)) {
+        } else if sender.didTapAttributedTextInLabel(self.termsLabel, inRange: NSMakeRange(56, 14)) {
             print("Privacy Tapped")
             nextVc = SFSafariViewController(URL: NSURL(string: "http://recall-that.com/privacy_policy.html")!)
             self.presentViewController(nextVc, animated: true, completion: nil)
@@ -93,7 +95,7 @@ class HomeViewController: UIViewController {
         loginButton.backgroundColor = UIColor.recallRedLight()
         loginButton.setTitleColor(UIColor.grayColor(), forState: .Normal)
         loginButton.setTitle("LOGIN", forState: .Normal)
-        loginButton.addTarget(self, action: "loginButtonPressed:", forControlEvents: .TouchUpInside)
+        loginButton.addTarget(self, action: #selector(HomeViewController.loginButtonPressed(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(loginButton)
         loginButton.autoPinEdgeToSuperviewEdge(.Bottom)
         loginButton.autoPinEdgeToSuperviewEdge(.Left)
@@ -103,7 +105,7 @@ class HomeViewController: UIViewController {
         signupButton.backgroundColor = UIColor.recallOffWhite()
         signupButton.setTitleColor(UIColor.grayColor(), forState: .Normal)
         signupButton.setTitle("SIGN UP", forState: .Normal)
-        signupButton.addTarget(self, action: "signUpButtonPressed:", forControlEvents: .TouchUpInside)
+        signupButton.addTarget(self, action: #selector(HomeViewController.signUpButtonPressed(_:)), forControlEvents: .TouchUpInside)
         self.view.addSubview(signupButton)
         signupButton.autoSetDimension(.Height, toSize: 50)
         signupButton.autoPinEdge(.Bottom, toEdge: .Top, ofView: loginButton)
@@ -113,8 +115,10 @@ class HomeViewController: UIViewController {
         self.view.addSubview(termsLabel)
         termsLabel.autoSetDimension(.Height, toSize: 50)
         termsLabel.autoPinEdge(.Bottom, toEdge: .Top, ofView: signupButton)
-        termsLabel.autoPinEdgeToSuperviewEdge(.Left)
-        termsLabel.autoPinEdgeToSuperviewEdge(.Right)
+        termsLabel.autoPinEdgeToSuperviewEdge(.Left, withInset: 20)
+        termsLabel.autoPinEdgeToSuperviewEdge(.Right, withInset: 20)
+//        termsLabel.autoPinEdgeToSuperviewEdge(.Left)
+//        termsLabel.autoPinEdgeToSuperviewEdge(.Right)
         
     }
     

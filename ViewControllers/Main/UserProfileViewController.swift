@@ -36,6 +36,7 @@ class UserProfileViewController: UIViewController {
         self.collectionView.backgroundView = nil
         self.collectionView.backgroundColor = UIColor.clearColor()
         setUpUserDefaults()
+        fetchRealmProfilePhoto() 
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -46,7 +47,7 @@ class UserProfileViewController: UIViewController {
     // MARK: - Init Methods
     
     private func addPhotoTouchEvent() {
-        let tap = UITapGestureRecognizer(target: self, action: "chooseProfilePhoto")
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UserProfileViewController.chooseProfilePhoto))
         tap.numberOfTapsRequired = 1
         userProfileImage.userInteractionEnabled = true
         userProfileImage.addGestureRecognizer(tap)
@@ -70,13 +71,7 @@ class UserProfileViewController: UIViewController {
             self.userProfileName.text = username
         }
     }
-    
-    func getRealmPhotos() {
-        realmProfilePhotos = RealmHelper.getAllProfilePhotos()
-        print(realmProfilePhotos?.count)
-        
-    }
-    
+
     func fetchSavedPhotosParse() {
         ParseHelper.savedPhotosRequestTimeline { (results: [PFObject]?, error: NSError?) -> Void in
             if let results = results {
@@ -86,6 +81,27 @@ class UserProfileViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    func fetchRealmProfilePhoto() {
+        let photo: (ProfilePhoto)? = RealmHelper.findProfilePhoto()
+        if let photo = photo, photoFile = photo.pictureFile {
+            self.userProfileImage.image = UIImage(data: photoFile)
+        }
+    }
+    
+    func fetchParseProfilePhoto() {
+        
+    }
+    
+    func saveRealmProfilePhoto(image: UIImage) {
+        guard let user = PFUser.currentUser() else { return }
+        let photo = ProfilePhoto(user: user, image: image)
+        photo.saveSelf()
+    }
+    
+    func saveParseProfilePhoto(image: UIImage) {
+        
     }
     
     // MARK: - Actions
@@ -110,6 +126,7 @@ class UserProfileViewController: UIViewController {
         photoTakingHelper = PhotoTakingHelper(viewController: self, callback: { (image: UIImage?) in
             guard let image = image else {return}
             self.userProfileImage.image = image
+            self.saveRealmProfilePhoto(image)
         })
         
     }

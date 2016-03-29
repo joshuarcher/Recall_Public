@@ -59,7 +59,7 @@ class RecallComposeViewController: UIViewController {
         }
         
         for button in dateButtonCollection {
-            button.addTarget(self, action: "handleDatePicker:", forControlEvents: .TouchUpInside)
+            button.addTarget(self, action: #selector(RecallComposeViewController.handleDatePicker(_:)), forControlEvents: .TouchUpInside)
         }
 
         // Do any additional setup after loading the view.
@@ -152,7 +152,7 @@ extension RecallComposeViewController {
     func getDateToSend() -> NSDate {
         var index: Int = 0
         var daysToAdd: Double = 1
-        for (var i = 0; i < self.dateButtonCollection.count; i++) {
+        for i in 0 ..< self.dateButtonCollection.count {
             if self.dateButtonCollection[i].selected {
                 index = i
             }
@@ -176,7 +176,6 @@ extension RecallComposeViewController {
         default:
             break;
         }
-        Answers.logCustomEventWithName("Time Interval Sent", customAttributes: ["days":daysToAdd])
         return NSDate().dateByAddingTimeInterval(86400*daysToAdd)
     }
     

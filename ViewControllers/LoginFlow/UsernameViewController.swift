@@ -39,9 +39,9 @@ class UsernameViewController: UIViewController {
     }
     
     func initializeTargets() {
-        self.usernameTextField.addTarget(self, action: "showSignUpButton", forControlEvents: .EditingChanged)
-        self.signUpButton.addTarget(self, action: "signUpButtonPressed:", forControlEvents: .TouchUpInside)
-        self.backButton.addTarget(self, action: "backButtonPressed:", forControlEvents: .TouchUpInside)
+        self.usernameTextField.addTarget(self, action: #selector(UsernameViewController.showSignUpButton), forControlEvents: .EditingChanged)
+        self.signUpButton.addTarget(self, action: #selector(UsernameViewController.signUpButtonPressed(_:)), forControlEvents: .TouchUpInside)
+        self.backButton.addTarget(self, action: #selector(UsernameViewController.backButtonPressed(_:)), forControlEvents: .TouchUpInside)
     }
     
     func showSignUpButton() {

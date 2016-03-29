@@ -10,9 +10,9 @@ import UIKit
 import Photos
 import AVFoundation
 
-var SessionRunningAndDeviceAuthorizedContext = "SessionRunningAndDeviceAuthorizedContext"
-var CapturingStillImageContext = "CapturingStillImageContext"
-var RecordingContext = "RecordingContext"
+//var SessionRunningAndDeviceAuthorizedContext = "SessionRunningAndDeviceAuthorizedContext"
+//var CapturingStillImageContext = "CapturingStillImageContext"
+//var RecordingContext = "RecordingContext"
 
 class CustomImagePickerViewController: UIViewController {
     
@@ -88,12 +88,6 @@ class CustomImagePickerViewController: UIViewController {
         
     }
     
-    override func viewDidDisappear(animated: Bool) {
-        //self.navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
-    
-    
-    
     func initialImageRequest() {
         
         let fetchOptions = PHFetchOptions()
@@ -118,6 +112,8 @@ class CustomImagePickerViewController: UIViewController {
     override func prefersStatusBarHidden() -> Bool {
         return true
     }
+    
+    // MARK: - Actions
     
     @IBAction func cameraButtonTapped(sender: AnyObject) {
         captureStillImage()
@@ -220,7 +216,7 @@ extension CustomImagePickerViewController {
             self.addObserver(self, forKeyPath: "sessionRunningAndDeviceAuthorized", options: [.Old , .New] , context: &SessionRunningAndDeviceAuthorizedContext)
             self.addObserver(self, forKeyPath: "stillImageOutput.capturingStillImage", options:[.Old , .New], context: &CapturingStillImageContext)
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "subjectAreaDidChange:", name: AVCaptureDeviceSubjectAreaDidChangeNotification, object: self.videoDeviceInput?.device)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(CustomImagePickerViewController.subjectAreaDidChange(_:)), name: AVCaptureDeviceSubjectAreaDidChangeNotification, object: self.videoDeviceInput?.device)
             
             
             weak var weakSelf = self
@@ -341,9 +337,6 @@ extension CustomImagePickerViewController {
                 print(error)
             }
             
-            
-            
-            
         })
         
     }
@@ -386,31 +379,38 @@ extension CustomImagePickerViewController {
         return captureDevice
     }
     
-    func showImage() {
-        if let capturedImage = capturedImage {
-            let newView = UIImageView(frame: self.view.frame)
-            newView.image = capturedImage
-            self.view.addSubview(newView)
-            self.view.bringSubviewToFront(newView)
-        }
-    }
-    
     func showNextView() {
         
         if let capturedImage = capturedImage {
-            let nextVC = CapturedImageViewController()
-            nextVC.imageTaken = capturedImage
-            self.navigationController?.pushViewController(nextVC, animated: false)
+//            let nextVC = CapturedImageViewController()
+//            nextVC.imageTaken = capturedImage
+//            self.navigationController?.pushViewController(nextVC, animated: false)
             // presentViewController(nextVC, animated: true, completion: nil)
             //self.navigationController?.pushViewController(nextVC, animated: false)
+//            let imageView = UIImageView(frame: self.view.frame)
+//            imageView.image = capturedImage
+//            self.view.addSubview(imageView)
+//            self.view.bringSubviewToFront(imageView)
+//            return
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let nextVc = storyboard.instantiateViewControllerWithIdentifier("DatePickerViewController") as! DatePickerViewController
+            nextVc.capturedImage = capturedImage
+            
+            self.navigationController?.pushViewController(nextVc, animated: false)
         }
     }
     
     func showNextView(withImage image: UIImage) {
-        let nextVC = CapturedImageViewController()
-        nextVC.imageTaken = image
-        self.navigationController?.pushViewController(nextVC, animated: true)
-//        presentViewController(nextVC, animated: true, completion: nil)
+        
+//        return
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let nextVc = storyboard.instantiateViewControllerWithIdentifier("DatePickerViewController") as! DatePickerViewController
+        nextVc.capturedImage = image
+        
+        self.navigationController?.pushViewController(nextVc, animated: true)
+//        let nextVC = CapturedImageViewController()
+//        nextVC.imageTaken = image
+//        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     
     // MARK: - Key value observing
@@ -428,6 +428,8 @@ extension CustomImagePickerViewController {
     }
     
 }
+
+// MARK: - Cameraroll Collection View
 
 extension CustomImagePickerViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate {
     
@@ -509,7 +511,13 @@ extension CustomImagePickerViewController: UICollectionViewDataSource, UICollect
     
 }
 
+// MARK: - Collection View Scrolling
+
 extension CustomImagePickerViewController: UIScrollViewDelegate {
+    
+    // when scrolling up, the camera preview moves out of screen while
+    // the collection view takes over
+    
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if self.collectionView == scrollView {
             let yOffset = scrollView.contentOffset.y

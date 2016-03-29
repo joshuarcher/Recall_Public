@@ -61,6 +61,7 @@ class ParseHelper {
     
     // User Relation
     static let ParseUserUsername = "username"
+    static let ParseUserProfilePhoto = "profilePhoto"
     
     // userSaved Relation
     static let ParseSavedClass = "userSaved"
@@ -186,11 +187,26 @@ class ParseHelper {
         friendRelation.saveInBackgroundWithBlock(nil)
     }
     
+    static func addRealmUserFriendRelation(friendsWith: RealmUser) {
+        let friendRelation = PFObject(className: ParseFriendClass)
+        
+        friendRelation[ParseFriendFromUser] = PFUser.currentUser()
+        let user: PFUser = PFUser(outDataWithObjectId: friendsWith.parseObjectId)
+//        let user: PFUser = PFUser(withoutDataWithClassName: ParseHelper.ParseUserClass, objectId: friendsWith.parseObjectId)
+//        let user: PFUser = PFUser(withoutDataWithObjectId: friendsWith.parseObjectId)
+        friendRelation[ParseFriendTouser] = user
+        friendRelation[ParseFriendToUsername] = friendsWith.parseUsername
+        
+        friendRelation.saveInBackgroundWithBlock(nil)
+    }
+    
     static func addContactRealmFriendRelation(friendsWith: ContactRealm) {
         
         let friendRelation = PFObject(className: ParseFriendClass)
         friendRelation[ParseFriendFromUser] = PFUser.currentUser()
-        let user: PFUser = PFUser(withoutDataWithObjectId: friendsWith.parseObjectId)
+        let user: PFUser = PFUser(outDataWithObjectId: friendsWith.parseObjectId)
+//        let user: PFUser = PFUser(withoutDataWithClassName: ParseHelper.ParseUserClass, objectId: friendsWith.parseObjectId)
+//        let user: PFUser = PFUser(withoutDataWithObjectId: friendsWith.parseObjectId)
         friendRelation[ParseFriendTouser] = user
         friendRelation[ParseFriendToUsername] = friendsWith.parseUsername
         
@@ -202,7 +218,9 @@ class ParseHelper {
         
         let friendRelation = PFObject(className: ParseFriendClass)
         friendRelation[ParseFriendFromUser] = PFUser.currentUser()
-        let user: PFUser = PFUser(withoutDataWithObjectId: friendsWith.parseObjectId)
+        let user: PFUser = PFUser(outDataWithObjectId: friendsWith.parseObjectId)
+//        let user: PFUser = PFUser(withoutDataWithClassName: ParseHelper.ParseUserClass, objectId: friendsWith.parseObjectId)
+//        let user: PFUser = PFUser(withoutDataWithObjectId: friendsWith.parseObjectId)
         friendRelation[ParseFriendTouser] = user
         friendRelation[ParseFriendToUsername] = friendsWith.parseUsername
         
@@ -219,6 +237,36 @@ class ParseHelper {
         friendQuery.findObjectsInBackgroundWithBlock(completionBlock)
     }
     
+    // MARK: Users
+    
+    /**
+     Fetch users whose usernames match the provided search term.
+     
+     :param: searchText The text that should be used to search for users
+     :param: completionBlock The completion block that is called when the query completes
+     
+     :returns: The generated PFQuery
+     */
+    static func searchUsers(searchText: String, completionBlock: PFQueryArrayResultBlock) -> PFQuery {
+            /*
+            NOTE: We are using a Regex to allow for a case insensitive compare of usernames.
+            Regex can be slow on large datasets. For large amount of data it's better to store
+            lowercased username in a separate column and perform a regular string compare.
+            */
+        let query = PFUser.query()!.whereKey(ParseHelper.ParseUserUsername, matchesRegex: searchText, modifiers: "i")
+            
+        query.whereKey(ParseHelper.ParseUserUsername, notEqualTo: PFUser.currentUser()!.username!)
+            
+        query.orderByAscending(ParseHelper.ParseUserUsername)
+        query.limit = 20
+        
+        if searchText.characters.count >= 3 {
+            query.findObjectsInBackgroundWithBlock(completionBlock)
+        }
+            
+        return query
+    }
+    
     // MARK: - Parse message shtuff
     
     
@@ -230,12 +278,6 @@ class ParseHelper {
         messageQuery.includeKey(ParseMessageSender)
         
         messageQuery.findObjectsInBackgroundWithBlock(completionBlock)
-    }
-    
-    static func getDefualtPhotot() {
-        let photo = Photo()
-        // image, created at, from user
-        photo.fromUser?.username = "recall founders"
     }
     
     // MARK: - Parse Feedback Shtuff
@@ -338,6 +380,7 @@ class ParseHelper {
 //        
 //        finalQuery.findObjectsInBackgroundWithBlock(completionBlock)
 //    }
+    
 }
 
 // MARK: - PFUser capabilities

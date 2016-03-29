@@ -53,27 +53,6 @@ class PhotoProfileRealm: Object {
         }
     }
     
-    private func fetchImage() {
-        let photo = Photo(withoutDataWithObjectId: self.parseObjectId)
-    }
-    
-//    private func getTagged(taggedRelation: PFRelation) {
-//        // FIND PARSE OBJECTS GIVEN PFRELATION
-//        ParseHelper.taggedUsersMessages(forRelation: taggedRelation) { (results: [PFObject]?, error: NSError?) -> Void in
-//            if let results = results {
-//                var taggedIds: [String] = []
-//                for one in results {
-//                    if let objId = one.objectId {
-//                        taggedIds.append(objId)
-//                    }
-//                }
-//                self.parseTaggedUsersIds = taggedIds
-//                // Save
-//                self.saveSelf()
-//            }
-//        }
-//    }
-    
     func saveSelf() {
         var realm: Realm?
         do {

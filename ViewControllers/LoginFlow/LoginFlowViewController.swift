@@ -37,7 +37,7 @@ class LoginFlowViewController: UIViewController {
     // segues
     private let toAppSegue = "loginFlowToApp"
     private let toDigitsSegue = "loginFlowToDigits"
-
+    
     @IBOutlet weak var scrollView: UIScrollView!
     
     private var hourGlassImage: UIImageView?
@@ -63,7 +63,7 @@ class LoginFlowViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         let defaultCenter = NSNotificationCenter.defaultCenter()
-        defaultCenter.addObserver(self, selector: "receiveAlertNotifcation:", name: Notifications.alertNotifaction, object: nil)
+        defaultCenter.addObserver(self, selector: #selector(LoginFlowViewController.receiveAlertNotifcation(_:)), name: Notifications.alertNotifaction, object: nil)
     }
     
     override func viewDidDisappear(animated: Bool) {

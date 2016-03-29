@@ -12,18 +12,23 @@ class RecallHomeViewController: UIViewController {
     
     private let capsuleViewNib = "CapsuleViewController"
     private let timelineViewNib = "RecallViewController"
-    private let composeSegue = "showRecallCompose"
+    private let composeSegue = "showRecallCompose" // i think I'm done with this
+    private let imagePickerSegue = "presentImagePicker"
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var cameraButton: UIButton!
     @IBOutlet weak var topBarView: UIView!
     
-    private var overlayButtonOne: UIButton?
-    private var overlayButtonTwo: UIButton?
+    @IBOutlet weak var labelRecall: UILabel!
+    @IBOutlet weak var labelComing: UILabel!
+    
+    @IBOutlet weak var labelRecallCenterConstraint: NSLayoutConstraint!
+    @IBOutlet weak var labelComingCenterConstraint: NSLayoutConstraint!
+    
     private var profileButton: UIButton?
     
-    var photoTakingHelper: PhotoTakingHelper?
-    var imageToCompose: UIImage?
+    weak var photoTakingHelper: PhotoTakingHelper?
+    weak var imageToCompose: UIImage?
     
     enum Notifications {
         static let viewAppeared = "homeControllerAppeared"
@@ -46,11 +51,13 @@ class RecallHomeViewController: UIViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        subscribeToNotifications()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: false)
+        unsubscribeToNotifications()
     }
     
     @IBAction func cameraButtonTapped(sender: AnyObject) {
@@ -59,8 +66,7 @@ class RecallHomeViewController: UIViewController {
     
     func composeImage() {
         if UIImagePickerController.isCameraDeviceAvailable(.Rear) {
-            let nextVC = CustomImagePickerViewController()
-            self.navigationController?.pushViewController(nextVC, animated: true)
+            self.performSegueWithIdentifier(imagePickerSegue, sender: self)
         } else {
             self.performSegueWithIdentifier(composeSegue, sender: self)
         }
@@ -74,7 +80,6 @@ class RecallHomeViewController: UIViewController {
     
     func setUpView() {
         
-//        let timeCapsuleView = CapsuleViewController(nibName: capsuleViewNib, bundle: nil)
         let timelineView = RecallViewController(nibName: timelineViewNib, bundle: nil)
         
         // add to scrollView
@@ -82,8 +87,6 @@ class RecallHomeViewController: UIViewController {
         self.scrollView.addSubview(timelineView.view)
         timelineView.didMoveToParentViewController(self)
         
-        
-//        let timelineView = RecallViewController(nibName: timelineViewNib, bundle: nil)
         let timeCapsuleView = CapsuleViewController(nibName: capsuleViewNib, bundle: nil)
         
         // set frame to be to the right of the capsule view
@@ -103,46 +106,44 @@ class RecallHomeViewController: UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == composeSegue {
-            let composeView: RecallComposeViewController = segue.destinationViewController as! RecallComposeViewController
-            if let imageTo = imageToCompose {
-                composeView.imageTaken = imageTo
+            // changed for new datepicker
+            guard let datePickerView: DatePickerViewController = segue.destinationViewController as? DatePickerViewController else {return}
+            if let imageForPicker = imageToCompose {
+                datePickerView.capturedImage = imageForPicker
             }
         }
     }
     
-    func sendAppearNotification() {
-        
+    // MARK: Notifications
+    
+    func subscribeToNotifications() {
+        let defaultCenter = NSNotificationCenter.defaultCenter()
+        defaultCenter.addObserver(self, selector: #selector(RecallHomeViewController.scrollToCapsule), name: Notifications.viewAppeared, object: nil)
+    }
+    
+    func unsubscribeToNotifications() {
+        let defaultCenter = NSNotificationCenter.defaultCenter()
+        defaultCenter.removeObserver(self)
+    }
+    
+    func scrollToCapsule() {
+        updateScrollViewOffset(0)
     }
     
     // MARK: - Button Methods
     
     func setUpButtons() {
-        if overlayButtonOne == nil && overlayButtonTwo == nil && profileButton == nil {
-            // image for buttons
-            let image = UIImage(named: "CustomTabBarHourGlassImage")
+        if profileButton == nil {
             
-            // set original frame on right side
-            let buttonX = self.view.frame.width - 40
-            let buttonFrame = CGRectMake(buttonX, 2, 40, 40)
-            overlayButtonOne = UIButton(frame: buttonFrame)
-            if let button = overlayButtonOne {
-                topBarView.addSubview(button)
-                button.setImage(image, forState: .Normal)
-                let gesture = UITapGestureRecognizer(target: self, action: "firstButtonTapped")
-                button.addGestureRecognizer(gesture)
-            }
+            // for labels as buttons
+            let gestureRecall = UITapGestureRecognizer(target: self, action: #selector(RecallHomeViewController.labelRecallTapped))
+            labelRecall.addGestureRecognizer(gestureRecall)
+            labelRecall.userInteractionEnabled = true
+            let gestureIncoming = UITapGestureRecognizer(target: self, action: #selector(RecallHomeViewController.labelIncomingTapped))
+            labelComing.addGestureRecognizer(gestureIncoming)
+            labelComing.userInteractionEnabled = true
             
-            // set original frame in the middle of the nav bar
-            let buttonTwoX = (self.view.frame.width/2) - 20
-            let buttonTwoFrame = CGRectMake(buttonTwoX, 2, 40, 40)
-            overlayButtonTwo = UIButton(frame: buttonTwoFrame)
-            if let buttonTwo = overlayButtonTwo {
-                topBarView.addSubview(buttonTwo)
-                buttonTwo.alpha = 0
-                buttonTwo.setImage(image, forState: .Normal)
-                let gesture = UITapGestureRecognizer(target: self, action: "secondButtonTapped")
-                buttonTwo.addGestureRecognizer(gesture)
-            }
+            
             
             let profileButtonImage = UIImage(named: "ProfileButton")
             
@@ -152,7 +153,7 @@ class RecallHomeViewController: UIViewController {
             if let profileButton = profileButton {
                 topBarView.addSubview(profileButton)
                 profileButton.setImage(profileButtonImage, forState: .Normal)
-                let gesture = UITapGestureRecognizer(target: self, action: "profileButtonTapped")
+                let gesture = UITapGestureRecognizer(target: self, action: #selector(RecallHomeViewController.profileButtonTapped))
                 profileButton.addGestureRecognizer(gesture)
                 profileButton.imageEdgeInsets = UIEdgeInsetsMake(10, 10, 10 , 26)
                 
@@ -162,13 +163,13 @@ class RecallHomeViewController: UIViewController {
     }
     
     // type 0
-    func firstButtonTapped() {
+    func labelIncomingTapped() {
         print("first button Tapped")
         updateScrollViewOffset(0)
     }
     
     // type 1
-    func secondButtonTapped() {
+    func labelRecallTapped() {
         print("second button Tapped")
         updateScrollViewOffset(1)
     }
@@ -176,13 +177,7 @@ class RecallHomeViewController: UIViewController {
     func profileButtonTapped() {
         print("profile button tapped")
         let nextVc: UserProfileViewController = UserProfileViewController(nibName: "UserProfileViewController", bundle: nil)
-//        self.navigationController?.presentViewController(nextVc, animated: true, completion: nil)
         self.presentViewController(nextVc, animated: true, completion: nil)
-    }
-    
-    func dismissToLogin() {
-        let delegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        delegate.escapeToLogin()
     }
 
 }
@@ -191,9 +186,8 @@ extension RecallHomeViewController {
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let scrollOffset = scrollView.contentOffset.x
-        updateButton(scrollOffset)
-        updateButtonTwo(scrollOffset)
         fadeProfileButton(scrollOffset)
+        animateNavigationLabels(scrollOffset)
     }
     
     func updateScrollViewOffset(buttonType: Int) {
@@ -214,37 +208,6 @@ extension RecallHomeViewController {
     // MARK: - Button Animation Methods
     // TODO: make this highly more efficient....
     
-    func updateButton(contentOffset: CGFloat) {
-        let barWidth = self.view.frame.width
-        let endxDistance = (barWidth / 2) - 20
-        let startxDistance = barWidth - 40
-        let difference = startxDistance - endxDistance
-        let spotToMove = barWidth - ((difference * (contentOffset/barWidth)) + 40)
-        let animationPercatage = contentOffset/(barWidth/4)
-        fadeButton(animationPercatage)
-        moveButton(spotToMove)
-    }
-    
-    func updateButtonTwo(contentOffset: CGFloat) {
-        let barWidth = self.view.frame.width
-        let startxDistance = barWidth/2 - 20
-        let difference = startxDistance - 0
-        let spotToMove = (1 - (contentOffset/barWidth)) * difference
-        let animationPercentage = contentOffset/(barWidth/4)
-        fadeButtonTwo(animationPercentage)
-        moveButtonTwo(spotToMove)
-    }
-    
-    func fadeButton(animatedPercFade: CGFloat) {
-        guard let button = overlayButtonOne else {return}
-        button.alpha = 1 - animatedPercFade
-    }
-    
-    func fadeButtonTwo(animatedPercFade: CGFloat) {
-        guard let button = overlayButtonTwo else {return}
-        button.alpha = -3 + animatedPercFade
-    }
-    
     func fadeProfileButton(scrollOffset: CGFloat) {
         guard let button = profileButton else {return}
         let barWidth = self.view.frame.width
@@ -262,26 +225,29 @@ extension RecallHomeViewController {
         button.frame = buttonFrame
     }
     
-    func moveButton(buttonLocation: CGFloat) {
-        let max = self.view.frame.width - 40
-        guard let button = overlayButtonOne else {return}
-        let frame = button.frame
-        // don't over-move
-        if buttonLocation > max {
-            button.frame = CGRectMake(max, frame.origin.y, frame.width, frame.height)
-        } else {
-            button.frame = CGRectMake(buttonLocation, frame.origin.y, frame.width, frame.height)
+    // MARK: - NavLabel Animation
+    
+    func animateNavigationLabels(contentOffset: CGFloat) {
+        let barWidth = self.view.frame.width
+        var percentageScroll = contentOffset/barWidth
+        if percentageScroll < 0 {
+            percentageScroll = 0
+        } else if percentageScroll > 1 {
+            percentageScroll = 1
         }
+        animateNavigationRecall(percentageScroll)
+        animateNavigationIncoming(percentageScroll)
     }
     
-    func moveButtonTwo(buttonLocation: CGFloat) {
-        guard let button = overlayButtonTwo else {return}
-        let frame = button.frame
-        // don't over-move
-        if buttonLocation < 0 {
-            button.frame = CGRectMake(0, frame.origin.y, frame.width, frame.height)
-        } else {
-            button.frame = CGRectMake(buttonLocation, frame.origin.y, frame.width, frame.height)
-        }
+    func animateNavigationRecall(percentage: CGFloat) {
+        // move contstraint between 0 -> -74
+        self.labelRecallCenterConstraint.constant = CGFloat(-74) * percentage
+        self.labelRecall.alpha = CGFloat(1.4) - percentage
+    }
+    
+    func animateNavigationIncoming(percentage: CGFloat) {
+        // move constraint between +74 -> 0
+        self.labelComingCenterConstraint.constant = CGFloat(74) - (CGFloat(74) * percentage)
+        self.labelComing.alpha = CGFloat(0.4) + percentage
     }
 }

@@ -88,7 +88,7 @@ class Photo: PFObject, PFSubclassing {
     func parseUsers(fromStrings objectIds: [String]) -> [PFUser] {
         var users: [PFUser] = []
         for userId in objectIds {
-            let user = PFUser(withoutDataWithObjectId: userId)
+            let user: PFUser = PFUser(outDataWithObjectId: userId)
             users.append(user)
         }
         

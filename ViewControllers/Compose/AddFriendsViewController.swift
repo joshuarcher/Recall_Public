@@ -86,6 +86,9 @@ class AddFriendsViewController: UIViewController {
 
 extension AddFriendsViewController: UITableViewDataSource {
     
+    // Table view shows 2 sections: Contacts and All Users
+    // Contacts gets loaded after All users, therefore there may be only one section
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if realmContacts?.count > 0 {
             return 2
@@ -140,14 +143,6 @@ extension AddFriendsViewController: UITableViewDataSource {
                 }
             }
         }
-        
-        if let user = cell.realmUser {
-//            print("_____________________________")
-//            print(user)
-//            print(user.parseUsername)
-//            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        }
-        
         return cell
     }
 }

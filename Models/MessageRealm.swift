@@ -115,8 +115,6 @@ class MessageRealm: Object, JSQMessageData {
     }
     
     func media() -> JSQMessageMediaData! {
-//        guard let mediaImageUrl = mediaImageUrl else {return JSQMediaItem()}
-//        let image = UIImage(contentsOfFile: mediaImageUrl)
         guard let mediaImagePath = mediaImagePath else { return JSQMediaItem() }
         let image = FileManager.getImage(fromPath: mediaImagePath)
         let mediaItem = JSQPhotoMediaItem(image: image)
